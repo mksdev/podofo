@@ -151,26 +151,28 @@ void PdfObject::WriteObject( PdfOutputDevice* pDevice, const PdfName & keyStop )
         pDevice->Print( "endobj\n" );
 }
 
-PdfObject* PdfObject::GetIndirectKey( const PdfName & key )
+PdfVariant* PdfObject::GetIndirectKey( const PdfName & key )
 {
-    PdfObject* pObj = NULL;
+    PdfVariant* pVar = NULL;
 
     if( this->IsDictionary() && this->GetDictionary().HasKey( key ) )
     {
-        pObj = this->GetDictionary().GetKey( key );
-        if( pObj->IsReference() ) 
+        pVar = this->GetDictionary().GetKey( key );
+        if( pVar->IsReference() ) 
         {
             if( !m_pOwner )
             {
                 PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
             }
-            pObj = m_pOwner->GetObject( pObj->GetReference() );
+            pVar = m_pOwner->GetObject( pVar->GetReference() );
         }
+        /* XXX TODO indirects can no longer have an owner. Do we rely on this anywhere?
         else
-            pObj->SetOwner( GetOwner() );// even directs might want an owner...
+            pVar->SetOwner( GetOwner() );// even directs might want an owner...
+        */
     }
 
-    return pObj;
+    return pVar;
 }
 
 unsigned long PdfObject::GetObjectLength()

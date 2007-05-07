@@ -57,9 +57,9 @@ void PdfInfo::Init( bool bModify )
 
 const PdfString & PdfInfo::GetStringFromInfoDict( const PdfName & rName ) const
 {
-    PdfObject* pObj = m_pObject->GetDictionary().GetKey( rName );
+    PdfVariant* pVar = m_pObject->GetDictionary().GetKey( rName );
     
-    return pObj && pObj->IsString() ? pObj->GetString() : PdfString::StringNull;
+    return pVar && pVar->IsString() ? pVar->GetString() : PdfString::StringNull;
 }
 
 void PdfInfo::SetAuthor( const PdfString & sAuthor )

@@ -38,7 +38,7 @@ class PODOFO_API PdfFileSpec : public PdfElement {
  public:
     PdfFileSpec( const char* pszFilename, bool bEmbedd, PdfVecObjects* pParent );
 
-    PdfFileSpec( PdfObject* pObject );
+    PdfFileSpec( PdfVariant* pObject );
 
     /** \returns the filename of this file specification.
      *           if no general name is available 

@@ -41,7 +41,7 @@ class PdfObject;
  * 
  *  \see PdfPainter
  */
-class PODOFO_API PdfXObject : public PdfElement, public PdfCanvas {
+class PODOFO_API PdfXObject : public PdfIElement, public PdfCanvas {
  public:
     /** Create a new XObject with a specified dimension
      *  in a given vector of PdfObjects
@@ -127,7 +127,8 @@ class PODOFO_API PdfXObject : public PdfElement, public PdfCanvas {
 // -----------------------------------------------------
 inline PdfObject* PdfXObject::GetContents() const
 {
-    return m_pObject;
+    // XXX TODO ensure really PdfObject if debugging on
+    return static_cast<PdfObject*>(m_pVariant);
 }
 
 // -----------------------------------------------------

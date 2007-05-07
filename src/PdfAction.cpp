@@ -21,6 +21,7 @@
 #include "PdfAction.h"
 
 #include "PdfDictionary.h"
+#include "PdfString.h"
 
 namespace PoDoFo {
 
@@ -57,35 +58,36 @@ PdfAction::PdfAction( EPdfAction eAction, PdfVecObjects* pParent )
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    m_pObject->GetDictionary().AddKey( "S", type );
+    m_pVariant->GetDictionary().AddKey( "S", type );
 }
 
-PdfAction::PdfAction( PdfObject* pObject )
+PdfAction::PdfAction( PdfVariant* pVariant )
     // The typename /Action is optional for PdfActions
-    : PdfElement( NULL, pObject )
+    : PdfElement( NULL, pVariant )
 {
-    m_eType = static_cast<EPdfAction>(TypeNameToIndex( m_pObject->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
+    // XXX FIXME TODO handle being passed an indirect reference
+    m_eType = static_cast<EPdfAction>(TypeNameToIndex( m_pVariant->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
 }
 
 PdfAction::PdfAction( const PdfAction & rhs )
-    : PdfElement( "Action", rhs.m_pObject )
+    : PdfElement( "Action", rhs.m_pVariant )
 {
-    m_eType = static_cast<EPdfAction>(TypeNameToIndex( m_pObject->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
+    m_eType = static_cast<EPdfAction>(TypeNameToIndex( m_pVariant->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
 }
 
 void PdfAction::SetURI( const PdfString & sUri )
 {
-    m_pObject->GetDictionary().AddKey( "URI", sUri );
+    m_pVariant->GetDictionary().AddKey( "URI", sUri );
 }
 
 PdfString PdfAction::GetURI() const
 {
-    return m_pObject->GetDictionary().GetKey( "URI" )->GetString();
+    return m_pVariant->GetDictionary().GetKey( "URI" )->GetString();
 }
 
 bool PdfAction::HasURI() const
 {
-    return m_pObject->GetDictionary().HasKey( "URI" );
+    return m_pVariant->GetDictionary().HasKey( "URI" );
 }
 
 

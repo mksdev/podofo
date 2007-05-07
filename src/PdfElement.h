@@ -22,21 +22,23 @@
 #define _PDF_ELEMENT_H_
 
 #include "PdfDefines.h"
-
 #include "PdfObject.h"
+
 namespace PoDoFo {
 
 class PdfVecObjects;
+class PdfVariant;
 
 /** PdfElement is a common base class for all elements
  *  in a PDF file. For example pages, action and annotations.
  *
- *  Every PDF element has one PdfObject and provides an easier
+ *  Every PDF element has one PdfVariant (which may be a direct object or an
+ *  indirect object of a real type based on PdfObject) and provides an easier
  *  interface to modify the contents of the dictionary. 
  *  
- *  A PdfElement base class can be created from an existing PdfObject
+ *  A PdfElement base class can be created from an existing PdfVariant
  *  or created from scratch. In the later case, the PdfElement creates
- *  a PdfObject and adds it to a vector of objects.
+ *  a new indirect object and adds it to a vector of objects.
  *
  *  A PdfElement cannot be created directly. Use one
  *  of the subclasses which implement real functionallity.
@@ -50,33 +52,34 @@ class PODOFO_API PdfElement {
     virtual ~PdfElement();
 
     /** Get access to the internal object
-     *  \returns the internal PdfObject
+     *  \returns the internal PdfVariant
      */
-    inline PdfObject* GetObject();
+    inline PdfVariant* GetObject();
 
     /** Get access to the internal object
      *  This is an overloaded member function.
      *
-     *  \returns the internal PdfObject
+     *  \returns the internal PdfVariant
      */
-    inline const PdfObject* GetObject() const;
+    inline const PdfVariant* GetObject() const;
 
  protected:
-    /** Creates a new PdfElement 
+    /** Creates a new PdfElement with an indirect object.
+     *
      *  \param pszType type entry of the elements object
      *  \param pParent parent vector of objects.
      *                 Add a newly created object to this vector.
      */
     PdfElement( const char* pszType, PdfVecObjects* pParent );
 
-    /** Create a PdfElement from an existing PdfObject
+    /** Create a PdfElement from an existing PdfVariant
      *  \param pszType type entry of the elements object.
      *                 Throws an exception if the type in the 
-     *                 PdfObject differs from pszType.
-     *  \param pObject pointer to the PdfObject that is modified
+     *                 PdfVariant differs from pszType.
+     *  \param pObject pointer to the PdfVariant that is modified
      *                 by this PdfElement
      */
-    PdfElement( const char* pszType, PdfObject* pObject );
+    PdfElement( const char* pszType, PdfVariant* pVariant );
 
     /** Convert an enum or index to its string representation
      *  which can be written to the PDF file.
@@ -111,23 +114,85 @@ class PODOFO_API PdfElement {
     int TypeNameToIndex( const char* pszType, const char** ppTypes, long lLen ) const;
 
  protected:
-    PdfObject* m_pObject;
+    PdfVariant* m_pVariant;
 };
+
 
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline PdfObject* PdfElement::GetObject()
+inline PdfVariant* PdfElement::GetObject()
 {
-    return m_pObject;
+    return m_pVariant;
 }
 
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline const PdfObject* PdfElement::GetObject() const
+inline const PdfVariant* PdfElement::GetObject() const
 {
-    return m_pObject;
+    return m_pVariant;
+}
+
+class PdfObject;
+
+/**
+ * PdfIElement is a PdfElement that may only refer to an indirect object.
+ * It ensures that it only ever contains an indirect object, and works with
+ * PdfObject rather than PdfVariant.
+ */
+class PdfIElement : public PdfElement
+{
+
+ public:
+
+    virtual ~PdfIElement();
+
+    /**
+     * We know that our object is always indirect, so we can return a PdfObject*
+     * to GetObject() .
+     */
+    inline PdfObject* GetObject();
+
+    /**
+     * We know that our object is always indirect, so we can return a PdfObject*
+     * to GetObject() .
+     */
+    inline const PdfObject* GetObject() const;
+
+ protected:
+    // Note that we do NOT need to overrid the PdfVecObjects-overloaded ctor of
+    // PdfElement since it'll always create an indirect object anyway.
+
+    /** Create a PdfElement from an existing PdfVariant
+     *  \param pszType type entry of the elements object.
+     *                 Throws an exception if the type in the 
+     *                 PdfVariant differs from pszType.
+     *  \param pObject pointer to the PdfVariant that is modified
+     *                 by this PdfElement
+     */
+    PdfIElement( const char* pszType, PdfObject* pObject )
+        : PdfElement( pszType, pObject )
+    {
+    }
+};
+
+// -----------------------------------------------------
+// 
+// -----------------------------------------------------
+inline PdfObject* PdfIElement::GetObject()
+{
+    // XXX TODO Ensure really PdfObject if debugging on
+    return static_cast<PdfObject*>(m_pVariant);
+}
+
+// -----------------------------------------------------
+// 
+// -----------------------------------------------------
+inline const PdfObject* PdfIElement::GetObject() const
+{
+    // XXX TODO Ensure really PdfObject if debugging on
+    return static_cast<const PdfObject*>(m_pVariant);
 }
 
 };

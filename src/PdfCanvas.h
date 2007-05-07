@@ -28,6 +28,7 @@ namespace PoDoFo {
 
 class PdfDictionary;
 class PdfObject;
+class PdfVariant;
 class PdfRect;
 
 /** A interface that provides the necessary features 

@@ -21,34 +21,35 @@
 #include "PdfElement.h"
 
 #include "PdfDictionary.h"
-#include "PdfObject.h"
+#include "PdfVariant.h"
 #include "PdfVecObjects.h"
 
 namespace PoDoFo {
 
 PdfElement::PdfElement( const char* pszType, PdfVecObjects* pParent )
 {
-    m_pObject = pParent->CreateObject( pszType );
+    // Create a new indirect object to use
+    m_pVariant = pParent->CreateObject( pszType );
 }
 
-PdfElement::PdfElement( const char* pszType, PdfObject* pObject )
+PdfElement::PdfElement( const char* pszType, PdfVariant* pVariant )
+    : m_pVariant(pVariant)
 {
-    if( !pObject )         
+    // Manage an existing PdfVariant (which may be a direct or indirect object)
+    if( !m_pVariant )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    m_pObject = pObject;
-
-    if( !m_pObject->IsDictionary() ) 
+    if( !m_pVariant->IsDictionary() ) 
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
     }
 
-    if( pszType && m_pObject->GetDictionary().GetKeyAsName( PdfName::KeyType ) != pszType ) 
+    if( pszType && m_pVariant->GetDictionary().GetKeyAsName( PdfName::KeyType ) != pszType ) 
     {
         PdfError::LogMessage( eLogSeverity_Debug, "Expected key %s but got key %s.", 
-                              pszType, m_pObject->GetDictionary().GetKeyAsName( PdfName::KeyType ).GetName().c_str() );
+                              pszType, m_pVariant->GetDictionary().GetKeyAsName( PdfName::KeyType ).GetName().c_str() );
 
         PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
     }
@@ -77,5 +78,8 @@ int PdfElement::TypeNameToIndex( const char* pszType, const char** ppTypes, long
     return --lLen;
 }
 
+PdfIElement::~PdfIElement()
+{
+}
 
 };

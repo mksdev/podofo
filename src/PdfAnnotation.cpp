@@ -76,21 +76,21 @@ PdfAnnotation::PdfAnnotation( PdfPage* pPage, EPdfAnnotation eAnnot, const PdfRe
 
     rRect.ToVariant( rect );
 
-    m_pObject->GetDictionary().AddKey( PdfName::KeyRect, rect );
+    m_pVariant->GetDictionary().AddKey( PdfName::KeyRect, rect );
 
     rRect.ToVariant( rect );
     date.ToString( sDate );
     
-    m_pObject->GetDictionary().AddKey( PdfName::KeySubtype, name );
-    m_pObject->GetDictionary().AddKey( PdfName::KeyRect, rect );
-    m_pObject->GetDictionary().AddKey( "P", pPage->GetObject()->Reference() );
-    m_pObject->GetDictionary().AddKey( "M", sDate );
+    m_pVariant->GetDictionary().AddKey( PdfName::KeySubtype, name );
+    m_pVariant->GetDictionary().AddKey( PdfName::KeyRect, rect );
+    m_pVariant->GetDictionary().AddKey( "P", pPage->GetObject()->Reference() );
+    m_pVariant->GetDictionary().AddKey( "M", sDate );
 }
 
 PdfAnnotation::PdfAnnotation( PdfObject* pObject )
     : PdfElement( "Annot", pObject ), m_eAnnotation( ePdfAnnotation_Unknown ), m_pAction( NULL ), m_pFileSpec( NULL )
 {
-    m_eAnnotation = static_cast<EPdfAnnotation>(TypeNameToIndex( m_pObject->GetDictionary().GetKeyAsName( PdfName::KeySubtype ).GetName().c_str(), s_names, s_lNumActions ));
+    m_eAnnotation = static_cast<EPdfAnnotation>(TypeNameToIndex( m_pVariant->GetDictionary().GetKeyAsName( PdfName::KeySubtype ).GetName().c_str(), s_names, s_lNumActions ));
 }
 
 PdfAnnotation::~PdfAnnotation()
@@ -101,8 +101,8 @@ PdfAnnotation::~PdfAnnotation()
 
 PdfRect PdfAnnotation::GetRect() const
 {
-   if( m_pObject->GetDictionary().HasKey( PdfName::KeyRect ) )
-        return PdfRect( m_pObject->GetDictionary().GetKey( PdfName::KeyRect )->GetArray() );
+   if( m_pVariant->GetDictionary().HasKey( PdfName::KeyRect ) )
+        return PdfRect( m_pVariant->GetDictionary().GetKey( PdfName::KeyRect )->GetArray() );
 
    return PdfRect();
 }
@@ -118,18 +118,18 @@ void PdfAnnotation::SetAppearanceStream( PdfXObject* pObject )
 
     dict.AddKey( "N", pObject->GetObject()->Reference() );
 
-    m_pObject->GetDictionary().AddKey( "AP", dict );
+    m_pVariant->GetDictionary().AddKey( "AP", dict );
 }
 
 void PdfAnnotation::SetFlags( pdf_uint32 uiFlags )
 {
-    m_pObject->GetDictionary().AddKey( "F", PdfVariant( static_cast<long>(uiFlags) ) );
+    m_pVariant->GetDictionary().AddKey( "F", PdfVariant( static_cast<long>(uiFlags) ) );
 }
 
 pdf_uint32 PdfAnnotation::GetFlags() const
 {
-    if( m_pObject->GetDictionary().HasKey( "F" ) )
-        return static_cast<pdf_uint32>(m_pObject->GetDictionary().GetKey( "F" )->GetNumber());
+    if( m_pVariant->GetDictionary().HasKey( "F" ) )
+        return static_cast<pdf_uint32>(m_pVariant->GetDictionary().GetKey( "F" )->GetNumber());
 
     return static_cast<pdf_uint32>(0);
 }
@@ -150,48 +150,48 @@ void PdfAnnotation::SetBorderStyle( double dHCorner, double dVCorner, double dWi
     if( rStrokeStyle.size() )
         aValues.push_back(rStrokeStyle);
 
-    m_pObject->GetDictionary().AddKey( "Border", aValues );
+    m_pVariant->GetDictionary().AddKey( "Border", aValues );
 }
 
 void PdfAnnotation::SetTitle( const PdfString & sTitle )
 {
-    m_pObject->GetDictionary().AddKey( "T", sTitle );
+    m_pVariant->GetDictionary().AddKey( "T", sTitle );
 }
 
 PdfString PdfAnnotation::GetTitle() const
 {
-    if( m_pObject->GetDictionary().HasKey( "T" ) )
-        return m_pObject->GetDictionary().GetKey( "T" )->GetString();
+    if( m_pVariant->GetDictionary().HasKey( "T" ) )
+        return m_pVariant->GetDictionary().GetKey( "T" )->GetString();
 
     return PdfString();
 }
 
 void PdfAnnotation::SetContents( const PdfString & sContents )
 {
-    m_pObject->GetDictionary().AddKey( "Contents", sContents );
+    m_pVariant->GetDictionary().AddKey( "Contents", sContents );
 }
 
 PdfString PdfAnnotation::GetContents() const
 {
-    if( m_pObject->GetDictionary().HasKey( "Contents" ) )
-        return m_pObject->GetDictionary().GetKey( "Contents" )->GetString();
+    if( m_pVariant->GetDictionary().HasKey( "Contents" ) )
+        return m_pVariant->GetDictionary().GetKey( "Contents" )->GetString();
 
     return PdfString();
 }
 
 void PdfAnnotation::SetDestination( const PdfDestination & rDestination )
 {
-    rDestination.AddToDictionary( m_pObject->GetDictionary() );
+    rDestination.AddToDictionary( m_pVariant->GetDictionary() );
 }
 
 PdfDestination PdfAnnotation::GetDestination() const
 {
-    return PdfDestination( m_pObject->GetDictionary().GetKey( "Dest" ) );
+    return PdfDestination( m_pVariant->GetDictionary().GetKey( "Dest" ) );
 }
 
 bool PdfAnnotation::HasDestination() const
 {
-    return m_pObject->GetDictionary().HasKey( "Dest" );
+    return m_pVariant->GetDictionary().HasKey( "Dest" );
 }
 
 void PdfAnnotation::SetAction( const PdfAction & rAction )
@@ -200,38 +200,44 @@ void PdfAnnotation::SetAction( const PdfAction & rAction )
         delete m_pAction;
 
     m_pAction = new PdfAction( rAction );
-    m_pObject->GetDictionary().AddKey( "A", m_pAction->GetObject()->Reference() );
+    // XXX FIXME TODO: we can not safely assume actions are indirect objects. We must
+    // be able to handle including them literally, or as a reference. Currently
+    // we INCORRECTLY assume they're always indirect. We never could assume this, we'd just insert
+    // an invalid reference (-1,-1) here before.
+    m_pVariant->GetDictionary().AddKey( "A", static_cast<PdfObject*>(m_pAction->GetObject())->Reference() );
 }
 
 PdfAction* PdfAnnotation::GetAction() const
 {
     if( !m_pAction && HasAction() )
-        const_cast<PdfAnnotation*>(this)->m_pAction = new PdfAction( m_pObject->GetIndirectKey( "A" ) );
+    {
+        const_cast<PdfAnnotation*>(this)->m_pAction = new PdfAction( m_pVariant->GetDictionary().GetKey( "A" ) );
+    }
 
     return m_pAction;
 }
 
 bool PdfAnnotation::HasAction() const
 {
-    return m_pObject->GetDictionary().HasKey( "A" );
+    return m_pVariant->GetDictionary().HasKey( "A" );
 }
 
 void PdfAnnotation::SetOpen( bool b )
 {
-    m_pObject->GetDictionary().AddKey( "Open", b );
+    m_pVariant->GetDictionary().AddKey( "Open", b );
 }
 
 bool PdfAnnotation::GetOpen() const
 {
-    if( m_pObject->GetDictionary().HasKey( "Open" ) )
-        return m_pObject->GetDictionary().GetKey( "Open" )->GetBool();
+    if( m_pVariant->GetDictionary().HasKey( "Open" ) )
+        return m_pVariant->GetDictionary().GetKey( "Open" )->GetBool();
 
     return false;
 }
 
 bool PdfAnnotation::HasFileAttachement() const
 {
-    return m_pObject->GetDictionary().HasKey( "FS" );
+    return m_pVariant->GetDictionary().HasKey( "FS" );
 }
 
 void PdfAnnotation::SetFileAttachement( const PdfFileSpec & rFileSpec )
@@ -240,13 +246,15 @@ void PdfAnnotation::SetFileAttachement( const PdfFileSpec & rFileSpec )
         delete m_pFileSpec;
 
     m_pFileSpec = new PdfFileSpec( rFileSpec );
-    m_pObject->GetDictionary().AddKey( "FS", m_pFileSpec->GetObject()->Reference() );
+    // XXX FIXME TODO We incorrectly assume that FileSpec objects contain an indirect object.
+    // That assumption is unsafe, but was made before. It needs to be fixed.
+    m_pVariant->GetDictionary().AddKey( "FS", static_cast<PdfObject*>(m_pFileSpec->GetObject())->Reference() );
 }
 
 PdfFileSpec* PdfAnnotation::GetFileAttachement() const
 {
     if( !m_pFileSpec && HasFileAttachement() )
-        const_cast<PdfAnnotation*>(this)->m_pFileSpec = new PdfFileSpec( m_pObject->GetIndirectKey( "FS" ) );
+        const_cast<PdfAnnotation*>(this)->m_pFileSpec = new PdfFileSpec( m_pVariant->GetDictionary().GetKey( "FS" ) );
 
     return m_pFileSpec;
 }

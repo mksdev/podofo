@@ -46,7 +46,7 @@ typedef enum {
  *  
  *  \see PdfDocument
  */
-class PODOFO_API PdfPagesTree : public PdfElement
+class PODOFO_API PdfPagesTree : public PdfIElement
 {
  public:
     /** Construct a new PdfPagesTree
@@ -127,7 +127,7 @@ class PODOFO_API PdfPagesTree : public PdfElement
 
     /** Private method to access the Root of the tree using a logical name
      */
-    PdfObject* GetRoot()	{ return m_pObject; }
+    PdfObject* GetRoot()	{ return GetObject(); }
     
     /** Private method for getting the Parent of a node in the /Pages tree
      */

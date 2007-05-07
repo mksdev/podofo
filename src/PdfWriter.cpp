@@ -57,7 +57,7 @@ PdfWriter::PdfWriter( PdfParser* pParser )
     }
 
     m_eVersion     = pParser->GetPdfVersion();
-    m_pTrailer     = new PdfObject( *(pParser->GetTrailer() ) );
+    m_pTrailer     = new PdfVariant( *(pParser->GetTrailer() ) );
     m_vecObjects   = pParser->m_vecObjects;
 }
 
@@ -72,12 +72,12 @@ PdfWriter::PdfWriter( PdfDocument* pDocument )
     }
 
     m_eVersion     = pDocument->GetPdfVersion();
-    m_pTrailer     = new PdfObject( *(pDocument->GetTrailer() ) );
+    m_pTrailer     = new PdfVariant( *(pDocument->GetTrailer() ) );
     m_vecObjects   = &(pDocument->m_vecObjects);
     m_pPagesTree   = pDocument->m_pPagesTree;
 }
 
-PdfWriter::PdfWriter( PdfVecObjects* pVecObjects, const PdfObject* pTrailer )
+PdfWriter::PdfWriter( PdfVecObjects* pVecObjects, const PdfVariant* pTrailer )
     : m_bCompress( true ), m_bXRefStream( false ), 
       m_pPagesTree( NULL ), m_bLinearized( false ),  
       m_lFirstInXRef( 0 )
@@ -88,7 +88,7 @@ PdfWriter::PdfWriter( PdfVecObjects* pVecObjects, const PdfObject* pTrailer )
     }
 
     m_eVersion     = ePdfVersion_1_3;
-    m_pTrailer     = new PdfObject( *pTrailer );
+    m_pTrailer     = new PdfVariant( *pTrailer );
     m_vecObjects   = pVecObjects;
 }
 
@@ -98,7 +98,7 @@ PdfWriter::PdfWriter( PdfVecObjects* pVecObjects )
       m_lFirstInXRef( 0 )
 {
     m_eVersion     = ePdfVersion_1_3;
-    m_pTrailer     = new PdfObject();
+    m_pTrailer     = new PdfVariant();
     m_vecObjects   = pVecObjects;
 }
 

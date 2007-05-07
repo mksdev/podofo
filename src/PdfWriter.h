@@ -64,7 +64,7 @@ class PODOFO_API PdfWriter {
      *  \param pVecObjects the vector of objects
      *  \param pTrailer a valid trailer object
      */
-    PdfWriter( PdfVecObjects* pVecObjects, const PdfObject* pTrailer );
+    PdfWriter( PdfVecObjects* pVecObjects, const PdfVariant* pTrailer );
 
     virtual ~PdfWriter();
 
@@ -247,7 +247,7 @@ class PODOFO_API PdfWriter {
 
  protected:
     PdfVecObjects*  m_vecObjects;
-    PdfObject*      m_pTrailer;
+    PdfVariant*     m_pTrailer;
 
     bool            m_bCompress;
     bool            m_bXRefStream;

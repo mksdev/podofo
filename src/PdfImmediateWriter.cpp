@@ -29,11 +29,11 @@
 namespace PoDoFo {
 
 PdfImmediateWriter::PdfImmediateWriter( PdfOutputDevice* pDevice, PdfVecObjects* pVecObjects, 
-                                        const PdfObject* pTrailer, EPdfVersion eVersion )
+                                        const PdfVariant* pTrailer, EPdfVersion eVersion )
     : PdfWriter( pVecObjects ), m_pParent( pVecObjects ), 
       m_pDevice( pDevice ), m_pLast( NULL ), m_bOpenStream( false )
 {
-    m_pTrailer = new PdfObject( *pTrailer );
+    m_pTrailer = new PdfVariant( *pTrailer );
 
     // register as observer for PdfVecObjects
     m_pParent->Attach( this );

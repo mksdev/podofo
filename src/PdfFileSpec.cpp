@@ -49,10 +49,12 @@ PdfFileSpec::PdfFileSpec( const char* pszFilename, bool bEmbedd, PdfVecObjects* 
     }
 }
 
-PdfFileSpec::PdfFileSpec( PdfObject* pObject )
-    : PdfElement( "Filespec", pObject )
+PdfFileSpec::PdfFileSpec( PdfVariant* pVariant )
+    : PdfElement( "Filespec", pVariant )
 {
-
+    // XXX TODO FIXME we fail to verify that the passed data looks like
+    // a sane filespec.
+    // XXX TODO FIXME Resolve indirect references
 }
 
 PdfString PdfFileSpec::CreateFileSpecification( const char* pszFilename ) const

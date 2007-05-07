@@ -31,7 +31,7 @@
 namespace PoDoFo {
 
 PdfPagesTree::PdfPagesTree( PdfVecObjects* pParent )
-    : PdfElement( "Pages", pParent )
+    : PdfIElement( "Pages", pParent )
 {
     // PdfObject* kids = pParent->CreateObject( PdfArray() );
     GetObject()->GetDictionary().AddKey( "Kids", PdfArray() ); // kids->Reference() 

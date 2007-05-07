@@ -35,7 +35,7 @@ namespace PoDoFo {
 PdfArray PdfXObject::s_matrix;
 
 PdfXObject::PdfXObject( const PdfRect & rRect, PdfVecObjects* pParent )
-    : PdfElement( "XObject", pParent ), PdfCanvas(), m_rRect( rRect )
+    : PdfIElement( "XObject", pParent ), PdfCanvas(), m_rRect( rRect )
 {
     PdfVariant    var;
     ostringstream out;
@@ -72,7 +72,7 @@ PdfXObject::PdfXObject( const PdfRect & rRect, PdfVecObjects* pParent )
 }
 
 PdfXObject::PdfXObject( PdfObject* pObject )
-    : PdfElement( "XObject", pObject ), PdfCanvas()
+    : PdfIElement( "XObject", pObject ), PdfCanvas()
 {
     ostringstream out;
     PdfLocaleImbue(out);
@@ -88,7 +88,7 @@ PdfXObject::PdfXObject( PdfObject* pObject )
 }
 
 PdfXObject::PdfXObject( const char* pszSubType, PdfVecObjects* pParent )
-    : PdfElement( "XObject", pParent ) 
+    : PdfIElement( "XObject", pParent ) 
 {
     ostringstream out;
     PdfLocaleImbue(out);
@@ -103,7 +103,7 @@ PdfXObject::PdfXObject( const char* pszSubType, PdfVecObjects* pParent )
 }
 
 PdfXObject::PdfXObject( const char* pszSubType, PdfObject* pObject )
-    : PdfElement( "XObject", pObject ) 
+    : PdfIElement( "XObject", pObject ) 
 {
     ostringstream out;
     PdfLocaleImbue(out);

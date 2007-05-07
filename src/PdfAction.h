@@ -26,6 +26,7 @@
 
 namespace PoDoFo {
 
+class PdfVariant;
 class PdfObject;
 class PdfString;
 class PdfVecObjects;
@@ -78,9 +79,10 @@ class PODOFO_API PdfAction : public PdfElement {
     virtual ~PdfAction() { }
 
     /** Create a PdfAction object from an existing 
-     *  PdfObject
+     *  variant.
+     *  TODO unclear/insufficient documentation.
      */
-    PdfAction( PdfObject* pObject );
+    PdfAction( PdfVariant* pVariant );
 
     /** Set the URI of an ePdfAction_URI
      *  \param sUri must be a correct URI as PdfString
