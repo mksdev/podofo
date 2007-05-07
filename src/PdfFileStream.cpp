@@ -21,6 +21,7 @@
 #include "PdfFileStream.h"
 
 #include "PdfFilter.h"
+#include "PdfObject.h"
 #include "PdfOutputDevice.h"
 #include "PdfOutputStream.h"
 

@@ -23,7 +23,8 @@
 
 #include "PdfDefines.h"
 #include "PdfDataType.h"
-#include "PdfObject.h"
+#include "PdfVariant.h"
+#include "PdfString.h"
 
 namespace PoDoFo {
 
@@ -34,7 +35,7 @@ namespace PoDoFo {
  *
  *  \see PdfVariant
  */
-class PODOFO_API PdfArray : public std::vector<PdfObject>, public PdfDataType {
+class PODOFO_API PdfArray : public std::vector<PdfVariant>, public PdfDataType {
  public:
 
     /** Create an empty array 
@@ -46,7 +47,7 @@ class PODOFO_API PdfArray : public std::vector<PdfObject>, public PdfDataType {
      *
      *  \param var add this object to the array.
      */
-    PdfArray( const PdfObject & var );
+    PdfArray( const PdfVariant & var );
 
     /** Deep copy an existing PdfArray
      *

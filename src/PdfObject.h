@@ -134,12 +134,6 @@ class PODOFO_API PdfObject : public PdfVariant {
      */        
     PdfObject( const PdfDictionary & rDict );
 
-    /** Creates a copy of an existing PdfObject
-     *  All assosiated objects and streams will be copied along with the PdfObject
-     *  \param rhs PdfObject to clone
-     */
-    PdfObject( const PdfObject & rhs );
-
     virtual ~PdfObject();
 
     /** Get the keys value out of the dictionary. If the key is a reference, 
@@ -219,13 +213,6 @@ class PODOFO_API PdfObject : public PdfVariant {
      */
     inline PdfObject* GetParent() const;
 
-    /** Creates a copy of an existing PdfObject
-     *  All assosiated objects and streams will be copied along with the PdfObject
-     *  \param rhs PdfObject to clone
-     *  \returns a reference to this object
-     */
-    const PdfObject & operator=( const PdfObject & rhs );
-
     /** This function compresses any currently set stream
      *  using the FlateDecode algorithm. JPEG compressed streams
      *  will not be compressed again using this function.
@@ -304,6 +291,11 @@ class PODOFO_API PdfObject : public PdfVariant {
     // Tracks whether deferred loading is still pending (in which case it'll be
     // false). If true, deferred loading is not requried or has been completed.
     mutable bool m_bDelayedStreamLoadDone;
+
+    // Prevent compiler auto-generation of copy ctor and
+    // assignment operator.
+    explicit PdfObject( const PdfObject & rhs );
+    const PdfObject & operator=( const PdfObject & rhs );
 
 #if defined(PODOFO_EXTRA_CHECKS)
  protected:

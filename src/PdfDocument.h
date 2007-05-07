@@ -135,7 +135,7 @@ class PODOFO_API PdfDocument {
     /** Get the trailer dictionary
      *  which can be written unmodified to a pdf file.
      */
-    const PdfObject* GetTrailer() const { return m_pTrailer; }
+    const PdfVariant* GetTrailer() const { return m_pTrailer; }
     
     /** Get access to the internal Info dictionary
      *  You can set the author, title etc. of the
@@ -353,16 +353,16 @@ class PODOFO_API PdfDocument {
      *  that is either an PdfArray or a direct object.
      *  The reference is changed so that difference is added to the object number
      *  if the reference.
-     *  \param pObject object to change
+     *  \param pVariant object to change
      *  \param difference add this value to every reference that is encountered
      */
-    void FixObjectReferences( PdfObject* pObject, int difference );
+    void FixObjectReferences( PdfVariant* pVariant, int difference );
 
     /** Low level APIs for setting a viewer preference
      *  \param whichPrefs the dictionary key to set
      *  \param the object to be set
      */
-    void SetViewerPreference( const PdfName& whichPref, const PdfObject & valueObj ) const;
+    void SetViewerPreference( const PdfName& whichPref, const PdfVariant & valueObj ) const;
     void SetViewerPreference( const PdfName& whichPref, bool inValue ) const;
 
  private:
@@ -382,7 +382,7 @@ class PODOFO_API PdfDocument {
     PdfNamesTree*   m_pNamesTree;
     PdfPagesTree*   m_pPagesTree;
 
-    PdfObject*      m_pTrailer;
+    PdfVariant*     m_pTrailer;
     PdfObject*      m_pCatalog;
 
     EPdfVersion     m_eVersion;

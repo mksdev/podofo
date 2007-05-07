@@ -55,8 +55,7 @@ PdfDocument::PdfDocument()
     m_bLinearized = false;
     m_vecObjects.SetParentDocument( this );
 
-    m_pTrailer = new PdfObject();
-    m_pTrailer->SetOwner( &m_vecObjects );
+    m_pTrailer = new PdfVariant();
     m_pCatalog = m_vecObjects.CreateObject( "Catalog" );
 
     m_pInfo = new PdfInfo( &m_vecObjects );
@@ -133,17 +132,38 @@ void PdfDocument::InitFromParser( PdfParser* pParser )
     m_eVersion     = pParser->GetPdfVersion();
     m_bLinearized  = pParser->IsLinearized();
 
-    m_pTrailer = new PdfObject( *(pParser->GetTrailer()) );
-    m_pTrailer->SetOwner( &m_vecObjects );
+    m_pTrailer = new PdfVariant( *(pParser->GetTrailer()) );
 
-    m_pCatalog  = m_pTrailer->GetIndirectKey( "Root" );
+    PdfVariant* pCatalogRef  = m_pTrailer->GetDictionary().GetKey( "Root" );
+    // Catalog dictionary MUST be indirect reference in trailer
+    if (!pCatalogRef || !pCatalogRef->IsReference())
+    {
+        PODOFO_RAISE_ERROR_INFO( ePdfError_NoObject, "/Root entry in trailer dictionary missing or not reference" );
+    }
+
+    m_pCatalog = m_vecObjects.GetObject(pCatalogRef->GetReference());
     if( !m_pCatalog )
     {
         PODOFO_RAISE_ERROR_INFO( ePdfError_NoObject, "Catalog object not found!" );
     }
 
-    pInfo = m_pTrailer->GetIndirectKey( "Info" );
-    if( !pInfo ) 
+    PdfVariant* pInfoRef = m_pTrailer->GetDictionary().GetKey( "Info" );
+    if (pInfoRef && !pInfoRef->IsReference())
+    {
+        PODOFO_RAISE_ERROR_INFO( ePdfError_NoObject, "/Info entry in trailer dictionary must be indirect reference." );
+    }
+    else if (pInfoRef)
+    {
+        // Info entry specified and is indirect reference
+        pInfo = m_vecObjects.GetObject(pInfoRef->GetReference());
+    }
+    else
+    {
+        // Info entry not specified in trailer dictionary
+        pInfo = 0;
+    }
+
+    if( !pInfo )
     {
         m_pInfo = new PdfInfo( &m_vecObjects );
         m_pTrailer->GetDictionary().AddKey( "Info", m_pInfo->GetObject()->Reference() );
@@ -303,32 +323,32 @@ const PdfDocument & PdfDocument::Append( const PdfDocument & rDoc )
     return *this;
 }
 
-void PdfDocument::FixObjectReferences( PdfObject* pObject, int difference )
+void PdfDocument::FixObjectReferences( PdfVariant* pVariant, int difference )
 {
-    if( !pObject ) 
+    if( !pVariant ) 
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    if( pObject->IsReference() )
+    if( pVariant->IsReference() )
     {
-        pObject->GetReference().SetObjectNumber( pObject->GetReference().ObjectNumber() + difference );
+        pVariant->GetReference().SetObjectNumber( pVariant->GetReference().ObjectNumber() + difference );
     }
-    else if( pObject->IsDictionary() )
+    else if( pVariant->IsDictionary() )
     {
-        TKeyMap::iterator it = pObject->GetDictionary().GetKeys().begin();
+        TKeyMap::iterator it = pVariant->GetDictionary().GetKeys().begin();
 
-        while( it != pObject->GetDictionary().GetKeys().end() )
+        while( it != pVariant->GetDictionary().GetKeys().end() )
         {
             FixObjectReferences( (*it).second, difference );
             ++it;
         }
     }
-    else if( pObject->IsArray() )
+    else if( pVariant->IsArray() )
     {
-        PdfArray::iterator it = pObject->GetArray().begin();
+        PdfArray::iterator it = pVariant->GetArray().begin();
 
-        while( it != pObject->GetArray().end() )
+        while( it != pVariant->GetArray().end() )
         {
             FixObjectReferences( &(*it), difference );
             ++it;
@@ -457,12 +477,12 @@ void PdfDocument::SetUseFullScreen( void ) const
     
     // if current mode is anything but "don't care", we need to move that to non-full-screen
     if ( curMode != ePdfPageModeDontCare )
-        SetViewerPreference( PdfName( "NonFullScreenPageMode" ), PdfObject( *(GetCatalog()->GetIndirectKey( PdfName( "PageMode" ) )) ) );
+        SetViewerPreference( PdfName( "NonFullScreenPageMode" ), PdfVariant( *(GetCatalog()->GetIndirectKey( PdfName( "PageMode" ) )) ) );
     
     SetPageMode( ePdfPageModeFullScreen );
 }
 
-void PdfDocument::SetViewerPreference( const PdfName& whichPref, const PdfObject & valueObj ) const
+void PdfDocument::SetViewerPreference( const PdfName& whichPref, const PdfVariant & valueObj ) const
 {
     PdfObject* prefsObj = GetCatalog()->GetIndirectKey( PdfName( "ViewerPreferences" ) );
     if ( prefsObj == NULL ) {

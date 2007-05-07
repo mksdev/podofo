@@ -48,7 +48,7 @@ const PdfDictionary & PdfDictionary::operator=( const PdfDictionary & rhs )
     it = rhs.m_mapKeys.begin();
     while( it != rhs.m_mapKeys.end() )
     {
-        m_mapKeys[(*it).first] = new PdfObject( *(*it).second );
+        m_mapKeys[(*it).first] = new PdfVariant( *(*it).second );
         ++it;
     }
     
@@ -72,7 +72,7 @@ void PdfDictionary::Clear()
     }
 }
 
-void PdfDictionary::AddKey( const PdfName & identifier, const PdfObject & rObject )
+void PdfDictionary::AddKey( const PdfName & identifier, const PdfVariant & rObject )
 {
     if( !identifier.GetLength() )
     {
@@ -85,15 +85,15 @@ void PdfDictionary::AddKey( const PdfName & identifier, const PdfObject & rObjec
         m_mapKeys.erase( identifier );
     }
 
-	m_mapKeys[identifier] = new PdfObject( rObject );
+    m_mapKeys[identifier] = new PdfVariant( rObject );
 }
 
-void PdfDictionary::AddKey( const PdfName & identifier, const PdfObject* pObject )
+void PdfDictionary::AddKey( const PdfName & identifier, const PdfVariant* pObject )
 {
     this->AddKey( identifier, *pObject );
 }
 
-const PdfObject* PdfDictionary::GetKey( const PdfName & key ) const
+const PdfVariant* PdfDictionary::GetKey( const PdfName & key ) const
 {
     TCIKeyMap it;
 
@@ -106,7 +106,7 @@ const PdfObject* PdfDictionary::GetKey( const PdfName & key ) const
     return NULL;
 }
 
-PdfObject* PdfDictionary::GetKey( const PdfName & key )
+PdfVariant* PdfDictionary::GetKey( const PdfName & key )
 {
     TIKeyMap it;
 
@@ -121,7 +121,7 @@ PdfObject* PdfDictionary::GetKey( const PdfName & key )
 
 long PdfDictionary::GetKeyAsLong( const PdfName & key, long lDefault ) const
 {
-    const PdfObject* pObject = GetKey( key );
+    const PdfVariant* pObject = GetKey( key );
     
     if( pObject && pObject->GetDataType() == ePdfDataType_Number ) 
     {
@@ -133,7 +133,7 @@ long PdfDictionary::GetKeyAsLong( const PdfName & key, long lDefault ) const
 
 bool PdfDictionary::GetKeyAsBool( const PdfName & key, bool bDefault ) const
 {
-    const PdfObject* pObject = GetKey( key );
+    const PdfVariant* pObject = GetKey( key );
 
     if( pObject && pObject->GetDataType() == ePdfDataType_Bool ) 
     {
@@ -145,7 +145,7 @@ bool PdfDictionary::GetKeyAsBool( const PdfName & key, bool bDefault ) const
 
 PdfName PdfDictionary::GetKeyAsName( const PdfName & key ) const
 {
-    const PdfObject* pObject = GetKey( key );
+    const PdfVariant* pObject = GetKey( key );
 
     if( pObject && pObject->GetDataType() == ePdfDataType_Name ) 
     {

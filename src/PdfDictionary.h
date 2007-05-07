@@ -25,11 +25,11 @@
 #include "PdfDataType.h"
 
 #include "PdfName.h"
-#include "PdfObject.h"
+#include "PdfVariant.h"
 
 namespace PoDoFo {
 
-typedef std::map<PdfName,PdfObject*>      TKeyMap;
+typedef std::map<PdfName,PdfVariant*>     TKeyMap;
 typedef TKeyMap::iterator                 TIKeyMap;
 typedef TKeyMap::const_iterator           TCIKeyMap;
 
@@ -71,7 +71,7 @@ class PODOFO_API PdfDictionary : public PdfDataType {
      *  \param identifier the key is identified by this name in the dictionary
      *  \param rObject a variant object containing the data. The object is copied.
      */
-    void AddKey( const PdfName & identifier, const PdfObject & rObject );
+    void AddKey( const PdfName & identifier, const PdfVariant & rObject );
 
     /** Add a key to the dictionary. If an existing key of this name exists,
      *  its value is replaced and the old value object will be deleted. The
@@ -82,7 +82,7 @@ class PODOFO_API PdfDictionary : public PdfDataType {
      *  \param identifier the key is identified by this name in the dictionary
      *  \param rObject a variant object containing the data. The object is copied.
      */
-    void AddKey( const PdfName & identifier, const PdfObject* pObject );
+    void AddKey( const PdfName & identifier, const PdfVariant* pObject );
 
     /** Get the keys value out of the dictionary.
      *
@@ -93,7 +93,7 @@ class PODOFO_API PdfDictionary : public PdfDataType {
      * 
      *  \returns pointer to the found value or 0 if the key was not found.
      */
-    const PdfObject* GetKey( const PdfName & key ) const;
+    const PdfVariant* GetKey( const PdfName & key ) const;
 
     /** Get the keys value out of the dictionary.  This is an overloaded member
      * function.
@@ -106,7 +106,7 @@ class PODOFO_API PdfDictionary : public PdfDataType {
      * 
      *  \returns the found value or 0 if the key was not found.
      */
-    PdfObject* GetKey( const PdfName & key );
+    PdfVariant* GetKey( const PdfName & key );
 
     long GetKeyAsLong( const PdfName & key, long lDefault = 0 ) const;
 

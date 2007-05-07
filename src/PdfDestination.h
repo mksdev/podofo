@@ -25,6 +25,8 @@
 
 #include "PdfArray.h"
 #include "PdfReference.h"
+#include "PdfVariant.h"
+#include "PdfVecObjects.h"
 
 namespace PoDoFo {
 
@@ -55,10 +57,10 @@ class PODOFO_API PdfDestination {
      */
     PdfDestination( PdfVecObjects* pParent );
 
-    /** Create a new PdfDestination from an existing PdfObject (such as loaded from a doc)
-     *  \param pObject the object to construct from 
+    /** Create a new PdfDestination from an existing PdfVariant (such as loaded from a doc)
+     *  \param var the object to construct from 
      */
-    PdfDestination( PdfObject* pObject );
+    PdfDestination( const PdfVariant& var );
 
     /** Create a new PdfDestination with a page as destination
      *  \param pPage a page which is the destination 

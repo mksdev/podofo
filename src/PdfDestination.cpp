@@ -45,41 +45,39 @@ PdfDestination::PdfDestination( PdfVecObjects* pParent )
     m_pObject = pParent->CreateObject( m_array );
 }
 
-PdfDestination::PdfDestination( PdfObject* pObject )
+PdfDestination::PdfDestination( const PdfVariant& var )
 {
-    if ( pObject->GetDataType() == ePdfDataType_Array ) 
+    if ( var.GetDataType() == ePdfDataType_Array ) 
     {
-        m_array = pObject->GetArray();
+        m_array = var.GetArray();
     }
-    else if( pObject->GetDataType() == ePdfDataType_String ) 
+    else if( var.GetDataType() == ePdfDataType_String ) 
     {
-        PdfDocument* pDoc = pObject->GetOwner()->GetParentDocument();
-        if( pDoc ) 
+        PODOFO_RAISE_ERROR_INFO( ePdfError_Unknown, "String/name destinations not yet supported!" );
+        /*
+        PdfNamesTree* pNames = pDoc->GetNamesTree( ePdfDontCreateObject );
+        if( !pNames ) 
         {
-            PdfNamesTree* pNames = pDoc->GetNamesTree( ePdfDontCreateObject );
-            if( !pNames ) 
-            {
-                PODOFO_RAISE_ERROR( ePdfError_NoObject );
-            }
-            
-            PdfObject* pValue = pNames->GetValue( "Dests", pObject->GetString() );
-            if( !pValue ) 
-            {
-                PODOFO_RAISE_ERROR( ePdfError_InvalidName );
-            }
-
-            if( pValue->IsArray() ) 
-                m_array = pValue->GetArray();
-            else if( pValue->IsDictionary() )
-                m_array = pValue->GetDictionary().GetKey( "D" )->GetArray();
+            PODOFO_RAISE_ERROR( ePdfError_NoObject );
         }
+
+        PdfObject* pValue = pNames->GetValue( "Dests", pObject->GetString() );
+        if( !pValue ) 
+        {
+            PODOFO_RAISE_ERROR( ePdfError_InvalidName );
+        }
+
+        if( pValue->IsArray() ) 
+            m_array = pValue->GetArray();
+        else if( pValue->IsDictionary() )
+            m_array = pValue->GetDictionary().GetKey( "D" )->GetArray();
+        m_pObject = pObject;
+        */
     }
-    else 
+    else
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
     }
-
-    m_pObject = pObject;
 }
 
 PdfDestination::PdfDestination( const PdfPage* pPage, EPdfDestinationFit eFit )

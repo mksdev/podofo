@@ -34,6 +34,7 @@ namespace PoDoFo {
 class PdfDictionary;
 class PdfName;
 class PdfObject;
+class PdfVariant;
 class PdfOutputStream;
 
 typedef std::vector<EPdfFilter>            TVecFilters;
@@ -440,11 +441,12 @@ class PODOFO_API PdfFilterFactory {
     /** The passed PdfObject has to be a dictionary with a Filters key,
      *  an array of filter names or a filter name.
      *
-     *  \param pObject must define a list of filters.
+     *  \param pObject must be the name of a single filter, an array of filter names,
+     *         or a dictionary with a /Filter key containing an array of filter names.
      *
      *  \returns a list of filters
      */
-    static TVecFilters CreateFilterList( const PdfObject* pObject );
+    static TVecFilters CreateFilterList( const PdfVariant* pVariant );
 };
 
 

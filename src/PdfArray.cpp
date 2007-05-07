@@ -25,7 +25,7 @@
 namespace PoDoFo {
 
 PdfArray::PdfArray()
-    : std::vector<PoDoFo::PdfObject>(), PdfDataType()
+    : std::vector<PoDoFo::PdfVariant>(), PdfDataType()
 {
 }
 
@@ -33,14 +33,14 @@ PdfArray::~PdfArray()
 {
 }
 
-PdfArray::PdfArray( const PdfObject & var )
-    : std::vector<PoDoFo::PdfObject>(), PdfDataType()
+PdfArray::PdfArray( const PdfVariant & var )
+    : std::vector<PoDoFo::PdfVariant>(), PdfDataType()
 {
     this->push_back( var );
 }
 
 PdfArray::PdfArray( const PdfArray & rhs )
-    : std::vector<PoDoFo::PdfObject>(), PdfDataType()
+    : std::vector<PoDoFo::PdfVariant>(), PdfDataType()
 {
     this->operator=( rhs );
 }

@@ -22,6 +22,7 @@
 #include "PdfFilter.h"
 
 #include "PdfArray.h"
+#include "PdfObject.h"
 #include "PdfDictionary.h"
 #include "PdfFiltersPrivate.h"
 #include "PdfOutputStream.h"
@@ -318,27 +319,27 @@ const char* PdfFilterFactory::FilterTypeToName( EPdfFilter eFilter )
     return aszFilters[static_cast<int>(eFilter)];
 }
 
-TVecFilters PdfFilterFactory::CreateFilterList( const PdfObject* pObject )
+TVecFilters PdfFilterFactory::CreateFilterList( const PdfVariant* pVariant )
 {
     TVecFilters filters;
 
-    const PdfObject* pObj    = NULL;
+    const PdfVariant* pVar    = NULL;
 
-    if( pObject->IsDictionary() && pObject->GetDictionary().HasKey( "Filter" ) )
-        pObj = pObject->GetDictionary().GetKey( "Filter" );
-    else if( pObject->IsArray() )
-        pObj = pObject;
-    else if( pObject->IsName() ) 
-        pObj = pObject;
+    if( pVariant->IsDictionary() && pVariant->GetDictionary().HasKey( "Filter" ) )
+        pVar = pVariant->GetDictionary().GetKey( "Filter" );
+    else if( pVariant->IsArray() )
+        pVar = pVariant;
+    else if( pVariant->IsName() ) 
+        pVar = pVariant;
 
 
-    if( pObj->IsName() ) 
-        filters.push_back( PdfFilterFactory::FilterNameToType( pObj->GetName() ) );
-    else if( pObj->IsArray() ) 
+    if( pVar->IsName() ) 
+        filters.push_back( PdfFilterFactory::FilterNameToType( pVar->GetName() ) );
+    else if( pVar->IsArray() ) 
     {
-        TCIVariantList it = pObj->GetArray().begin();
+        TCIVariantList it = pVar->GetArray().begin();
 
-        while( it != pObj->GetArray().end() )
+        while( it != pVar->GetArray().end() )
         {
             filters.push_back( PdfFilterFactory::FilterNameToType( (*it).GetName() ) );
                 

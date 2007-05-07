@@ -111,13 +111,6 @@ PdfObject::PdfObject( const PdfDictionary & rDict )
     InitPdfObject();
 }
 
-PdfObject::PdfObject( const PdfObject & rhs ) : PdfVariant()
-{
-    InitPdfObject();
-
-    operator=( rhs );
-}
-
 PdfObject::~PdfObject()
 {
     delete m_pStream;
@@ -226,30 +219,6 @@ void PdfObject::FlateCompressStream()
     if( m_pStream )
         m_pStream->FlateCompress();
     */
-}
-
-const PdfObject & PdfObject::operator=( const PdfObject & rhs )
-{
-    delete m_pStream;
-
-    const_cast<PdfObject*>(&rhs)->DelayedStreamLoad();
-
-    m_reference     = rhs.m_reference;
-
-    PdfVariant::operator=( rhs );
-
-    m_bDelayedStreamLoadDone = rhs.DelayedStreamLoadDone();
-
-    if( rhs.m_pStream )
-        m_pStream = m_pOwner->CreateStream( *(rhs.m_pStream) );
-
-#if defined(PODOFO_EXTRA_CHECKS)
-    // Must've been demand loaded or already done
-    assert(DelayedLoadDone());
-    assert(DelayedStreamLoadDone());
-#endif
-
-    return *this;
 }
 
 unsigned long PdfObject::GetByteOffset( const char* pszKey )
