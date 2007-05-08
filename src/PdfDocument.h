@@ -145,15 +145,15 @@ class PODOFO_API PdfDocument {
      */
     PdfInfo* GetInfo() const { return m_pInfo; }
 
-    /** Get access to the StructTreeRoot dictionary
+    /** Get access to the StructTreeRoot dictionary. If it's an indirect reference the pointed-to object will be returned.
      *  \returns PdfObject the StructTreeRoot dictionary
      */
-    PdfObject* GetStructTreeRoot() const { return GetNamedObjectFromCatalog( "StructTreeRoot" ); }
+    PdfVariant* GetStructTreeRoot() const { return GetNamedObjectFromCatalog( "StructTreeRoot" ); }
 
-    /** Get access to the Metadata stream
+    /** Get access to the Metadata stream. If it's an indirect reference, the pointed-to object will be returned.
      *  \returns PdfObject the Metadata stream (should be in XML, using XMP grammar)
      */
-    PdfObject* GetMetadata() const { return GetNamedObjectFromCatalog( "Metadata" ); }
+    PdfVariant* GetMetadata() const { return GetNamedIndirectObjectFromCatalog( "Metadata" ); }
 
     /** Get access to the Outlines (Bookmarks) dictionary
      *  The returned outlines object is owned by the PdfDocument.
@@ -169,10 +169,11 @@ class PODOFO_API PdfDocument {
      */
     PdfNamesTree* GetNamesTree( bool bCreate = ePdfCreateObject );
 
-    /** Get access to the AcroForm dictionary
+    /** Get access to the AcroForm dictionary. If it's an indirect reference, the pointed-to object will be returned.
+     *
      *  \returns PdfObject the AcroForm dictionary
      */
-    PdfObject* GetAcroForm() const { return GetNamedObjectFromCatalog( "AcroForm" ); }
+    PdfVariant* GetAcroForm() const { return GetNamedObjectFromCatalog( "AcroForm" ); }
 
     /** Get access to the pages tree.
      *  Better use GetPage and CreatePage methods.
@@ -333,7 +334,14 @@ class PODOFO_API PdfDocument {
      *  \param pszName will be converted into a PdfName
      *  \returns the dictionary if it was found or NULL
      */
-    PdfObject* GetNamedObjectFromCatalog( const char* pszName ) const;
+    PdfVariant* GetNamedObjectFromCatalog( const char* pszName ) const;
+
+    /**
+     * As GetNamedObjectFromCatalog, but requires that the object be indirect
+     * and throws if it gets a direct object. NULL will be returned if the object
+     * does not exist.
+     */
+    PdfObject* GetNamedIndirectObjectFromCatalog( const char* pszName ) const;
 
     /** Internal method for initializing the pages tree for this document
      */

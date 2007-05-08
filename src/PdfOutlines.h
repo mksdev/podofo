@@ -54,7 +54,7 @@ typedef enum EPdfOutlineFormat {
  * \see PdfOutlines
  * \see PdfDestination
  */
-class PODOFO_API PdfOutlineItem : public PdfElement {
+class PODOFO_API PdfOutlineItem : public PdfIElement {
  public:
     virtual ~PdfOutlineItem();
 

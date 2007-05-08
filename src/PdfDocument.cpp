@@ -174,9 +174,23 @@ void PdfDocument::InitFromParser( PdfParser* pParser )
 
 void PdfDocument::InitPagesTree()
 {
-    PdfObject* pagesRootObj = m_pCatalog->GetIndirectKey( PdfName( "Pages" ) );
-    if ( pagesRootObj ) 
+    PdfVariant* pagesRootRef = m_pCatalog->GetDictionary().GetKey( PdfName( "Pages" ) );
+    // The pages key must be an indirect reference if it exists
+    if (pagesRootRef && !pagesRootRef->IsReference())
     {
+        PODOFO_RAISE_ERROR_INFO( ePdfError_InvalidDataType, "Pages entry in document catalog not indirect reference");
+    }
+
+    // If the pages key exists and points to a valid object, create a pages tree from it.
+    // If it's missing, create a new page tree.
+    PdfObject* pagesRootObj = 0;
+    if (pagesRootRef)
+    {
+        pagesRootObj = m_vecObjects.GetObject(pagesRootRef->GetReference());
+        if (!pagesRootObj)
+        {
+            PODOFO_RAISE_ERROR_INFO( ePdfError_NoObject, "Pages entry in document catalog refers to missing object");
+        }
         m_pPagesTree = new PdfPagesTree( pagesRootObj );
     }
     else
@@ -184,6 +198,7 @@ void PdfDocument::InitPagesTree()
         m_pPagesTree = new PdfPagesTree( &m_vecObjects );
         m_pCatalog->GetDictionary().AddKey( "Pages", m_pPagesTree->GetObject()->Reference() );
     }
+    assert(m_pPagesTree);
 }
 
 void PdfDocument::Load( const char* pszFilename )
@@ -229,9 +244,19 @@ void PdfDocument::Write( PdfOutputDevice* pDevice )
     writer.Write( pDevice );    
 }
 
-PdfObject* PdfDocument::GetNamedObjectFromCatalog( const char* pszName ) const 
+PdfVariant* PdfDocument::GetNamedObjectFromCatalog( const char* pszName ) const 
 {
     return m_pCatalog->GetIndirectKey( PdfName( pszName ) );
+}
+
+PdfObject* PdfDocument::GetNamedIndirectObjectFromCatalog( const char* pszName ) const 
+{
+    // TODO ... verify safety and handling of error cases
+    PdfVariant *const ref = m_pCatalog->GetDictionary().GetKey( PdfName( pszName ) );
+    if (!ref)
+        return NULL;
+    // ref->GetReference() will throw appropriately if it's not actually a reference
+    return m_vecObjects.GetObject(ref->GetReference());
 }
 
 int PdfDocument::GetPageCount() const
@@ -313,6 +338,7 @@ const PdfDocument & PdfDocument::Append( const PdfDocument & rDoc )
             pRoot = pRoot->Next();
 
         printf("Reached last node difference=%i\n", difference);
+        // XXX FIXME TODO The following code assumes that `pAppendRoot->First()->GetObject()' will be a PdfObject.
         printf("First: %li 0 R\n", pAppendRoot->First()->GetObject()->Reference().ObjectNumber() );
         PdfReference ref( pAppendRoot->First()->GetObject()->Reference().ObjectNumber() + difference, 0 );
         pRoot->InsertChild( new PdfOutlines( m_vecObjects.GetObject( ref ) ) );
@@ -411,7 +437,7 @@ EPdfPageMode PdfDocument::GetPageMode( void ) const
     // PageMode is optional; the default value is UseNone
     EPdfPageMode thePageMode = ePdfPageModeUseNone;
     
-    PdfObject* pageModeObj = GetCatalog()->GetIndirectKey( PdfName( "PageMode" ) );
+    PdfVariant* pageModeObj = GetCatalog()->GetIndirectKey( PdfName( "PageMode" ) );
     if ( pageModeObj != NULL ) {
         PdfName pmName = pageModeObj->GetName();
         
