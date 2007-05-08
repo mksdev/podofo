@@ -510,7 +510,7 @@ void PdfDocument::SetUseFullScreen( void ) const
 
 void PdfDocument::SetViewerPreference( const PdfName& whichPref, const PdfVariant & valueObj ) const
 {
-    PdfObject* prefsObj = GetCatalog()->GetIndirectKey( PdfName( "ViewerPreferences" ) );
+    PdfVariant* prefsObj = GetCatalog()->GetIndirectKey( PdfName( "ViewerPreferences" ) );
     if ( prefsObj == NULL ) {
         // make me a new one and add it
         PdfDictionary	vpDict;
@@ -617,7 +617,7 @@ PdfOutlines* PdfDocument::GetOutlines( bool bCreate )
 
     if( !m_pOutlines )
     {
-        pObj = GetNamedObjectFromCatalog( "Outlines" );
+        pObj = GetNamedIndirectObjectFromCatalog( "Outlines" );
         if( !pObj ) 
         {
             if ( !bCreate )	return NULL;
@@ -635,26 +635,26 @@ PdfOutlines* PdfDocument::GetOutlines( bool bCreate )
 
 PdfNamesTree* PdfDocument::GetNamesTree( bool bCreate )
 {
-    PdfObject* pObj;
+    PdfVariant* pObj;
 
     if( !m_pNamesTree )
     {
-        pObj = GetNamedObjectFromCatalog( "Names" );
-        if( !pObj ) 
+        PdfVariant* namesTreeObj = GetNamedObjectFromCatalog( "Names" );
+        if( !namesTreeObj ) 
         {
             if ( !bCreate )
                 return NULL;
 
             PdfNamesTree tmpTree ( &m_vecObjects );
-            pObj = tmpTree.GetObject();
+            PdfObject* pObj = tmpTree.GetObject();
             m_pCatalog->GetDictionary().AddKey( "Names", pObj->Reference() );
             m_pNamesTree = new PdfNamesTree( pObj, m_pCatalog );
-        } else if ( pObj->GetDataType() != ePdfDataType_Dictionary ) {
+        } else if ( namesTreeObj->GetDataType() != ePdfDataType_Dictionary ) {
             PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
         } else
-            m_pNamesTree = new PdfNamesTree( pObj, m_pCatalog );
-    }        
-    
+            m_pNamesTree = new PdfNamesTree( namesTreeObj, m_pCatalog );
+    }
+
     return m_pNamesTree;
 }
 
