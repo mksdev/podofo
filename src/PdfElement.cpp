@@ -30,12 +30,14 @@ PdfElement::PdfElement( const char* pszType, PdfVecObjects* pParent )
 {
     // Create a new indirect object to use
     m_pVariant = pParent->CreateObject( pszType );
+    PODOFO_RAISE_LOGIC_IF( !m_pVariant->IsDictionary(), "Created non-dictionary base object for PdfElement");
 }
 
 PdfElement::PdfElement( const char* pszType, PdfVariant* pVariant )
     : m_pVariant(pVariant)
 {
     // Manage an existing PdfVariant (which may be a direct or indirect object)
+    // XXX TODO FIXME currently we just don't know if we own the variant or not.
     if( !m_pVariant )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );

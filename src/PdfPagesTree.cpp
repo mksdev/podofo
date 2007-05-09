@@ -207,6 +207,8 @@ PdfPage* PdfPagesTree::GetPage( const PdfReference & ref )
 PdfObject* PdfPagesTree::GetParent( PdfObject* inObject )
 {
     PdfVariant *pObjRef = inObject->GetDictionary().GetKey( "Parent" );
+    if (!pObjRef)
+        return NULL;
     // GetReference() will throw if pObjRef isn't an indirect reference
     PdfObject* pObj = inObject->GetOwner()->GetObject(pObjRef->GetReference());
     if( pObj && pObj->IsDictionary() )

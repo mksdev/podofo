@@ -71,7 +71,7 @@ PdfAction::PdfAction( PdfVariant* pVariant )
 
 // XXX FIXME TODO Lifetime managemnet of copy of the variant - we leak it at the moment!
 PdfAction::PdfAction( const PdfAction & rhs )
-    : PdfElement( "Action", new PdfVariant(rhs.GetObject()) )
+    : PdfElement( "Action", new PdfVariant( *rhs.GetObject() ) )
 {
     m_eType = static_cast<EPdfAction>(TypeNameToIndex( GetObject()->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
 }

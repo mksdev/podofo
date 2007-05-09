@@ -199,7 +199,7 @@ PdfDestination* PdfOutlineItem::GetDestination( void )
         if ( !dObj ) 
             return NULL;
     
-        m_pDestination = new PdfDestination( dObj );
+        m_pDestination = new PdfDestination( *dObj );
     }
 
     return m_pDestination;

@@ -55,7 +55,7 @@ PdfDocument::PdfDocument()
     m_bLinearized = false;
     m_vecObjects.SetParentDocument( this );
 
-    m_pTrailer = new PdfVariant();
+    m_pTrailer = new PdfVariant(PdfDictionary());
     m_pCatalog = m_vecObjects.CreateObject( "Catalog" );
 
     m_pInfo = new PdfInfo( &m_vecObjects );

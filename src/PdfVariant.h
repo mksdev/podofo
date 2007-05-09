@@ -70,7 +70,7 @@ class PODOFO_API PdfVariant {
 
     /** Construct a PdfVariant that is a real number.
      *  \param d the value of the real number.
-     */    
+     */
     PdfVariant( double d );
 
     /** Construct a PdfVariant that is a string. The argument
@@ -78,17 +78,17 @@ class PODOFO_API PdfVariant {
      * passed in unescaped form.
      *
      *  \param rsString the value of the string
-     */        
+     */
     PdfVariant( const PdfString & rsString );
 
     /** Construct a PdfVariant that is a name.
      *  \param rName the value of the name
-     */        
+     */
     PdfVariant( const PdfName & rName );
 
     /** Construct a PdfVariant that is a name.
      *  \param rRef the value of the name
-     */        
+     */
     PdfVariant( const PdfReference & rRef );
 
     /** Initalize a PdfVariant object with array data.
@@ -104,12 +104,12 @@ class PODOFO_API PdfVariant {
 
     /** Construct a PdfVariant that is a dictionary.
      *  \param rDict the value of the dictionary.
-     */        
+     */
     PdfVariant( const PdfDictionary & rDict );
 
     /** Construct a PdfVariant that contains raw PDF data.
      *  \param rData raw and valid PDF data.
-     */        
+     */
     PdfVariant( const PdfData & rData );
 
     /** Constructs a new PdfVariant which has the same 
@@ -351,6 +351,23 @@ class PODOFO_API PdfVariant {
     inline PdfArray & GetArray_NoDL();
 
  private:
+    /**
+     * It's an easy mistake to pass a pointer to a PdfVariant when trying to
+     * copy a PdfVariant, especially with heap allocators like `new'. This can
+     * produce confusing and unexpected results like getting a PdfVariant(bool).
+     *
+     * We provide this overload so that such attempts will fail with an error about
+     * a private ctor. If you're reading this, you wrote:
+     *
+     *  PdfVariant( my_ptr_to_variant )
+     *
+     *... not ...
+     * 
+     *  PdfVariant( *my_ptr_to_variant )
+     *
+     */
+    PdfVariant( const PdfVariant *);
+
     /** To reduce memory usage of this very often used class,
      *  we use a union here, as there is always only
      *  one of those members used.
