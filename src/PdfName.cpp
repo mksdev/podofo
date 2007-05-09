@@ -162,7 +162,7 @@ PdfName PdfName::FromEscaped( const char * pszName, int ilen )
 
 void PdfName::Write( PdfOutputDevice* pDevice ) const
 {
-    pDevice->Print( "/" );
+    pDevice->Print( this, "/" );
     string escaped( EscapeName(m_Data.begin(), m_Data.length()) );
     pDevice->Write( escaped.c_str(), escaped.length() );
 }

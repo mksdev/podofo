@@ -49,16 +49,16 @@ void PdfArray::Write( PdfOutputDevice* pDevice ) const
 {
     PdfArray::const_iterator it = this->begin();
 
-    pDevice->Print( "[ " );
+    pDevice->Print( this, "[ " );
     while( it != this->end() )
     {
         (*it).Write( pDevice );
-        pDevice->Print( " " );
+        pDevice->Print( this, " " );
 
         ++it;
     }
 
-    pDevice->Print( "]" );
+    pDevice->Print( this, "]" );
 }
 
 bool PdfArray::ContainsString( const std::string& cmpString ) const

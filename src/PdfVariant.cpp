@@ -206,10 +206,10 @@ void PdfVariant::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) cons
     switch( m_eDataType ) 
     {
         case ePdfDataType_Bool:
-            pDevice->Print( m_Data.bBoolValue ? "true" : "false" );
+            pDevice->Print( this, m_Data.bBoolValue ? "true" : "false" );
             break;
         case ePdfDataType_Number:
-            pDevice->Print( "%li", m_Data.nNumber );
+            pDevice->Print( this, "%li", m_Data.nNumber );
             break;
         case ePdfDataType_Real:
             //pDevice->Print( "%g", m_Data.dNumber );
@@ -218,7 +218,7 @@ void PdfVariant::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) cons
             //           which is not supported in PDF.
             //           %f fixes this but might loose precision as 
             //           it defaults to a precision of 6
-            pDevice->Print( "%f", m_Data.dNumber );
+            pDevice->Print( this, "%f", m_Data.dNumber );
             break;
         case ePdfDataType_HexString:
         case ePdfDataType_String:
@@ -232,7 +232,7 @@ void PdfVariant::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) cons
             static_cast<PdfDictionary*>(m_Data.pData)->Write( pDevice, keyStop );
             break;
         case ePdfDataType_Null:
-            pDevice->Print( "null" );
+            pDevice->Print( this, "null" );
             break;
         case ePdfDataType_Unknown:
         default:

@@ -67,7 +67,7 @@ void PdfImmediateWriter::WriteObject( const PdfObject* pObject )
     // we simply overwrite this string with "stream\n" which 
     // has excatly the same length.
     m_pDevice->Seek( m_pDevice->GetLength() - endObjLenght );
-    m_pDevice->Print( "stream\n" );
+    m_pDevice->Print( this, "stream\n" );
 
     m_pLast = const_cast<PdfObject*>(pObject);
 }
@@ -95,11 +95,11 @@ void PdfImmediateWriter::Finish()
         // if we have a dummy offset we write also a prev entry to the trailer
         FillTrailerObject( &trailer, m_pXRef->GetSize(), false, false );
         
-        m_pDevice->Print("trailer\n");
+        m_pDevice->Print( this, "trailer\n" );
         trailer.Write( m_pDevice );
     }
     
-    m_pDevice->Print( "startxref\n%li\n%%%%EOF\n", lXRefOffset );
+    m_pDevice->Print( this, "startxref\n%li\n%%%%EOF\n", lXRefOffset );
     m_pDevice->Flush();
 
     // we are done now
@@ -118,8 +118,8 @@ void PdfImmediateWriter::FinishLastObject()
 {
     if( m_pLast ) 
     {
-        m_pDevice->Print( "\nendstream\n" );
-        m_pDevice->Print( "endobj\n" );
+        m_pDevice->Print( this, "\nendstream\n" );
+        m_pDevice->Print( this, "endobj\n" );
         
         delete m_pParent->RemoveObject( m_pLast->Reference(), false );
         m_pLast = NULL;

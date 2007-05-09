@@ -40,6 +40,11 @@ class PdfOutputStream;
  *  PdfFileStream is used automatically when creating PDF files
  *  using PdfImmediateWriter.
  *
+ *  The output device is locked by PdfFileStream from when the first byte of
+ *  the stream is written until Write() is called. Attempts to use the output
+ *  device by any other object while the stream is incompletely written will
+ *  trigger an exception.
+ *
  *  \see PdfVecObjects
  *  \see PdfStream
  *  \see PdfMemoryStream
@@ -127,9 +132,12 @@ class PODOFO_API PdfFileStream : public PdfStream {
 
     unsigned long    m_lLenInitial;
     unsigned long    m_lLength;
-    
 
     PdfObject*       m_pLength;
+
+    // Is this file stream finalized and no longer modifiable?
+    // Set when Write() is called and the output device is unlocked.
+    bool             m_bFinalized;
 };
 
 // -----------------------------------------------------

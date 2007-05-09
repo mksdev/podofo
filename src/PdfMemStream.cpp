@@ -262,9 +262,9 @@ const PdfStream & PdfMemStream::operator=( const PdfStream & rhs )
 
 void PdfMemStream::Write( PdfOutputDevice* pDevice ) 
 {
-    pDevice->Print( "stream\n" );
+    pDevice->Print( this, "stream\n" );
     pDevice->Write( this->Get(), this->GetLength() );
-    pDevice->Print( "\nendstream\n" );
+    pDevice->Print( this, "\nendstream\n" );
 }
 
 };

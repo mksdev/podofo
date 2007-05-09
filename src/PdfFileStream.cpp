@@ -29,7 +29,7 @@ namespace PoDoFo {
 
 PdfFileStream::PdfFileStream( PdfObject* pParent, PdfOutputDevice* pDevice )
     : PdfStream( pParent ), m_pDevice( pDevice ), m_pStream( NULL ), m_pDeviceStream( NULL ),
-      m_lLenInitial( 0 ), m_lLength( 0 )
+      m_lLenInitial( 0 ), m_lLength( 0 ), m_bFinalized(false)
 {
     m_pLength = pParent->GetOwner()->CreateObject( PdfVariant(0L) );
     m_pParent->GetDictionary().AddKey( PdfName::KeyLength, m_pLength->Reference() );
@@ -37,14 +37,29 @@ PdfFileStream::PdfFileStream( PdfObject* pParent, PdfOutputDevice* pDevice )
 
 PdfFileStream::~PdfFileStream() 
 {
+    // when we're destroyed, we won't be doing any more writing to the stream,
+    // so we can safely release our lock on it.
+    m_pDevice->PopWriter(this);
 }
 
-void PdfFileStream::Write( PdfOutputDevice* )
+void PdfFileStream::Write( PdfOutputDevice* pDevice )
 {
+    PODOFO_RAISE_LOGIC_IF( pDevice != m_pDevice,
+            "Tried to Write() file stream to an output device other than its own");
+    // Flag ourselves as finalized, so any further attempts to modify the output
+    // device will fail. Otherwise, we'd still be able to wrie to the output device
+    // if nobody else had taken a lock on it.
+    m_bFinalized = true;
+    // and release the lock on the output device.
+    m_pDevice->PopWriter(this);
 }
 
 void PdfFileStream::BeginAppendImpl( const TVecFilters & vecFilters )
 {
+    PODOFO_RAISE_LOGIC_IF( m_bFinalized, "Tried to append to finalized file stream" );
+    // Lock the stream so nobody else can do anything with it until we're finished
+    m_pDevice->PushWriter(0, this);
+
     m_pParent->GetOwner()->WriteObject( m_pParent );
 
     m_lLenInitial = m_pDevice->GetLength();
@@ -60,11 +75,14 @@ void PdfFileStream::BeginAppendImpl( const TVecFilters & vecFilters )
 
 void PdfFileStream::AppendImpl( const char* pszString, size_t lLen )
 {
+    PODOFO_RAISE_LOGIC_IF( m_bFinalized, "Tried to append to finalized file stream" );
     m_pStream->Write( pszString, lLen );
 }
 
 void PdfFileStream::EndAppendImpl()
 {
+    PODOFO_RAISE_LOGIC_IF( m_bFinalized, "Tried to append to finalized file stream" );
+
     if( m_pStream ) 
     {
         m_pStream->Close();

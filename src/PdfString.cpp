@@ -84,9 +84,9 @@ void PdfString::Write ( PdfOutputDevice* pDevice ) const
     // Strings in PDF documents may contain \0 especially if they are encrypted
     // this case has to be handled!
 
-    pDevice->Print( m_bHex ? "<" : "(" );
+    pDevice->Print( this, m_bHex ? "<" : "(" );
     pDevice->Write( m_buffer.GetBuffer(), m_buffer.GetSize()-1 );
-    pDevice->Print( m_bHex ? ">" : ")" );
+    pDevice->Print( this, m_bHex ? ">" : ")" );
 }
 
 bool PdfString::operator>( const PdfString & rhs ) const
