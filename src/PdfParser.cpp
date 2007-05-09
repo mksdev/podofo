@@ -570,7 +570,6 @@ void PdfParser::ReadXRefStreamContents( long lOffset, bool bReadOnlyTrailer )
     long        lBufferLen;
     long        lSize     = 0;
     PdfVariant  vWArray;
-    PdfObject*  pObj;
 
     long        nW[W_ARRAY_SIZE] = { 0, 0, 0 };
     int         i;
@@ -586,7 +585,7 @@ void PdfParser::ReadXRefStreamContents( long lOffset, bool bReadOnlyTrailer )
         PODOFO_RAISE_ERROR( ePdfError_NoXRef );
     } 
 
-    pObj = xrefObject.GetDictionary().GetKey( PdfName::KeyType );
+    PdfVariant* pObj = xrefObject.GetDictionary().GetKey( PdfName::KeyType );
     if( !pObj->IsName() || ( pObj->GetName() != "XRef" ) )
     {
         PODOFO_RAISE_ERROR( ePdfError_NoXRef );

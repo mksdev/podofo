@@ -39,9 +39,9 @@ PdfPagesTree::PdfPagesTree( PdfVecObjects* pParent )
 }
 
 PdfPagesTree::PdfPagesTree( PdfObject* pPagesRoot )
-    : PdfElement( "Pages", pPagesRoot )
+    : PdfIElement( "Pages", pPagesRoot )
 {
-    if( !m_pObject ) 
+    if( !GetObject() ) 
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
@@ -66,8 +66,8 @@ PdfPagesTree::~PdfPagesTree()
 
 int PdfPagesTree::GetTotalNumberOfPages() const
 {
-    return ( ( m_pObject->GetDictionary().HasKey( "Count" ) ) ?
-             m_pObject->GetDictionary().GetKeyAsLong( "Count", 0 ) : 0 );
+    return ( ( GetObject()->GetDictionary().HasKey( "Count" ) ) ?
+             GetObject()->GetDictionary().GetKeyAsLong( "Count", 0 ) : 0 );
 }
 
 PdfObject* PdfPagesTree::GetPageFromKidArray( PdfArray& inArray, int inIndex )
@@ -93,7 +93,7 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pPagesObject )
 {
     // recurse through the pages tree nodes
     int        nPagesSeenSoFar = -1;	// initialize to -1 because nPageNum is 0-based
-    PdfObject* pObj            = NULL;
+    PdfVariant* pObj            = NULL;
 
     if( !pPagesObject->GetDictionary().HasKey( "Kids" ) )
         return NULL;
@@ -199,23 +199,25 @@ PdfPage* PdfPagesTree::GetPage( int nIndex )
 
 PdfPage* PdfPagesTree::GetPage( const PdfReference & ref )
 {
-    PdfPage* pPage  = new PdfPage( m_pObject->GetOwner()->GetObject( ref ) );
+    PdfPage* pPage  = new PdfPage( GetObject()->GetOwner()->GetObject( ref ) );
     m_deqPageObjs[ pPage->GetPageNumber() - 1 ] = pPage;
     return pPage;
 }
 
 PdfObject* PdfPagesTree::GetParent( PdfObject* inObject )
 {
-    PdfObject *pObj = inObject->GetIndirectKey( "Parent" );
+    PdfVariant *pObjRef = inObject->GetDictionary().GetKey( "Parent" );
+    // GetReference() will throw if pObjRef isn't an indirect reference
+    PdfObject* pObj = inObject->GetOwner()->GetObject(pObjRef->GetReference());
     if( pObj && pObj->IsDictionary() )
         return pObj;
     else
         return NULL;
 }
 
-PdfObject* PdfPagesTree::GetKids( PdfObject* inPagesDict )
+PdfVariant* PdfPagesTree::GetKids( PdfObject* inPagesDict )
 {
-    PdfObject *pObj = inPagesDict->GetIndirectKey( "Kids" );
+    PdfVariant *pObj = inPagesDict->GetIndirectKey( "Kids" );
     if( pObj && pObj->IsArray() )
         return pObj;
     else
@@ -232,8 +234,8 @@ int PdfPagesTree::GetPosInKids( PdfObject* inPageObj )
         return -1;
     
     // find inPageObj in parentObj
-    PdfObject* theKids = PdfPagesTree::GetKids( parentObj ) ;
-    PdfArray&	kidsArray = theKids->GetArray();
+    PdfVariant* theKids = PdfPagesTree::GetKids( parentObj ) ;
+    PdfArray& kidsArray = theKids->GetArray();
     size_t kidsLen = kidsArray.size();
     int kidsIndex;
     bool foundKid = false ;
@@ -310,8 +312,8 @@ void PdfPagesTree::InsertPages( int inAfterIndex,
     // insert inPageOrPagesDict in the parent's Kids array, and set inPageOrPagesDict's Parent
     int	insIdx = inAfterIndex + 1;
     
-    PdfObject*	kidsArrObj = PdfPagesTree::GetKids( inParentObj ) ;
-    PdfArray&	kidsArray = kidsArrObj->GetArray();
+    PdfVariant* kidsArrObj = PdfPagesTree::GetKids( inParentObj ) ;
+    PdfArray& kidsArray = kidsArrObj->GetArray();
 
     if( insIdx > static_cast<int>(kidsArray.size()) ) 
         kidsArray.push_back( inPageOrPagesObj->Reference() );
@@ -383,20 +385,20 @@ void PdfPagesTree::DeletePage( int inPageNumber )
             int theIndexInKidsArray = GetPosInKids( thePageObj ) ;
             thePageObj->GetDictionary().RemoveKey( PdfName( "Parent" ) );
             
-            PdfObject* theKidsArray = GetKids( theParentPagesDict ) ;
+            PdfVariant* theKidsArray = GetKids( theParentPagesDict ) ;
             PdfArray& kArr = theKidsArray->GetArray();
             kArr.erase( kArr.begin() + theIndexInKidsArray );
         }
         else if( !isPageALeaf )
         {
             // if we have only one immediate kid, we are an unnecessary intermediate node
-            PdfObject* thePagesKidsArray = this->GetKids( thePageObj ) ;
+            PdfVariant* thePagesKidsArray = this->GetKids( thePageObj ) ;
             PdfArray& kArr = thePagesKidsArray->GetArray();
             if( 1 == kArr.size() )
             {
-                PdfObject& oneChild = kArr[0];
-                int	indexInKArr = GetPosInKids( thePageObj );
-                PdfObject* theKidsArray = GetKids( theParentPagesDict );
+                PdfVariant& oneChild = kArr[0];
+                int indexInKArr = GetPosInKids( thePageObj );
+                PdfVariant* theKidsArray = GetKids( theParentPagesDict );
                 oneChild.GetDictionary().AddKey( PdfName( "Parent" ), theParentPagesDict );
                 theKidsArray->GetArray()[ indexInKArr ] = oneChild;
             }

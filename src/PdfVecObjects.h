@@ -274,7 +274,7 @@ class PODOFO_API PdfVecObjects {
      *  \param pTrailer the trailer object
      *  \param pNotDelete a list of object which must not be deleted
      */
-    void RenumberObjects( PdfObject* pTrailer, TPdfReferenceSet* pNotDelete = NULL );
+    void RenumberObjects( PdfVariant* pTrailer, TPdfReferenceSet* pNotDelete = NULL );
 
     /** Insert a object into this vector.
      *  Overwritten from std::vector so that 
@@ -301,7 +301,7 @@ class PODOFO_API PdfVecObjects {
      *  \param pList write the list of dependencies to this list
      *     
      */
-    void GetObjectDependencies( const PdfObject* pObj, TPdfReferenceList* pList ) const;
+    void GetObjectDependencies( const PdfVariant* pObj, TPdfReferenceList* pList ) const;
 
 
     /** Attach a new observer
@@ -398,11 +398,11 @@ class PODOFO_API PdfVecObjects {
      * \param pList write all references to this list
      */
     void BuildReferenceCountVector( TVecReferencePointerList* pList );
-    void InsertReferencesIntoVector( const PdfObject* pObj, TVecReferencePointerList* pList );
+    void InsertReferencesIntoVector( const PdfVariant* pObj, TVecReferencePointerList* pList );
 
     /** Assumes that the PdfVecObjects is sorted
      */
-    void InsertOneReferenceIntoVector( const PdfObject* pObj, TVecReferencePointerList* pList );
+    void InsertOneReferenceIntoVector( const PdfVariant* pObj, TVecReferencePointerList* pList );
 
     /** Delete all objects from the vector which do not have references to them selves
      *  \param pList must be a list created by BuildReferenceCountVector

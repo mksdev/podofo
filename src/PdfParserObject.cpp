@@ -240,7 +240,7 @@ void PdfParserObject::ParseStream()
     
     long fLoc = m_device.Device()->Tell();	// we need to save this, since loading the Length key could disturb it!
 
-    PdfObject* pObj = this->GetDictionary_NoDL().GetKey( PdfName::KeyLength );  
+    PdfVariant* pObj = this->GetDictionary_NoDL().GetKey( PdfName::KeyLength );  
     if( pObj && pObj->IsNumber() )
     {
         lLen = pObj->GetNumber();   

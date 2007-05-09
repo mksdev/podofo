@@ -434,12 +434,18 @@ void PdfWriter::ReorderObjectsLinearized( PdfObject* pLinearize, PdfHintStream* 
 
 void PdfWriter::FindCatalogDependencies( PdfObject* pCatalog, const PdfName & rName, TPdfReferenceList* pList, bool bWithDependencies )
 {
-    if( pCatalog->GetDictionary().HasKey( rName ) && pCatalog->GetDictionary().GetKey( rName )->IsReference() )
+    PdfDictionary& catDic( pCatalog->GetDictionary() );
+
+    if( catDic.HasKey( rName ) )
     {
-        if( bWithDependencies )
-            m_vecObjects->GetObjectDependencies( pCatalog->GetIndirectKey( rName ), pList );
-        else
-            pList->push_back( pCatalog->GetIndirectKey( rName )->Reference() );
+        PdfVariant* catEntry = catDic.GetKey( rName );
+        if (catEntry->IsReference())
+        {
+            if( bWithDependencies )
+                m_vecObjects->GetObjectDependencies( m_vecObjects->GetObject( catEntry->GetReference() ), pList );
+            else
+                pList->push_back( catEntry->GetReference() );
+        }
     }
 }
 
@@ -474,7 +480,7 @@ void PdfWriter::FetchPagesTree()
     if( !m_pPagesTree )
     {
         // try to find the pages tree
-        PdfObject* pRoot = m_pTrailer->GetDictionary().GetKey( "Root" );
+        PdfVariant* pRoot = m_pTrailer->GetDictionary().GetKey( "Root" );
 
         if( !pRoot || !pRoot->IsReference() )
         {
@@ -491,7 +497,7 @@ void PdfWriter::FetchPagesTree()
             PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
         }
 
-        m_pPagesTree     = new PdfPagesTree( pRoot->GetIndirectKey( "Pages" ) );
+        m_pPagesTree     = new PdfPagesTree( m_vecObjects->GetObject( pRoot->GetDictionary().GetKey( "Pages" )->GetReference() ) );
     }
 }
 
@@ -540,7 +546,7 @@ void PdfWriter::CreateFileIdentifier( PdfObject* pTrailer ) const
     PdfOutputDevice length;
     PdfString       identifier;
     PdfArray        array;
-    PdfObject*      pInfo;
+    PdfVariant*     pInfo;
     char*           pBuffer;
     
     // create a dictionary with some unique information.
@@ -548,7 +554,7 @@ void PdfWriter::CreateFileIdentifier( PdfObject* pTrailer ) const
     // dictionary if it exists.
     if( pTrailer->GetDictionary().HasKey("Info") )
     {
-        pInfo = new PdfObject( *(m_vecObjects->GetObject( pTrailer->GetDictionary().GetKey( "Info" )->GetReference() ) ) );
+        pInfo = new PdfVariant( *(m_vecObjects->GetObject( pTrailer->GetDictionary().GetKey( "Info" )->GetReference() ) ) );
     }
     else 
     {

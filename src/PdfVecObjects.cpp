@@ -260,7 +260,7 @@ void PdfVecObjects::push_back( PdfObject* pObj )
     m_vector.push_back( pObj );
 }
 
-void PdfVecObjects::RenumberObjects( PdfObject* pTrailer, TPdfReferenceSet* pNotDelete )
+void PdfVecObjects::RenumberObjects( PdfVariant* pTrailer, TPdfReferenceSet* pNotDelete )
 {
     TVecReferencePointerList  list;
     TIVecReferencePointerList it;
@@ -299,14 +299,14 @@ void PdfVecObjects::RenumberObjects( PdfObject* pTrailer, TPdfReferenceSet* pNot
     }
 }
 
-void PdfVecObjects::InsertOneReferenceIntoVector( const PdfObject* pObj, TVecReferencePointerList* pList )  
+void PdfVecObjects::InsertOneReferenceIntoVector( const PdfVariant* pObj, TVecReferencePointerList* pList )  
 {
     int                        index;
 
     PODOFO_RAISE_LOGIC_IF( !m_bSorted, 
                            "PdfVecObjects must be sorted before calling PdfVecObjects::InsertOneReferenceIntoVector!" );
-    
-    // we asume that pObj is a reference - no checking here because of speed
+
+    // we assume that pObj is a reference - no checking here because of speed. GetReference() does it anyway.
     std::pair<TCIVecObjects,TCIVecObjects> it = 
         std::equal_range( m_vector.begin(), m_vector.end(), pObj->GetReference(), ObjectComparatorPredicate() );
 
@@ -321,7 +321,7 @@ void PdfVecObjects::InsertOneReferenceIntoVector( const PdfObject* pObj, TVecRef
     (*pList)[index].push_back( const_cast<PdfReference*>(&(pObj->GetReference() )) );
 }
 
-void PdfVecObjects::InsertReferencesIntoVector( const PdfObject* pObj, TVecReferencePointerList* pList )
+void PdfVecObjects::InsertReferencesIntoVector( const PdfVariant* pObj, TVecReferencePointerList* pList )
 {
     PdfArray::const_iterator   itArray;
     TCIKeyMap                  itKeys;
@@ -362,7 +362,7 @@ void PdfVecObjects::InsertReferencesIntoVector( const PdfObject* pObj, TVecRefer
     }
 }
 
-void PdfVecObjects::GetObjectDependencies( const PdfObject* pObj, TPdfReferenceList* pList ) const
+void PdfVecObjects::GetObjectDependencies( const PdfVariant* pObj, TPdfReferenceList* pList ) const
 {
     PdfArray::const_iterator   itArray;
     TCIKeyMap                  itKeys;

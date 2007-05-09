@@ -135,7 +135,7 @@ class PODOFO_API PdfPagesTree : public PdfIElement
     
     /** Private method for getting the Kids of a node in the /Pages tree
      */
-    static PdfObject* GetKids( PdfObject* inObject );
+    static PdfVariant* GetKids( PdfObject* inObject );
     
     /** Private method for determining where a page is in the /Pages tree
      */

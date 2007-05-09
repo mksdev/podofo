@@ -236,6 +236,7 @@ class PODOFO_API PdfWriter {
      *  \param pVecXRefOffset xref table entries for previous entry
      */
     // void FillLinearizationDictionary( PdfObject* pLinearize, PdfOutputDevice* pDevice, PdfPage* pPage, PdfObject* pLast, PdfHintStream* pHint, TVecXRefOffset* pVecXRefOffset ) PODOFO_LOCAL;
+
     /** Creates a file identifier which is required in several
      *  PDF workflows. 
      *  All values from the files document information dictionary are

@@ -33,7 +33,6 @@ namespace PoDoFo {
 
 class PdfDictionary;
 class PdfName;
-class PdfObject;
 class PdfVariant;
 class PdfOutputStream;
 

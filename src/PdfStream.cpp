@@ -26,6 +26,8 @@
 #include "PdfOutputStream.h"
 
 #include "PdfOutputDevice.h"
+#include "PdfObject.h"
+
 #include <iostream>
 using namespace std;
 
@@ -42,7 +44,7 @@ PdfStream::~PdfStream()
 
 void PdfStream::GetFilteredCopy( PdfOutputStream* pStream ) const
 {
-    TVecFilters      vecFilters    = PdfFilterFactory::CreateFilterList( m_pParent );
+    TVecFilters vecFilters = PdfFilterFactory::CreateFilterList( m_pParent );
     if( vecFilters.size() )
     {
         PdfOutputStream* pDecodeStream = PdfFilterFactory::CreateDecodeStream( vecFilters, pStream, 
