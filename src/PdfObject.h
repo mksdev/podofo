@@ -154,12 +154,19 @@ class PODOFO_API PdfObject : public PdfVariant {
      */
     inline const PdfVariant* GetIndirectKey( const PdfName & key ) const;
 
+    /** Write the complete object to an output device.
+     *  This is an overloaded member function.
+     *
+     *  \param pDevice write the object to this device
+     */
+    virtual void Write( PdfOutputDevice* pDevice ) const;
+
     /** Write the complete object to a file.
      *  \param pDevice write the object to this device
      *  \param keyStop if not KeyNull and a key == keyStop is found
      *                 writing will stop right before this key!
      */
-    void WriteObject( PdfOutputDevice* pDevice, const PdfName & keyStop = PdfName::KeyNull ) const;
+    virtual void Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) const;
 
     /** Get the length of the object in bytes if it was written to disk now.
      *  \returns  the length of the object

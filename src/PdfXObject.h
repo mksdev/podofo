@@ -84,7 +84,7 @@ class PODOFO_API PdfXObject : public PdfIElement, public PdfCanvas {
      *  This is most likely an internal object.
      *  \returns a resources object
      */
-    inline virtual PdfObject* GetResources() const;
+    inline virtual PdfVariant* GetResources() const;
 
     /** Get the current page size in PDF Units
      *  \returns a PdfRect containing the page size available for drawing
@@ -116,7 +116,7 @@ class PODOFO_API PdfXObject : public PdfIElement, public PdfCanvas {
  private:
     static PdfArray  s_matrix;
 
-    PdfObject*       m_pResources;
+    PdfVariant*      m_pResources;
 
     PdfName          m_Identifier;
     PdfReference     m_Reference;
@@ -134,7 +134,7 @@ inline PdfObject* PdfXObject::GetContents() const
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline PdfObject* PdfXObject::GetResources() const
+inline PdfVariant* PdfXObject::GetResources() const
 {
     return m_pResources;
 }

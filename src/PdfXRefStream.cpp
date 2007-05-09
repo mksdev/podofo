@@ -158,7 +158,7 @@ void PdfXRefStream::Write( PdfOutputDevice* pDevice )
     object.GetDictionary().AddKey( "Index", indeces );
     object.GetDictionary().AddKey( "W", w );
     //object.FlateCompressStream();
-    object.WriteObject( pDevice );
+    object.Write( pDevice );
 }
 
 };

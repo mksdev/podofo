@@ -149,7 +149,7 @@ void PdfWriter::Write( PdfOutputDevice* pDevice )
                 FillTrailerObject( &trailer, pXRef->GetSize(), false, false );
                 
                 pDevice->Print("trailer\n");
-                trailer.WriteObject( pDevice );
+                trailer.Write( pDevice );
             }
             
             pDevice->Print( "startxref\n%li\n%%%%EOF\n", lXRefOffset );
@@ -270,7 +270,7 @@ void PdfWriter::WritePdfObjects( PdfOutputDevice* pDevice, const PdfVecObjects& 
     while( itObjects != vecObjects.end() )
     {
         pXref->AddObject( (*itObjects)->Reference(), pDevice->GetLength(), true );
-        (*itObjects)->WriteObject( pDevice );
+        (*itObjects)->Write( pDevice );
 
         ++itObjects;
     }
@@ -571,7 +571,7 @@ void PdfWriter::CreateFileIdentifier( PdfObject* pTrailer ) const
     
     pInfo->GetDictionary().AddKey( "Location", PdfString("SOMEFILENAME") );
 
-    pInfo->WriteObject( &length );
+    pInfo->Write( &length );
 
     pBuffer = static_cast<char*>(malloc( sizeof(char) * length.GetLength() ));
     if( !pBuffer )
@@ -581,7 +581,7 @@ void PdfWriter::CreateFileIdentifier( PdfObject* pTrailer ) const
     }
 
     PdfOutputDevice device( pBuffer, length.GetLength() );
-    pInfo->WriteObject( &device );
+    pInfo->Write( &device );
 
     // calculate the MD5 Sum
     identifier = PdfEncrypt::GetMD5String( reinterpret_cast<unsigned char*>(pBuffer), length.GetLength() );

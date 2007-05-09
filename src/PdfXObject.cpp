@@ -54,21 +54,21 @@ PdfXObject::PdfXObject( const PdfRect & rRect, PdfVecObjects* pParent )
     }
 
     rRect.ToVariant( var );
-    m_pObject->GetDictionary().AddKey( "BBox", var );
-    m_pObject->GetDictionary().AddKey( PdfName::KeySubtype, PdfName("Form") );
-    m_pObject->GetDictionary().AddKey( "FormType", PdfVariant( 1l ) ); // only 1 is only defined in the specification.
-    m_pObject->GetDictionary().AddKey( "Matrix", s_matrix );
+    GetObject()->GetDictionary().AddKey( "BBox", var );
+    GetObject()->GetDictionary().AddKey( PdfName::KeySubtype, PdfName("Form") );
+    GetObject()->GetDictionary().AddKey( "FormType", PdfVariant( 1l ) ); // only 1 is only defined in the specification.
+    GetObject()->GetDictionary().AddKey( "Matrix", s_matrix );
 
     // The PDF specification suggests that we send all available PDF Procedure sets
-    m_pObject->GetDictionary().AddKey( "Resources", PdfObject( PdfDictionary() ) );
-    m_pResources = m_pObject->GetDictionary().GetKey( "Resources" );
+    GetObject()->GetDictionary().AddKey( "Resources", PdfObject( PdfDictionary() ) );
+    m_pResources = GetObject()->GetDictionary().GetKey( "Resources" );
     m_pResources->GetDictionary().AddKey( "ProcSet", PdfCanvas::GetProcSet() );
 
     // Implementation note: the identifier is always
     // Prefix+ObjectNo. Prefix is /XOb for XObject.
-    out << "XOb" << m_pObject->Reference().ObjectNumber();
+    out << "XOb" << GetObject()->Reference().ObjectNumber();
     m_Identifier = PdfName( out.str().c_str() );
-    m_Reference  = m_pObject->Reference();
+    m_Reference  = GetObject()->Reference();
 }
 
 PdfXObject::PdfXObject( PdfObject* pObject )
@@ -78,13 +78,13 @@ PdfXObject::PdfXObject( PdfObject* pObject )
     PdfLocaleImbue(out);
     // Implementation note: the identifier is always
     // Prefix+ObjectNo. Prefix is /XOb for XObject.
-    out << "XOb" << m_pObject->Reference().ObjectNumber();
+    out << "XOb" << GetObject()->Reference().ObjectNumber();
 
     
     m_pResources = pObject->GetIndirectKey( "Resources" );
     m_Identifier = PdfName( out.str().c_str() );
-    m_rRect      = PdfRect( m_pObject->GetIndirectKey( "BBox" )->GetArray() );
-    m_Reference  = m_pObject->Reference();
+    m_rRect      = PdfRect( GetObject()->GetIndirectKey( "BBox" )->GetArray() );
+    m_Reference  = GetObject()->Reference();
 }
 
 PdfXObject::PdfXObject( const char* pszSubType, PdfVecObjects* pParent )
@@ -94,12 +94,12 @@ PdfXObject::PdfXObject( const char* pszSubType, PdfVecObjects* pParent )
     PdfLocaleImbue(out);
     // Implementation note: the identifier is always
     // Prefix+ObjectNo. Prefix is /XOb for XObject.
-    out << "XOb" << m_pObject->Reference().ObjectNumber();
+    out << "XOb" << GetObject()->Reference().ObjectNumber();
 
     m_Identifier = PdfName( out.str().c_str() );
-    m_Reference  = m_pObject->Reference();
+    m_Reference  = GetObject()->Reference();
 
-    m_pObject->GetDictionary().AddKey( PdfName::KeySubtype, PdfName( pszSubType ) );
+    GetObject()->GetDictionary().AddKey( PdfName::KeySubtype, PdfName( pszSubType ) );
 }
 
 PdfXObject::PdfXObject( const char* pszSubType, PdfObject* pObject )
@@ -108,17 +108,17 @@ PdfXObject::PdfXObject( const char* pszSubType, PdfObject* pObject )
     ostringstream out;
     PdfLocaleImbue(out);
 
-    if( m_pObject->GetDictionary().GetKeyAsName( PdfName::KeySubtype ) != pszSubType ) 
+    if( GetObject()->GetDictionary().GetKeyAsName( PdfName::KeySubtype ) != pszSubType ) 
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
     }
 
     // Implementation note: the identifier is always
     // Prefix+ObjectNo. Prefix is /XOb for XObject.
-    out << "XOb" << m_pObject->Reference().ObjectNumber();
+    out << "XOb" << GetObject()->Reference().ObjectNumber();
 
     m_Identifier = PdfName( out.str().c_str() );
-    m_Reference  = m_pObject->Reference();
+    m_Reference  = GetObject()->Reference();
 }
 
 };

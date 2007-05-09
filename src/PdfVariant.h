@@ -190,7 +190,7 @@ class PODOFO_API PdfVariant {
      *
      *  \param pDevice write the object to this device
      */
-    void Write( PdfOutputDevice* pDevice ) const;
+    virtual void Write( PdfOutputDevice* pDevice ) const;
 
     /** Write the complete variant to an output device.
      *  \param pDevice write the object to this device

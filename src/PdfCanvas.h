@@ -59,7 +59,7 @@ class PODOFO_API PdfCanvas {
      *  This is most likely an internal object.
      *  \returns a resources object
      */
-    virtual PdfObject* GetResources() const = 0;
+    virtual PdfVariant* GetResources() const = 0;
 
     /** Get the current page size in PDF Units
      *  \returns a PdfRect containing the page size available for drawing

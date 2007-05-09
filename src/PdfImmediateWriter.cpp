@@ -60,7 +60,7 @@ void PdfImmediateWriter::WriteObject( const PdfObject* pObject )
     this->FinishLastObject();
 
     m_pXRef->AddObject( pObject->Reference(), m_pDevice->GetLength(), true );
-    pObject->WriteObject( m_pDevice );
+    pObject->Write( m_pDevice );
 
     // Let's cheat a bit:
     // pObject has written an "endobj\n" as last data to the file.
@@ -96,7 +96,7 @@ void PdfImmediateWriter::Finish()
         FillTrailerObject( &trailer, m_pXRef->GetSize(), false, false );
         
         m_pDevice->Print("trailer\n");
-        trailer.WriteObject( m_pDevice );
+        trailer.Write( m_pDevice );
     }
     
     m_pDevice->Print( "startxref\n%li\n%%%%EOF\n", lXRefOffset );

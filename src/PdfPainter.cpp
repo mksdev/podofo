@@ -841,7 +841,7 @@ void PdfPainter::AddToPageResources( const PdfName & rIdentifier, const PdfRefer
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    PdfObject* pResource = m_pPage->GetResources();
+    PdfVariant* pResource = m_pPage->GetResources();
     
     if( !pResource )
     {

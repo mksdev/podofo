@@ -129,7 +129,12 @@ void PdfObject::InitPdfObject()
 #endif
 }
 
-void PdfObject::WriteObject( PdfOutputDevice* pDevice, const PdfName & keyStop ) const
+void PdfObject::Write( PdfOutputDevice* pDevice ) const
+{
+    Write(pDevice, PdfName::KeyNull);
+}
+
+void PdfObject::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) const
 {
     DelayedStreamLoad();
 
@@ -141,7 +146,7 @@ void PdfObject::WriteObject( PdfOutputDevice* pDevice, const PdfName & keyStop )
     if( m_reference.IsIndirect() )
         pDevice->Print( "%i %i obj\n", m_reference.ObjectNumber(), m_reference.GenerationNumber() );
 
-    this->Write( pDevice, keyStop );
+    PdfVariant::Write( pDevice, keyStop );
     pDevice->Print( "\n" );
 
     if( m_pStream )
@@ -179,7 +184,7 @@ unsigned long PdfObject::GetObjectLength()
 {
     PdfOutputDevice device;
 
-    this->WriteObject( &device );
+    this->Write( &device );
 
     return device.GetLength();
 }
@@ -221,25 +226,6 @@ void PdfObject::FlateCompressStream()
     if( m_pStream )
         m_pStream->FlateCompress();
     */
-}
-
-unsigned long PdfObject::GetByteOffset( const char* pszKey )
-{
-    PdfOutputDevice device;
-
-    if( !pszKey )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
-    }
-
-    if( !this->GetDictionary().HasKey( pszKey ) )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidKey );
-    }
-
-    this->Write( &device, pszKey );
-    
-    return device.GetLength();
 }
 
 };
