@@ -24,7 +24,6 @@
 #include <cstdarg>
 #include <ostream>
 #include <stack>
-#include <iostream> //XXX
 
 #include "PdfDefines.h"
 #include "PdfLocale.h"
@@ -224,7 +223,6 @@ void PdfOutputDevice::PushWriter(const void* lastWriter, const void* nextWriter)
         PODOFO_RAISE_LOGIC_IF( !m_writers.empty(),
                 "Write lock order violation in acquisition - claimed no writer incorrectly");
     }
-    std::cerr << "locked by " << nextWriter << " previous was " << lastWriter << std::endl;
     m_writers.push(nextWriter);
 }
 
@@ -234,14 +232,11 @@ void PdfOutputDevice::PopWriter(const void* lastWriter)
             "Write lock order violation in release - writer stack underflow");
     PODOFO_RAISE_LOGIC_IF( m_writers.top() != lastWriter,
             "Write lock order violation in release - wrong last writer");
-    std::cerr << "unlocked by " << lastWriter << std::endl;
     m_writers.pop();
 }
 
 void PdfOutputDevice::CheckWriter(const void* writer)
 {
-    std::cerr << m_writers.size() << " lockers, top is "
-        << (m_writers.size( )? m_writers.top():(void*)0xDEADBEEF) << ", caller is " << writer << std::endl;
     if (!m_writers.empty() && m_writers.top() != writer)
         PODOFO_RAISE_ERROR_INFO( ePdfError_InternalLogic,
                 "Write order lock violation in check - wrong writer");
