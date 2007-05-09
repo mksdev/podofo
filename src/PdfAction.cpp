@@ -58,7 +58,7 @@ PdfAction::PdfAction( EPdfAction eAction, PdfVecObjects* pParent )
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    m_pVariant->GetDictionary().AddKey( "S", type );
+    GetObject()->GetDictionary().AddKey( "S", type );
 }
 
 PdfAction::PdfAction( PdfVariant* pVariant )
@@ -66,28 +66,29 @@ PdfAction::PdfAction( PdfVariant* pVariant )
     : PdfElement( NULL, pVariant )
 {
     // XXX FIXME TODO handle being passed an indirect reference
-    m_eType = static_cast<EPdfAction>(TypeNameToIndex( m_pVariant->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
+    m_eType = static_cast<EPdfAction>(TypeNameToIndex( GetObject()->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
 }
 
+// XXX FIXME TODO Lifetime managemnet of copy of the variant - we leak it at the moment!
 PdfAction::PdfAction( const PdfAction & rhs )
-    : PdfElement( "Action", rhs.m_pVariant )
+    : PdfElement( "Action", new PdfVariant(rhs.GetObject()) )
 {
-    m_eType = static_cast<EPdfAction>(TypeNameToIndex( m_pVariant->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
+    m_eType = static_cast<EPdfAction>(TypeNameToIndex( GetObject()->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
 }
 
 void PdfAction::SetURI( const PdfString & sUri )
 {
-    m_pVariant->GetDictionary().AddKey( "URI", sUri );
+    GetObject()->GetDictionary().AddKey( "URI", sUri );
 }
 
 PdfString PdfAction::GetURI() const
 {
-    return m_pVariant->GetDictionary().GetKey( "URI" )->GetString();
+    return GetObject()->GetDictionary().GetKey( "URI" )->GetString();
 }
 
 bool PdfAction::HasURI() const
 {
-    return m_pVariant->GetDictionary().HasKey( "URI" );
+    return GetObject()->GetDictionary().HasKey( "URI" );
 }
 
 

@@ -292,12 +292,12 @@ bool PdfNameTreeNode::Rebalance()
   does NOT have a /Type key!
 */
 PdfNamesTree::PdfNamesTree( PdfVecObjects* pParent )
-    : PdfElement( NULL, pParent ), m_pCatalog( NULL )
+    : PdfIElement( NULL, pParent ), m_pCatalog( NULL )
 {
 }
 
 PdfNamesTree::PdfNamesTree( PdfObject* pObject, PdfObject* pCatalog )
-    : PdfElement( NULL, pObject ), m_pCatalog( pCatalog )
+    : PdfIElement( NULL, pObject ), m_pCatalog( pCatalog )
 {
 }
 
@@ -319,7 +319,7 @@ PdfObject* PdfNamesTree::GetValue( const PdfName & tree, const PdfString & key )
     {
         pResult = this->GetKeyValue( pObject, key );
         if( pResult && pResult->IsReference() )
-            pResult = m_pObject->GetOwner()->GetObject( pResult->GetReference() );
+            pResult = GetObject()->GetOwner()->GetObject( pResult->GetReference() );
     }
 
     return pResult;
@@ -337,7 +337,7 @@ PdfObject* PdfNamesTree::GetKeyValue( PdfObject* pObj, const PdfString & key ) c
 
         while( it != kids.end() )
         {
-            PdfObject* pChild = m_pObject->GetOwner()->GetObject( (*it).GetReference() );
+            PdfObject* pChild = GetObject()->GetOwner()->GetObject( (*it).GetReference() );
             if( pChild ) 
                 return GetKeyValue( pChild, key );
             else
@@ -360,7 +360,7 @@ PdfObject* PdfNamesTree::GetKeyValue( PdfObject* pObj, const PdfString & key ) c
             if( (*it).GetString() == key ) 
             {
                 ++it;
-                return m_pObject->GetOwner()->GetObject( (*it).GetReference() );
+                return GetObject()->GetOwner()->GetObject( (*it).GetReference() );
             }
 
             it += 2;
@@ -373,11 +373,13 @@ PdfObject* PdfNamesTree::GetKeyValue( PdfObject* pObj, const PdfString & key ) c
 
 PdfObject* PdfNamesTree::GetRootNode( const PdfName & name, bool bCreate ) const
 {
-    PdfObject* pObj = m_pObject->GetIndirectKey( name );
+    // FIXME unnecessary const_cast ?
+    // XXX FIXME TODO Unsafe assumption that returned object is an indirect object
+    PdfObject* pObj = static_cast<PdfObject*>(const_cast<PdfObject*>(GetObject())->GetIndirectKey( name ));
     if( !pObj && bCreate ) 
     {
-        pObj = m_pObject->GetOwner()->CreateObject();
-        const_cast<PdfNamesTree*>(this)->m_pObject->GetDictionary().AddKey( name, pObj->Reference() );
+        pObj = GetObject()->GetOwner()->CreateObject();
+        const_cast<PdfNamesTree*>(this)->GetObject()->GetDictionary().AddKey( name, pObj->Reference() );
     }
 
     return pObj;
@@ -427,7 +429,7 @@ void PdfNamesTree::AddToDictionary( PdfObject* pObj, PdfDictionary & rDict )
 
         while( it != kids.end() )
         {
-            PdfObject* pChild = m_pObject->GetOwner()->GetObject( (*it).GetReference() );
+            PdfObject* pChild = GetObject()->GetOwner()->GetObject( (*it).GetReference() );
             if( pChild ) 
                 this->AddToDictionary( pChild, rDict );
             else

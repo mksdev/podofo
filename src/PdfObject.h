@@ -149,6 +149,11 @@ class PODOFO_API PdfObject : public PdfVariant {
      */
     PdfVariant* GetIndirectKey( const PdfName & key );
 
+    /**
+     * Const overload of GetIndirectKey( const PdfName & key )
+     */
+    inline const PdfVariant* GetIndirectKey( const PdfName & key ) const;
+
     /** Write the complete object to a file.
      *  \param pDevice write the object to this device
      *  \param keyStop if not KeyNull and a key == keyStop is found
@@ -401,6 +406,14 @@ inline void PdfObject::DelayedStreamLoad() const
         m_bDelayedStreamLoadInProgress = false;
 #endif
     }
+}
+
+// -----------------------------------------------------
+// 
+// -----------------------------------------------------
+const PdfVariant* PdfObject::GetIndirectKey( const PdfName & n ) const
+{
+    return const_cast<PdfObject*>(this)->GetIndirectKey(n);
 }
 
 };

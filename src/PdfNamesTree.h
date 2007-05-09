@@ -40,8 +40,13 @@ typedef enum EPdfNameLimits {
 
 
 /** An action that can be performed in a PDF document
+ *
+ * FIXME TODO XXX A PdfNamesTree need not be indirect, so this class is incorrect.
+ * Unfortunately, too many assumptions are made about access to the VecObjects through
+ * PdfObject for it to be easily converted to use PdfVariant where it should. It'll need
+ * more work.
  */
-class PODOFO_API PdfNamesTree : public PdfElement {
+class PODOFO_API PdfNamesTree : public PdfIElement {
  public:
     /** Create a new PdfNamesTree object
      *  \param pParent parent of this action
@@ -52,7 +57,7 @@ class PODOFO_API PdfNamesTree : public PdfElement {
      *	\param pObject the object to create from
      *  \param pCatalog the Catalog dictionary of the owning PDF
      */
-    PdfNamesTree( PdfVariant* pVar, PdfObject* pCatalog );
+    PdfNamesTree( PdfObject* pVar, PdfObject* pCatalog );
 
     virtual ~PdfNamesTree() { }
 
@@ -61,7 +66,7 @@ class PODOFO_API PdfNamesTree : public PdfElement {
      *  \param key the key to insert. If it exists, it will be overwritten.
      *  \param rValue the value to insert.
      */
-    void AddValue( const PdfName & tree, const PdfString & key, const PdfVariant & rValue );
+    void AddValue( const PdfName & tree, const PdfString & key, const PdfObject & rValue );
 
     /** Get the object referenced by a string key in one of the dictionaries
      *  of the name tree.
@@ -71,7 +76,7 @@ class PODOFO_API PdfNamesTree : public PdfElement {
      *           if the value is a reference, the object referenced by 
      *           this reference is returned.
      */
-    PdfVariant* GetValue( const PdfName & tree, const PdfString & key ) const;
+    PdfObject* GetValue( const PdfName & tree, const PdfString & key ) const;
 
     /** Tests wether a certain nametree has a value.
      *
@@ -91,7 +96,7 @@ class PODOFO_API PdfNamesTree : public PdfElement {
      *
      *  Internal use only.
      */
-    static EPdfNameLimits CheckLimits( const PdfVariant* pObj, const PdfString & key );
+    static EPdfNameLimits CheckLimits( const PdfObject* pObj, const PdfString & key );
 
     /** 
      * Adds all keys and values from a name tree to a dictionary.
@@ -120,21 +125,21 @@ class PODOFO_API PdfNamesTree : public PdfElement {
      *  \param bCreate if true the root node is create if it does not exists.
      *  \returns the root node of the tree or NULL if it does not exists
      */
-    PdfVariant* GetRootNode( const PdfName & name, bool bCreate = false ) const;
+    PdfObject* GetRootNode( const PdfName & name, bool bCreate = false ) const;
 
     /** Recursively walk through the name tree and find the value for key.
      *  \param pObj the name tree 
      *  \param key the key to find a value for
      *  \return the value for the key or NULL if it was not found
      */
-    PdfVariant* GetKeyValue( PdfVariant* pObj, const PdfString & key ) const;
+    PdfObject* GetKeyValue( PdfObject* pObj, const PdfString & key ) const;
 
     /** 
      *  Add all keys and values from an object and its children to a dictionary.
      *  \param pObj a pdf name tree node
      *  \param rDict a dictionary
      */
-    void AddToDictionary( PdfVariant* pObj, PdfDictionary & rDict );
+    void AddToDictionary( PdfObject* pObj, PdfDictionary & rDict );
 
  private:
     PdfObject*	m_pCatalog;

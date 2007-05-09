@@ -635,16 +635,18 @@ PdfOutlines* PdfDocument::GetOutlines( bool bCreate )
 
 PdfNamesTree* PdfDocument::GetNamesTree( bool bCreate )
 {
-    PdfVariant* pObj;
-
     if( !m_pNamesTree )
     {
-        PdfVariant* namesTreeObj = GetNamedObjectFromCatalog( "Names" );
+        // XXX FIXME TODO We unsafely assume that the names tree is an indirect object.
+        PdfObject* namesTreeObj = static_cast<PdfObject*>(GetNamedObjectFromCatalog( "Names" ));
         if( !namesTreeObj ) 
         {
             if ( !bCreate )
                 return NULL;
 
+            // XXX FIXME TODO We unsafely assume that the names tree is an indirect object.
+            // This does not appear to be required by the specification - see 3.6.1, "Names".
+            // It'll work until PdfNamesTree gets fixed, though.
             PdfNamesTree tmpTree ( &m_vecObjects );
             PdfObject* pObj = tmpTree.GetObject();
             m_pCatalog->GetDictionary().AddKey( "Names", pObj->Reference() );
@@ -673,7 +675,9 @@ void PdfDocument::AttachFile( const PdfFileSpec & rFileSpec )
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    pNames->AddValue( "EmbeddedFiles", rFileSpec.GetFilename(), rFileSpec.GetObject()->Reference() );
+    // XXX FIXME TODO We unsafely assume that the filespec refers to an indirect object.
+    // This need not be the case.
+    pNames->AddValue( "EmbeddedFiles", rFileSpec.GetFilename(), static_cast<const PdfObject*>(rFileSpec.GetObject())->Reference() );
 }
 
 };

@@ -17,7 +17,7 @@ namespace PoDoFo {
 	 *  The main usage is for transparency, but it also support a variety
 	 *  of prepress features.
 	*/
-	class PODOFO_API PdfExtGState : public PdfElement {
+	class PODOFO_API PdfExtGState : public PdfIElement {
 	public:
 		/** Create a new PdfExtGState object which will introduce itself
 		*  automatically to every page object it is used on.
@@ -29,7 +29,7 @@ namespace PoDoFo {
 		virtual ~PdfExtGState();
 
 		/** Returns the identifier of this ExtGState how it is known
-		*  in the pages resource dictionary.
+		*   in the pages resource dictionary.
 		*  \returns PdfName containing the identifier (e.g. /ExtGS13)
 		*/
 		inline const PdfName & GetIdentifier() const;

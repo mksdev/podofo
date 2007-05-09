@@ -30,6 +30,8 @@ namespace PoDoFo {
 /** A interface that provides a wrapper around "PDF content" -
 	the instructions that are used to draw on the PDF "canvas".
  */
+// XXX FIXME TODO a PdfContents should be creatable with a PdfVariant containing
+// a PdfArray. It can not safely assume its argument will be an indirect object.
 class PODOFO_API PdfContents {
  public:
 

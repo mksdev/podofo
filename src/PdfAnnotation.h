@@ -111,7 +111,7 @@ class PODOFO_API PdfAnnotation : public PdfElement {
      */
     PdfAnnotation( PdfPage* pPage, EPdfAnnotation eAnnot, const PdfRect & rRect, PdfVecObjects* pParent );
 
-    PdfAnnotation( PdfObject* pObject );
+    PdfAnnotation( PdfVariant* pObject );
 
     ~PdfAnnotation();
 

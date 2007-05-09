@@ -67,7 +67,7 @@ class PODOFO_API PdfImage : public PdfXObject {
     PdfImage( PdfStreamedDocument* pParent );
 
     /** Construct an image from an existing PdfObject
-     *  
+     *
      *  \param pObject a PdfObject that has to be an image
      */
     PdfImage( PdfObject* pObject );

@@ -34,7 +34,7 @@ PdfFileSpec::PdfFileSpec( const char* pszFilename, bool bEmbedd, PdfVecObjects* 
 {
     PdfObject* pEmbeddedStream;
 
-    m_pObject->GetDictionary().AddKey( "F", this->CreateFileSpecification( pszFilename ) );
+    GetObject()->GetDictionary().AddKey( "F", this->CreateFileSpecification( pszFilename ) );
 
     if( bEmbedd ) 
     {
@@ -45,7 +45,7 @@ PdfFileSpec::PdfFileSpec( const char* pszFilename, bool bEmbedd, PdfVecObjects* 
 
         ef.AddKey( "F",  pEmbeddedStream->Reference() );
 
-        m_pObject->GetDictionary().AddKey( "EF", ef );
+        GetObject()->GetDictionary().AddKey( "EF", ef );
     }
 }
 
@@ -89,8 +89,8 @@ void PdfFileSpec::EmbeddFile( PdfObject* pStream, const char* pszFilename ) cons
 
 const PdfString & PdfFileSpec::GetFilename() const
 {
-    if( m_pObject->GetDictionary().HasKey( "F" ) )
-        return m_pObject->GetDictionary().GetKey( "F" )->GetString();
+    if( GetObject()->GetDictionary().HasKey( "F" ) )
+        return GetObject()->GetDictionary().GetKey( "F" )->GetString();
 
     PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
 }

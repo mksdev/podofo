@@ -29,13 +29,13 @@
 namespace PoDoFo {
 
 PdfInfo::PdfInfo( PdfVecObjects* pParent )
-    : PdfElement( NULL, pParent )
+    : PdfIElement( NULL, pParent )
 {
     Init( false );
 }
 
 PdfInfo::PdfInfo( PdfObject* pObject )
-    : PdfElement( NULL, pObject )
+    : PdfIElement( NULL, pObject )
 {
     Init( true );
 }
@@ -51,40 +51,40 @@ void PdfInfo::Init( bool bModify )
 
     date.ToString( str );
     
-    m_pObject->GetDictionary().AddKey( bModify ? "ModDate" : "CreationDate", str );
-    m_pObject->GetDictionary().AddKey( "Producer", PdfString( PRODUCER_STRING) );
+    GetObject()->GetDictionary().AddKey( bModify ? "ModDate" : "CreationDate", str );
+    GetObject()->GetDictionary().AddKey( "Producer", PdfString( PRODUCER_STRING) );
 }
 
 const PdfString & PdfInfo::GetStringFromInfoDict( const PdfName & rName ) const
 {
-    PdfVariant* pVar = m_pObject->GetDictionary().GetKey( rName );
+    const PdfVariant* pVar = GetObject()->GetDictionary().GetKey( rName );
     
     return pVar && pVar->IsString() ? pVar->GetString() : PdfString::StringNull;
 }
 
 void PdfInfo::SetAuthor( const PdfString & sAuthor )
 {
-    m_pObject->GetDictionary().AddKey( "Author", sAuthor );
+    GetObject()->GetDictionary().AddKey( "Author", sAuthor );
 }
 
 void PdfInfo::SetCreator( const PdfString & sCreator )
 {
-    m_pObject->GetDictionary().AddKey( "Creator", sCreator );
+    GetObject()->GetDictionary().AddKey( "Creator", sCreator );
 }
 
 void PdfInfo::SetKeywords( const PdfString & sKeywords )
 {
-    m_pObject->GetDictionary().AddKey( "Keywords", sKeywords );
+    GetObject()->GetDictionary().AddKey( "Keywords", sKeywords );
 }
 
 void PdfInfo::SetSubject( const PdfString & sSubject )
 {
-    m_pObject->GetDictionary().AddKey( "Subject", sSubject );
+    GetObject()->GetDictionary().AddKey( "Subject", sSubject );
 }
 
 void PdfInfo::SetTitle( const PdfString & sTitle )
 {
-    m_pObject->GetDictionary().AddKey( "Title", sTitle );
+    GetObject()->GetDictionary().AddKey( "Title", sTitle );
 }
 
 };

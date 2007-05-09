@@ -44,6 +44,9 @@ class PdfVariant;
  *  of the subclasses which implement real functionallity.
  *
  *  \see PdfPage \see PdfAction \see PdfAnnotation
+ *
+ * XXX TODO FIXME ownership/lifetime issues - if it's an indirect object, the
+ * PdfVecObjects owns our contained variant - but what about direct objects?!
  */
 class PODOFO_API PdfElement {
 
@@ -113,7 +116,9 @@ class PODOFO_API PdfElement {
      */
     int TypeNameToIndex( const char* pszType, const char** ppTypes, long lLen ) const;
 
- protected:
+ private:
+    // Access this member through GetObject() so subclasses can properly
+    // control the return type.
     PdfVariant* m_pVariant;
 };
 
@@ -161,8 +166,16 @@ class PdfIElement : public PdfElement
     inline const PdfObject* GetObject() const;
 
  protected:
-    // Note that we do NOT need to overrid the PdfVecObjects-overloaded ctor of
-    // PdfElement since it'll always create an indirect object anyway.
+    /** Creates a new PdfIElement with an indirect object.
+     *
+     *  \param pszType type entry of the elements object
+     *  \param pParent parent vector of objects.
+     *                 Add a newly created object to this vector.
+     */
+    PdfIElement( const char* pszType, PdfVecObjects* pParent )
+        : PdfElement( pszType, pParent)
+    {
+    }
 
     /** Create a PdfElement from an existing PdfVariant
      *  \param pszType type entry of the elements object.
@@ -183,7 +196,7 @@ class PdfIElement : public PdfElement
 inline PdfObject* PdfIElement::GetObject()
 {
     // XXX TODO Ensure really PdfObject if debugging on
-    return static_cast<PdfObject*>(m_pVariant);
+    return static_cast<PdfObject*>( PdfElement::GetObject() );
 }
 
 // -----------------------------------------------------
@@ -192,7 +205,7 @@ inline PdfObject* PdfIElement::GetObject()
 inline const PdfObject* PdfIElement::GetObject() const
 {
     // XXX TODO Ensure really PdfObject if debugging on
-    return static_cast<const PdfObject*>(m_pVariant);
+    return static_cast<const PdfObject*>( PdfElement::GetObject() );
 }
 
 };

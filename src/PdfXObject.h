@@ -127,8 +127,8 @@ class PODOFO_API PdfXObject : public PdfIElement, public PdfCanvas {
 // -----------------------------------------------------
 inline PdfObject* PdfXObject::GetContents() const
 {
-    // XXX TODO ensure really PdfObject if debugging on
-    return static_cast<PdfObject*>(m_pVariant);
+    // XXX FIXME TODO returning pointer to non-const member in const context
+    return const_cast<PdfObject*>(GetObject());
 }
 
 // -----------------------------------------------------

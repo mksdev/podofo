@@ -38,7 +38,7 @@ using namespace std;
 namespace PoDoFo {
 
 PdfFont::PdfFont( PdfFontMetrics* pMetrics, bool bEmbedd, PdfVecObjects* pParent )
-    : PdfElement( "Font", pParent ), m_pMetrics( pMetrics )
+    : PdfIElement( "Font", pParent ), m_pMetrics( pMetrics )
 {
     ostringstream out;
     PdfLocaleImbue(out);
@@ -51,7 +51,7 @@ PdfFont::PdfFont( PdfFontMetrics* pMetrics, bool bEmbedd, PdfVecObjects* pParent
 
     // Implementation note: the identifier is always
     // Prefix+ObjectNo. Prefix is /Ft for fonts.
-    out << "Ft" << m_pObject->Reference().ObjectNumber();
+    out << "Ft" << GetObject()->Reference().ObjectNumber();
     m_Identifier = PdfName( out.str().c_str() );
 
     this->Init( bEmbedd );
@@ -84,7 +84,7 @@ void PdfFont::Init( bool bEmbedd )
     m_BaseFont = PdfName( sTmp.c_str() );
 
 
-    pWidth = m_pObject->GetOwner()->CreateObject();
+    pWidth = GetObject()->GetOwner()->CreateObject();
     if( !pWidth )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
@@ -92,19 +92,19 @@ void PdfFont::Init( bool bEmbedd )
 
     m_pMetrics->GetWidthArray( *pWidth, FIRST_CHAR, LAST_CHAR );
 
-    pDescriptor = m_pObject->GetOwner()->CreateObject( "FontDescriptor" );
+    pDescriptor = GetObject()->GetOwner()->CreateObject( "FontDescriptor" );
     if( !pDescriptor )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    m_pObject->GetDictionary().AddKey( PdfName::KeySubtype, PdfName("TrueType") );
-    m_pObject->GetDictionary().AddKey("BaseFont", m_BaseFont );
-    m_pObject->GetDictionary().AddKey("FirstChar", PdfVariant( static_cast<long>(FIRST_CHAR) ) );
-    m_pObject->GetDictionary().AddKey("LastChar", PdfVariant( static_cast<long>(LAST_CHAR) ) );
-    m_pObject->GetDictionary().AddKey("Encoding", PdfName("WinAnsiEncoding") );
-    m_pObject->GetDictionary().AddKey("Widths", pWidth->Reference() );
-    m_pObject->GetDictionary().AddKey( "FontDescriptor", pDescriptor->Reference() );
+    GetObject()->GetDictionary().AddKey( PdfName::KeySubtype, PdfName("TrueType") );
+    GetObject()->GetDictionary().AddKey("BaseFont", m_BaseFont );
+    GetObject()->GetDictionary().AddKey("FirstChar", PdfVariant( static_cast<long>(FIRST_CHAR) ) );
+    GetObject()->GetDictionary().AddKey("LastChar", PdfVariant( static_cast<long>(LAST_CHAR) ) );
+    GetObject()->GetDictionary().AddKey("Encoding", PdfName("WinAnsiEncoding") );
+    GetObject()->GetDictionary().AddKey("Widths", pWidth->Reference() );
+    GetObject()->GetDictionary().AddKey( "FontDescriptor", pDescriptor->Reference() );
 
     m_pMetrics->GetBoundingBox( array );
 
@@ -129,7 +129,7 @@ void PdfFont::EmbeddFont( PdfObject* pDescriptor )
     PdfObject* pContents;
     long       lSize = 0;
 
-    pContents = m_pObject->GetOwner()->CreateObject();
+    pContents = GetObject()->GetOwner()->CreateObject();
     if( !pContents )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );

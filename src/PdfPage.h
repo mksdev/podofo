@@ -178,17 +178,19 @@ class PODOFO_API PdfPage : public PdfIElement, public PdfCanvas {
     /** Private method for getting a key value that could be inherited (such as the boxes, resources, etc.)
      *  \returns PdfVariant - the result of the key fetching
      */
-    PdfObject* GetInheritedKeyFromObject( const char* inKey, PdfObject* inObject ) const; 
+    PdfVariant* GetInheritedKeyFromObject( const char* inKey, PdfObject* inObject ) const; 
 
     /** Get the annotations array.
      *  \param bCreate if true the annotations array is created 
      *                 if it does not exist.
      *  \returns the annotations array or NULL if none exists.
      */
-    PdfObject* GetAnnotationsArray( bool bCreate = false ) const;
+    PdfVariant* GetAnnotationsArray( bool bCreate = false ) const;
 
  private:
     PdfContents*   m_pContents;
+    // XXX FIXME TODO Technically, there is no guarantee that the Resources entry
+    // will be indirect.
     PdfObject*     m_pResources;
 
     TMapAnnotation m_mapAnnotations;

@@ -141,7 +141,6 @@ void PdfMemStream::GetCopy( char** pBuffer, long* lLen ) const
 
 void PdfMemStream::FlateCompress()
 {
-    PdfObject*        pObj;
     PdfVariant        vFilter( PdfName("FlateDecode" ) );
     PdfVariant        vFilterList;
     PdfArray          tFilters;
@@ -154,7 +153,7 @@ void PdfMemStream::FlateCompress()
     // TODO: Handle DecodeParms
     if( m_pParent->GetDictionary().HasKey( "Filter" ) )
     {
-        pObj = m_pParent->GetIndirectKey( "Filter" );
+        PdfVariant* pObj = m_pParent->GetIndirectKey( "Filter" );
 
         if( pObj->IsName() )
         {

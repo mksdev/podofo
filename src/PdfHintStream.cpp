@@ -223,14 +223,14 @@ public:
 };
 
 PdfHintStream::PdfHintStream( PdfVecObjects* pParent, PdfPagesTree* pPagesTree )
-    : PdfElement( NULL, pParent ), m_pPagesTree( pPagesTree )
+    : PdfIElement( NULL, pParent ), m_pPagesTree( pPagesTree )
 {
     // This is overwritten later with valid data!
     PdfVariant place_holder( PdfData( LINEARIZATION_PADDING ) );
 
     m_bLittleEndian = podofo_is_little_endian();
 
-    m_pObject->GetDictionary().AddKey( "S", place_holder ); // shared object hint table
+    GetObject()->GetDictionary().AddKey( "S", place_holder ); // shared object hint table
 }
 
 PdfHintStream::~PdfHintStream()
@@ -359,7 +359,7 @@ void PdfHintStream::WriteUInt16( pdf_uint16 val )
         val = static_cast<pdf_uint16>(htons( static_cast<u_short>(val) ));
     }
 
-    m_pObject->GetStream()->Append( (char*)&val, 2 );
+    GetObject()->GetStream()->Append( (char*)&val, 2 );
 }
 
 void PdfHintStream::WriteUInt32( pdf_uint32 val )
@@ -369,7 +369,7 @@ void PdfHintStream::WriteUInt32( pdf_uint32 val )
         val = (pdf_uint32)htonl( (unsigned int)val );
     }
 
-    m_pObject->GetStream()->Append( (char*)&val, 4 );
+    GetObject()->GetStream()->Append( (char*)&val, 4 );
 }
 
 };

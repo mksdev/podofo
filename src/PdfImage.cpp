@@ -64,8 +64,8 @@ PdfImage::PdfImage( PdfStreamedDocument* pParent )
 PdfImage::PdfImage( PdfObject* pObject )
     : PdfXObject( "Image", pObject )
 {
-    m_rRect.SetHeight( m_pObject->GetDictionary().GetKey( "Height" )->GetNumber() );
-    m_rRect.SetWidth ( m_pObject->GetDictionary().GetKey( "Width" )->GetNumber() );
+    m_rRect.SetHeight( GetObject()->GetDictionary().GetKey( "Height" )->GetNumber() );
+    m_rRect.SetWidth ( GetObject()->GetDictionary().GetKey( "Width" )->GetNumber() );
 }
 
 PdfImage::~PdfImage()
@@ -75,7 +75,7 @@ PdfImage::~PdfImage()
 
 void PdfImage::SetImageColorSpace( EPdfColorSpace eColorSpace )
 {
-    m_pObject->GetDictionary().AddKey( "ColorSpace", PdfName( ColorspaceToName( eColorSpace ) ) );
+    GetObject()->GetDictionary().AddKey( "ColorSpace", PdfName( ColorspaceToName( eColorSpace ) ) );
 }
 
 void PdfImage::SetImageData( unsigned int nWidth, unsigned int nHeight, 
@@ -94,11 +94,11 @@ void PdfImage::SetImageData( unsigned int nWidth, unsigned int nHeight,
     m_rRect.SetWidth( nWidth );
     m_rRect.SetHeight( nHeight );
 
-    m_pObject->GetDictionary().AddKey( "Width",  PdfVariant( static_cast<long>(nWidth) ) );
-    m_pObject->GetDictionary().AddKey( "Height", PdfVariant( static_cast<long>(nHeight) ) );
-    m_pObject->GetDictionary().AddKey( "BitsPerComponent", PdfVariant( static_cast<long>(nBitsPerComponent) ) );
+    GetObject()->GetDictionary().AddKey( "Width",  PdfVariant( static_cast<long>(nWidth) ) );
+    GetObject()->GetDictionary().AddKey( "Height", PdfVariant( static_cast<long>(nHeight) ) );
+    GetObject()->GetDictionary().AddKey( "BitsPerComponent", PdfVariant( static_cast<long>(nBitsPerComponent) ) );
 
-    m_pObject->GetStream()->Set( pStream, vecFilters );
+    GetObject()->GetStream()->Set( pStream, vecFilters );
 }
 
 void PdfImage::SetImageDataRaw( unsigned int nWidth, unsigned int nHeight, 
@@ -107,11 +107,11 @@ void PdfImage::SetImageDataRaw( unsigned int nWidth, unsigned int nHeight,
     m_rRect.SetWidth( nWidth );
     m_rRect.SetHeight( nHeight );
 
-    m_pObject->GetDictionary().AddKey( "Width",  PdfVariant( static_cast<long>(nWidth) ) );
-    m_pObject->GetDictionary().AddKey( "Height", PdfVariant( static_cast<long>(nHeight) ) );
-    m_pObject->GetDictionary().AddKey( "BitsPerComponent", PdfVariant( static_cast<long>(nBitsPerComponent) ) );
+    GetObject()->GetDictionary().AddKey( "Width",  PdfVariant( static_cast<long>(nWidth) ) );
+    GetObject()->GetDictionary().AddKey( "Height", PdfVariant( static_cast<long>(nHeight) ) );
+    GetObject()->GetDictionary().AddKey( "BitsPerComponent", PdfVariant( static_cast<long>(nBitsPerComponent) ) );
 
-    m_pObject->GetStream()->SetRawData( pStream, -1 );
+    GetObject()->GetStream()->SetRawData( pStream, -1 );
 }
 
 #ifdef PODOFO_HAVE_JPEG_LIB
@@ -169,7 +169,7 @@ void PdfImage::LoadFromFile( const char* pszFilename )
 
     PdfFileInputStream stream( pszFilename );
     // Set the filters key to DCTDecode
-    m_pObject->GetDictionary().AddKey( PdfName::KeyFilter, PdfName( "DCTDecode" ) );
+    GetObject()->GetDictionary().AddKey( PdfName::KeyFilter, PdfName( "DCTDecode" ) );
     // Do not apply any filters as JPEG data is already DCT encoded.
     this->SetImageDataRaw( cinfo.output_width, cinfo.output_height, 8, &stream );
     

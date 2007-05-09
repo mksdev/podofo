@@ -33,23 +33,28 @@ PdfPage::PdfPage( const PdfRect & rSize, PdfVecObjects* pParent )
 {
     PdfVariant mediabox;
     rSize.ToVariant( mediabox );
-    m_pObject->GetDictionary().AddKey( "MediaBox", mediabox );
+    GetObject()->GetDictionary().AddKey( "MediaBox", mediabox );
 
     // The PDF specification suggests that we send all available PDF Procedure sets
-    m_pObject->GetDictionary().AddKey( "Resources", PdfObject( PdfDictionary() ) );
+    GetObject()->GetDictionary().AddKey( "Resources", PdfObject( PdfDictionary() ) );
 
-    m_pResources = m_pObject->GetIndirectKey( "Resources" );
+    // XXX FIXME TODO Technically, nothing guarantees that the resources entry
+    // is indirect.
+    m_pResources = static_cast<PdfObject*>(GetObject()->GetIndirectKey( "Resources" ));
     m_pResources->GetDictionary().AddKey( "ProcSet", PdfCanvas::GetProcSet() );
 
     m_pContents = new PdfContents( pParent );
-    m_pObject->GetDictionary().AddKey( PdfName::KeyContents, m_pContents->GetContents()->Reference());
+    GetObject()->GetDictionary().AddKey( PdfName::KeyContents, m_pContents->GetContents()->Reference());
 }
 
 PdfPage::PdfPage( PdfObject* pObject )
     : PdfIElement( "Page", pObject ), PdfCanvas()
 {
-    m_pResources = m_pObject->GetIndirectKey( "Resources" );
-    m_pContents = new PdfContents( m_pObject->GetIndirectKey( "Contents" ) );
+    // XXX FIXME TODO Technically, nothing guarantees that the resources entry
+    // is indirect.
+    m_pResources = static_cast<PdfObject*>(GetObject()->GetIndirectKey( "Resources" ));
+    // XXX FIXME TODO We can't safely assume that the passed object is really a PdfObject
+    m_pContents = new PdfContents( static_cast<PdfObject*>(GetObject()->GetIndirectKey( "Contents" )) );
 }
 
 PdfPage::~PdfPage()
@@ -100,9 +105,9 @@ PdfRect PdfPage::CreateStandardPageSize( const EPdfPageSize ePageSize )
     return rect;
 }
 
-PdfObject* PdfPage::GetInheritedKeyFromObject( const char* inKey, PdfObject* inObject ) const
+PdfVariant* PdfPage::GetInheritedKeyFromObject( const char* inKey, PdfObject* inObject ) const
 {
-    PdfObject* pObj = NULL;
+    PdfVariant* pObj = NULL;
 
     // check for it in the object itself
     if ( inObject->GetDictionary().HasKey( inKey ) ) 
@@ -117,7 +122,9 @@ PdfObject* PdfPage::GetInheritedKeyFromObject( const char* inKey, PdfObject* inO
     {
         pObj = inObject->GetIndirectKey( "Parent" );
         if( pObj )
-            pObj = GetInheritedKeyFromObject( inKey, pObj );
+            // TODO we assume that if the object has a /Parent key it must be indirect.
+            // Is this safe?
+            pObj = GetInheritedKeyFromObject( inKey, static_cast<PdfObject*>(pObj) );
     }
 
     return pObj;
@@ -125,46 +132,46 @@ PdfObject* PdfPage::GetInheritedKeyFromObject( const char* inKey, PdfObject* inO
 
 const PdfRect PdfPage::GetPageBox( const char* inBox ) const
 {
-    PdfRect	 pageBox;
-    PdfObject*   pObj;
-        
+    PdfRect      pageBox;
+
     // Take advantage of inherited values - walking up the tree if necessary
-    pObj = GetInheritedKeyFromObject( inBox, m_pObject );
-    
+    // TODO iffy const_cast<>() here
+    PdfVariant* pObj = GetInheritedKeyFromObject( inBox, const_cast<PdfObject*>(GetObject()) );
+
     // assign the value of the box from the array
     if ( pObj && pObj->IsArray() )
         pageBox.FromArray( pObj->GetArray() );
-    
+
     return pageBox;
 }
 
 const int PdfPage::GetRotation() const 
-{ 
+{
     int rot = 0;
-    
-    PdfObject* pObj = GetInheritedKeyFromObject( "Rotate", m_pObject ); 
+
+    // TODO iffy const_cast<>() here
+    PdfVariant* pObj = GetInheritedKeyFromObject( "Rotate", const_cast<PdfObject*>(GetObject()) ); 
     if ( pObj && pObj->IsNumber() )
         rot = pObj->GetNumber();
-    
+
     return rot;
 }
 
-PdfObject* PdfPage::GetAnnotationsArray( bool bCreate ) const
+PdfVariant* PdfPage::GetAnnotationsArray( bool bCreate ) const
 {
-    PdfObject* pObj;
-
     // check for it in the object itself
-    if ( m_pObject->GetDictionary().HasKey( "Annots" ) ) 
+    if ( GetObject()->GetDictionary().HasKey( "Annots" ) ) 
     {
-        pObj = m_pObject->GetIndirectKey( "Annots" );
+        // TODO iffy const_cast<>() here
+        PdfVariant* pObj = const_cast<PdfVariant*>(GetObject()->GetIndirectKey( "Annots" ));
         if( pObj && pObj->IsArray() )
             return pObj;
     }
     else if( bCreate ) 
     {
         PdfArray array;
-        const_cast<PdfPage*>(this)->m_pObject->GetDictionary().AddKey( "Annots", array );
-        return m_pObject->GetDictionary().GetKey( "Annots" );
+        const_cast<PdfPage*>(this)->GetObject()->GetDictionary().AddKey( "Annots", array );
+        return const_cast<PdfVariant*>(GetObject()->GetDictionary().GetKey( "Annots" ));
     }
 
     return NULL;
@@ -172,16 +179,17 @@ PdfObject* PdfPage::GetAnnotationsArray( bool bCreate ) const
 
 const int PdfPage::GetNumAnnots() const
 {
-    PdfObject* pObj = this->GetAnnotationsArray();
+    const PdfVariant* pObj = this->GetAnnotationsArray();
 
     return pObj ? static_cast<int>(pObj->GetArray().size()) : 0;
 }
 
 PdfAnnotation* PdfPage::CreateAnnotation( EPdfAnnotation eType, const PdfRect & rRect )
 {
-    PdfAnnotation* pAnnot = new PdfAnnotation( this, eType, rRect, m_pObject->GetOwner() );
-    PdfObject*     pObj   = this->GetAnnotationsArray( true );
-    PdfReference   ref    = pAnnot->GetObject()->Reference();
+    PdfAnnotation* pAnnot = new PdfAnnotation( this, eType, rRect, GetObject()->GetOwner() );
+    PdfVariant*    pObj   = this->GetAnnotationsArray( true );
+    // XXX FIXME TODO dangerous assumption that annotations will be indirect objects
+    PdfReference   ref    = static_cast<PdfObject*>(pAnnot->GetObject())->Reference();
 
     pObj->GetArray().push_back( ref );
     m_mapAnnotations[ref] = pAnnot;
@@ -194,7 +202,7 @@ PdfAnnotation* PdfPage::GetAnnotation( int index )
     PdfAnnotation* pAnnot;
     PdfReference   ref;
 
-    PdfObject*     pObj   = this->GetAnnotationsArray( false );
+    PdfVariant*   pObj   = this->GetAnnotationsArray( false );
 
     if( !(pObj && pObj->IsArray()) )
     {
@@ -210,7 +218,7 @@ PdfAnnotation* PdfPage::GetAnnotation( int index )
     pAnnot = m_mapAnnotations[ref];
     if( !pAnnot )
     {
-        pObj = m_pObject->GetOwner()->GetObject( ref );
+        pObj = GetObject()->GetOwner()->GetObject( ref );
         if( !pObj )
         {
             PODOFO_RAISE_ERROR( ePdfError_NoObject );
@@ -226,7 +234,7 @@ PdfAnnotation* PdfPage::GetAnnotation( int index )
 void PdfPage::DeleteAnnotation( int index )
 {
     PdfReference   ref;
-    PdfObject*     pObj   = this->GetAnnotationsArray( false );
+    PdfVariant*    pObj   = this->GetAnnotationsArray( false );
     
     if( !(pObj && pObj->IsArray()) )
     {
@@ -247,7 +255,7 @@ void PdfPage::DeleteAnnotation( const PdfReference & ref )
 {
     PdfAnnotation*     pAnnot;
     PdfArray::iterator it;
-    PdfObject*         pObj   = this->GetAnnotationsArray( false );
+    PdfVariant*        pObj   = this->GetAnnotationsArray( false );
     bool               bFound = false;
 
     // delete the annotation from the array
@@ -287,14 +295,15 @@ void PdfPage::DeleteAnnotation( const PdfReference & ref )
     }
 
     // delete the PdfObject in the file
-    delete m_pObject->GetOwner()->RemoveObject( ref );
+    delete GetObject()->GetOwner()->RemoveObject( ref );
 }
 
 unsigned int PdfPage::GetPageNumber() const
 {
     unsigned int        nPageNumber = 0;
-    PdfObject*          pParent     = m_pObject->GetIndirectKey( "Parent" );
-    PdfReference ref                = m_pObject->Reference();
+    // XXX FIXME TODO unsafe assumption that /Parent is an indirect object; iffy const cast
+    PdfObject*         pParent      = static_cast<PdfObject*>(const_cast<PdfObject*>(GetObject())->GetIndirectKey( "Parent" ));
+    PdfReference ref                = GetObject()->Reference();
 
     while( pParent ) 
     {
@@ -303,7 +312,7 @@ unsigned int PdfPage::GetPageNumber() const
 
         while( it != kids.end() && (*it).GetReference() != ref )
         {
-            PdfObject* pNode = m_pObject->GetOwner()->GetObject( (*it).GetReference() );
+            PdfObject* pNode = GetObject()->GetOwner()->GetObject( (*it).GetReference() );
 
             if( pNode->GetDictionary().GetKey( PdfName::KeyType )->GetName() == PdfName( "Pages" ) )
                 nPageNumber += pNode->GetDictionary().GetKey( "Count" )->GetNumber();
@@ -317,7 +326,8 @@ unsigned int PdfPage::GetPageNumber() const
         }
 
         ref     = pParent->Reference();
-        pParent = pParent->GetIndirectKey( "Parent" );
+        // TODO FIXME XXX unsafe assumption that /Parent is an indirect object
+        pParent = static_cast<PdfObject*>(pParent->GetIndirectKey( "Parent" ));
     }
 
     return ++nPageNumber;
