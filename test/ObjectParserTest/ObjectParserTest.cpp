@@ -257,7 +257,7 @@ void TestObject( const string & sFilename,
 
     std::ostringstream os;
     PdfOutputDevice deviceTest( &os );
-    obj.WriteObject( &deviceTest );
+    obj.Write( &deviceTest );
 
     string sLen = os.str();
     cerr << "  -> Object String Length: " << sLen.length() << endl;

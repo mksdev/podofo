@@ -34,8 +34,6 @@ ImageExtractor::~ImageExtractor()
 
 void ImageExtractor::Init( const char* pszInput, const char* pszOutput, int* pnNum )
 {
-    PdfObject*  pObj  = NULL;
-
     if( !pszInput || !pszOutput )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
@@ -55,7 +53,7 @@ void ImageExtractor::Init( const char* pszInput, const char* pszOutput, int* pnN
     {
         if( (*it)->IsDictionary() )
         {            
-            pObj = (*it)->GetDictionary().GetKey( PdfName::KeyType );
+            PdfVariant* pObj = (*it)->GetDictionary().GetKey( PdfName::KeyType );
             if( pObj && pObj->IsName() && ( pObj->GetName().GetName() == "XObject" ) )
             {
                 pObj = (*it)->GetDictionary().GetKey( PdfName::KeySubtype );
