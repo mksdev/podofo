@@ -144,16 +144,16 @@ void PdfObject::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) const
     }
 
     if( m_reference.IsIndirect() )
-        pDevice->Print( this, "%i %i obj\n", m_reference.ObjectNumber(), m_reference.GenerationNumber() );
+        pDevice->Print( "%i %i obj\n", m_reference.ObjectNumber(), m_reference.GenerationNumber() );
 
     PdfVariant::Write( pDevice, keyStop );
-    pDevice->Print( this, "\n" );
+    pDevice->Print( "\n" );
 
     if( m_pStream )
         m_pStream->Write( pDevice );
 
     if( m_reference.IsIndirect() )
-        pDevice->Print( this, "endobj\n" );
+        pDevice->Print( "endobj\n" );
 }
 
 PdfVariant* PdfObject::GetIndirectKey( const PdfName & key )

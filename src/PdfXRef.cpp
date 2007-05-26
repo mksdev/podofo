@@ -77,7 +77,7 @@ void PdfXRef::Write( PdfOutputDevice* pDevice )
     int nFirst       = 0;
     int nCount       = 0;
 
-    pDevice->Print( this, "xref\n" );
+    pDevice->Print( "xref\n" );
     while( it != m_vecXRef.end() ) 
     {
         nCount       = GetItemCount( it, itFree );
@@ -91,11 +91,11 @@ void PdfXRef::Write( PdfOutputDevice* pDevice )
 
         // when there is only one, then we need to start with 0 and the bogus object...
         //printf("XRef section: %u %u\n", nFirst, nCount );
-        pDevice->Print( this, "%u %u\n", nFirst, nCount );
+        pDevice->Print( "%u %u\n", nFirst, nCount );
 
         if( !nFirst ) 
         {
-            pDevice->Print( this, "%0.10i %0.5i %c \n",
+            pDevice->Print( "%0.10i %0.5i %c \n",
                             m_vecFreeObjects.size() ? m_vecFreeObjects.front().ObjectNumber() : 0,
                             EMPTY_OBJECT_OFFSET, 'f' );
         }
@@ -109,14 +109,14 @@ void PdfXRef::Write( PdfOutputDevice* pDevice )
                 ++itFree;
                 
                 // write free object
-                pDevice->Print( this, "%0.10i %0.5i f \n", 
+                pDevice->Print( "%0.10i %0.5i f \n", 
                                 itFree != m_vecFreeObjects.end() ? (*itFree).ObjectNumber() : 0,
                                 nGen );
                 --nCount;
             }
 
             //printf("Writing Object %i\n", (*it).reference.ObjectNumber() );
-            pDevice->Print( this, "%0.10i %0.5i n \n", (*it).lOffset, (*it).reference.GenerationNumber() );
+            pDevice->Print( "%0.10i %0.5i n \n", (*it).lOffset, (*it).reference.GenerationNumber() );
             ++it;
         }
     }    

@@ -34,7 +34,7 @@ ImageExtractor::~ImageExtractor()
 
 void ImageExtractor::Init( const char* pszInput, const char* pszOutput, int* pnNum )
 {
-    PdfVariant*  pObj  = NULL;
+    PdfObject*  pObj  = NULL;
 
     if( !pszInput || !pszOutput )
     {

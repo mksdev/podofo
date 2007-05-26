@@ -181,7 +181,7 @@ void PdfDictionary::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) c
 {
     TCIKeyMap     itKeys;
 
-    pDevice->Print( this, "<<\n" );
+    pDevice->Print( "<<\n" );
 
     itKeys     = m_mapKeys.begin();
 
@@ -191,9 +191,9 @@ void PdfDictionary::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) c
     if( this->HasKey( PdfName::KeyType ) ) 
     {
         // Type has to be the first key in any dictionary
-        pDevice->Print( this, "/Type " );
+        pDevice->Print( "/Type " );
         this->GetKey( PdfName::KeyType )->Write( pDevice );
-        pDevice->Print( this, "\n" );
+        pDevice->Print( "\n" );
     }
 
     while( itKeys != m_mapKeys.end() )
@@ -203,15 +203,15 @@ void PdfDictionary::Write( PdfOutputDevice* pDevice, const PdfName & keyStop ) c
             if( keyStop != PdfName::KeyNull && keyStop.GetLength() && (*itKeys).first == keyStop )
                 return;
 
-            pDevice->Print( this, "/%s ", (*itKeys).first.GetName().c_str() );
+            pDevice->Print( "/%s ", (*itKeys).first.GetName().c_str() );
             (*itKeys).second->Write( pDevice );
-            pDevice->Print( this, "\n");
+            pDevice->Print("\n");
         }
         
         ++itKeys;
     }
 
-    pDevice->Print( this,">>" );
+    pDevice->Print( ">>" );
 }
 
 };

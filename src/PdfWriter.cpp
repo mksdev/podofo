@@ -148,11 +148,11 @@ void PdfWriter::Write( PdfOutputDevice* pDevice )
                 // if we have a dummy offset we write also a prev entry to the trailer
                 FillTrailerObject( &trailer, pXRef->GetSize(), false, false );
                 
-                pDevice->Print( this, "trailer\n");
+                pDevice->Print("trailer\n");
                 trailer.Write( pDevice );
             }
             
-            pDevice->Print( this, "startxref\n%li\n%%%%EOF\n", lXRefOffset );
+            pDevice->Print( "startxref\n%li\n%%%%EOF\n", lXRefOffset );
             delete pXRef;
         } catch( PdfError & e ) {
             // Make sure pXRef is always deleted
@@ -242,7 +242,7 @@ void PdfWriter::WriteLinearized( PdfOutputDevice* /* pDevice */ )
 
 void PdfWriter::WritePdfHeader( PdfOutputDevice* pDevice )
 {
-    pDevice->Print( this, "%s\n%%%s", s_szPdfVersions[static_cast<int>(m_eVersion)], PDF_MAGIC );
+    pDevice->Print( "%s\n%%%s", s_szPdfVersions[static_cast<int>(m_eVersion)], PDF_MAGIC );
 }
 
 void PdfWriter::CompressObjects( const PdfVecObjects& vecObjects ) 

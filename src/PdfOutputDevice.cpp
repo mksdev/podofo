@@ -85,12 +85,10 @@ void PdfOutputDevice::Init()
     m_lBufferLen = 0;
 }
 
-void PdfOutputDevice::Print( const void* writer, const char* pszFormat, ... )
+void PdfOutputDevice::Print( const char* pszFormat, ... )
 {
     va_list  args;
     long     lBytes;
-
-    CheckWriter(writer);
 
     if( !pszFormat )
     {
@@ -162,9 +160,8 @@ void PdfOutputDevice::Print( const void* writer, const char* pszFormat, ... )
     m_ulLength += lBytes;
 }
 
-void PdfOutputDevice::Write( const void* writer, const char* pBuffer, long lLen )
+void PdfOutputDevice::Write( const char* pBuffer, long lLen )
 {
-    CheckWriter(writer);
     if( m_hFile )
     {
         if( fwrite( pBuffer, sizeof(char), lLen, m_hFile ) != static_cast<size_t>(lLen) )
@@ -191,9 +188,8 @@ void PdfOutputDevice::Write( const void* writer, const char* pBuffer, long lLen 
     m_ulLength += lLen;
 }
 
-void PdfOutputDevice::Seek( const void* writer, size_t offset )
+void PdfOutputDevice::Seek( size_t offset )
 {
-    CheckWriter(writer);
     if( m_hFile )
     {
         if( fseek( m_hFile, offset, SEEK_SET ) == -1 )
@@ -216,7 +212,7 @@ void PdfOutputDevice::Seek( const void* writer, size_t offset )
     m_ulLength = offset;
 }
 
-void PdfOutputDevice::Flush() const
+void PdfOutputDevice::Flush()
 {
     if( m_hFile )
     {

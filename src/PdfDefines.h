@@ -75,15 +75,8 @@
 // your STL probably writes all data in a POSIX-like way irrespective of
 // locale. If you set this to 0, you MUST use some other method to ensure
 // that streams used by PoDoFo will write data in a POSIX locale like manner.
-#ifndef PODOFO_USE_CXX_LOCALE
-#define PODOFO_USE_CXX_LOCALE 1
-#endif
-
-// PoDoFo is capable of verifying that writes to the output device are properly
-// ordered (unless you go out of your way to break the checking). By default this
-// is enabled, but it's possible you might want to disable it for production builds.
-#ifndef PODOFO_CHECK_ORDERED_WRITES
-#define PODOFO_CHECK_ORDERED_WRITES 1
+#ifndef USE_CXX_LOCALE
+#define USE_CXX_LOCALE 1
 #endif
 
 /**
