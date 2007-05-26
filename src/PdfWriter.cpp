@@ -546,15 +546,15 @@ void PdfWriter::CreateFileIdentifier( PdfObject* pTrailer ) const
     PdfOutputDevice length;
     PdfString       identifier;
     PdfArray        array;
-    PdfVariant*     pInfo;
     char*           pBuffer;
     
     // create a dictionary with some unique information.
     // This dictionary is based on the PDF files information
     // dictionary if it exists.
+    PdfVariant pInfo = PdfVariant( PdfDictionary() );
     if( pTrailer->GetDictionary().HasKey("Info") )
     {
-        pInfo = new PdfVariant( *(m_vecObjects->GetObject( pTrailer->GetDictionary().GetKey( "Info" )->GetReference() ) ) );
+        pInfo = PdfVariant( *(m_vecObjects->GetObject( pTrailer->GetDictionary().GetKey( "Info" )->GetReference() ) ));
     }
     else 
     {
@@ -563,25 +563,23 @@ void PdfWriter::CreateFileIdentifier( PdfObject* pTrailer ) const
 
         date.ToString( dateString );
 
-        pInfo = new PdfObject();
-        pInfo->GetDictionary().AddKey( "CreationDate", dateString );
-        pInfo->GetDictionary().AddKey( "Creator", PdfString("PoDoFo") );
-        pInfo->GetDictionary().AddKey( "Producer", PdfString("PoDoFo") );
+        pInfo.GetDictionary().AddKey( "CreationDate", dateString );
+        pInfo.GetDictionary().AddKey( "Creator", PdfString("PoDoFo") );
+        pInfo.GetDictionary().AddKey( "Producer", PdfString("PoDoFo") );
     }
     
-    pInfo->GetDictionary().AddKey( "Location", PdfString("SOMEFILENAME") );
+    pInfo.GetDictionary().AddKey( "Location", PdfString("SOMEFILENAME") );
 
-    pInfo->Write( &length );
+    pInfo.Write( &length );
 
     pBuffer = static_cast<char*>(malloc( sizeof(char) * length.GetLength() ));
     if( !pBuffer )
     {
-        delete pInfo;
         PODOFO_RAISE_ERROR( ePdfError_OutOfMemory );
     }
 
     PdfOutputDevice device( pBuffer, length.GetLength() );
-    pInfo->Write( &device );
+    pInfo.Write( &device );
 
     // calculate the MD5 Sum
     identifier = PdfEncrypt::GetMD5String( reinterpret_cast<unsigned char*>(pBuffer), length.GetLength() );
@@ -593,7 +591,6 @@ void PdfWriter::CreateFileIdentifier( PdfObject* pTrailer ) const
     
     // finally add the key to the trailer dictionary
     pTrailer->GetDictionary().AddKey( "ID", array );
-    delete pInfo;
 }
 
 };
