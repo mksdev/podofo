@@ -31,6 +31,9 @@
 extern "C" {
 #include "jpeglib.h"
 }
+// A macro from win-gdi sneaks through and mangles our code here.
+// It's safe to simply undefine it as we won't be using any gdi code.
+#undef GetObject
 #endif // PODOFO_HAVE_JPEG_LIB
 
 using namespace std;
