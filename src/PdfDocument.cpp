@@ -676,7 +676,9 @@ void PdfDocument::AttachFile( const PdfFileSpec & rFileSpec )
     }
 
     // XXX FIXME TODO We unsafely assume that the filespec refers to an
-    // indirect object.  This need not be the case.
+    // indirect object.  This need not be the case. It's actually safe
+    // for any document we are reading in, since the creation of every
+    // object as a PdfParserObject ensures it's a valid PdfObject.
     pNames->AddValue( "EmbeddedFiles", rFileSpec.GetFilename(), static_cast<const PdfObject*>(rFileSpec.GetObject())->Reference() );
 }
 

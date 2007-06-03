@@ -65,7 +65,6 @@ PdfAction::PdfAction( PdfVariant* pVariant )
     // The typename /Action is optional for PdfActions
     : PdfElement( NULL, pVariant )
 {
-    // XXX FIXME TODO handle being passed an indirect reference
     m_eType = static_cast<EPdfAction>(TypeNameToIndex( GetObject()->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
 }
 

@@ -39,10 +39,14 @@ class PdfVariant;
  *  indirect object of a type based on PdfObject) and provides an easier
  *  interface to modify the contents of the dictionary.  This variant is the
  *  underlying PDF data structure that the element is stored in.
- *  
+ *
  *  A PdfElement base class can be created from an existing PdfVariant
  *  or created from scratch. In the later case, the PdfElement creates
  *  a new indirect object and adds it to a vector of objects.
+ *
+ *  If creating a PdfElement from an existing variant, any indirect references
+ *  must be resolved. A PdfElement is unable to inherently resolve indirect
+ *  references.
  *
  *  PdfElement never owns its associated variant. If an indirect object
  *  (a PdfObject) is used, the PdfVecObjects will hold ownership. For

@@ -32,16 +32,14 @@ namespace PoDoFo {
 PdfFileSpec::PdfFileSpec( const char* pszFilename, bool bEmbedd, PdfVecObjects* pParent )
     : PdfElement( "Filespec", pParent )
 {
-    PdfObject* pEmbeddedStream;
-
     GetObject()->GetDictionary().AddKey( "F", this->CreateFileSpecification( pszFilename ) );
 
     if( bEmbedd ) 
     {
         PdfDictionary ef;
 
-        pEmbeddedStream = pParent->CreateObject( "EmbeddedFile" );
-        this->EmbeddFile( pEmbeddedStream, pszFilename );
+        PdfObject * const pEmbeddedStream = pParent->CreateObject( "EmbeddedFile" );
+        this->EmbedFile( pEmbeddedStream, pszFilename );
 
         ef.AddKey( "F",  pEmbeddedStream->Reference() );
 
@@ -49,12 +47,21 @@ PdfFileSpec::PdfFileSpec( const char* pszFilename, bool bEmbedd, PdfVecObjects* 
     }
 }
 
+// TODO: handle multi-byte file spec strings
+// TODO we fail to verify that the passed data looks like a sane filespec.
 PdfFileSpec::PdfFileSpec( PdfVariant* pVariant )
     : PdfElement( "Filespec", pVariant )
 {
-    // XXX TODO FIXME we fail to verify that the passed data looks like
-    // a sane filespec.
-    // XXX TODO FIXME Resolve indirect references
+    if ( !(GetObject()->IsDictionary() || GetObject()->IsString()) )
+        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType, "Argument must be a string or dictionary");
+    if (pVariant->IsString())
+    {
+        // We only support PdfDictionary file specs, so convert the passed spec
+        // to the dictionary form.
+        PdfDictionary d;
+        d.AddKey( PdfName("F"), pVariant);
+        GetObject() = d;
+    }
 }
 
 PdfString PdfFileSpec::CreateFileSpecification( const char* pszFilename ) const
@@ -62,8 +69,9 @@ PdfString PdfFileSpec::CreateFileSpecification( const char* pszFilename ) const
     std::ostringstream str;
     int                nLen = strlen( pszFilename );
 
-    // Not sure if we really get a platform independent file specifier here.
-    
+    // FIXME: This doesn't reliably produce a platform independent file spec,
+    // and may damage file names that contain characters (like a :) that are
+    // legal on a particular platform.
     for( int i=0;i<nLen;i++ ) 
     {
         if( pszFilename[i] == ':' || pszFilename[i] == '\\' ) 
@@ -75,7 +83,7 @@ PdfString PdfFileSpec::CreateFileSpecification( const char* pszFilename ) const
     return PdfString( str.str() );
 }
 
-void PdfFileSpec::EmbeddFile( PdfObject* pStream, const char* pszFilename ) const
+void PdfFileSpec::EmbedFile( PdfObject* pStream, const char* pszFilename ) const
 {
     PdfFileInputStream stream( pszFilename );
     pStream->GetStream()->Set( &stream );
@@ -89,10 +97,10 @@ void PdfFileSpec::EmbeddFile( PdfObject* pStream, const char* pszFilename ) cons
 
 const PdfString & PdfFileSpec::GetFilename() const
 {
-    if( GetObject()->GetDictionary().HasKey( "F" ) )
-        return GetObject()->GetDictionary().GetKey( "F" )->GetString();
-
-    PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
+    PODOFO_RAISE_LOGIC_IF(
+            !GetObject()->GetDictionary().HasKey( "F" ),
+            "PdfFileSpec's object must be a dictionary");
+    return GetObject()->GetDictionary().GetKey( "F" )->GetString();
 }
 
 

@@ -33,11 +33,35 @@ namespace PoDoFo {
  *  A file specification is used in the PDF file to referr to another file.
  *  The other file can be a file outside of the PDF or can be embedded into
  *  the PDF file itself.
+ *
+ *  A file specification may be a plain PdfString or a dictionary.
+ *
+ *  LIMITATIONS
+ *  -----------
+ *  - Multi-byte-per-character file specifications are not currently
+ *    supported by PdfFileSpec.
+ *  - Currently only the `F' key for a platform-independent file name
+ *    is used. The Mac, Unix and DOS keys are not examined, nor are the
+ *    associated entries in the EF dictionary.
  */
 class PODOFO_API PdfFileSpec : public PdfElement {
  public:
-    PdfFileSpec( const char* pszFilename, bool bEmbedd, PdfVecObjects* pParent );
+    /**
+     * Create a new PdfFileSpec that refers to a local file system path.
+     * A new indirect object will be created in `pParent' to store it.
+     * The dictionary form will always be created.
+     *
+     * \param pszFilename The local file path
+     * \param bEmbed Embed the file referenced by the file spec in the PDF as a stream?
+     * \param pParent The PdfVecObjects to create the file spec object in.
+     */
+    PdfFileSpec( const char* pszFilename, bool bEmbed, PdfVecObjects* pParent );
 
+    /**
+     * Initialize a PdfFileSpec that works on an existing variant containing
+     * file spec data. Either string or dictionary forms of the file spec are
+     * permitted.
+     */
     PdfFileSpec( PdfVariant* pObject );
 
     /** \returns the filename of this file specification.
@@ -60,7 +84,7 @@ class PODOFO_API PdfFileSpec : public PdfElement {
      *  \param pStream write the file to this objects stream
      *  \param pszFilename the file to embedd
      */
-    void EmbeddFile( PdfObject* pStream, const char* pszFilename ) const;
+    void EmbedFile( PdfObject* pStream, const char* pszFilename ) const;
 };
 
 };
