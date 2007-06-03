@@ -675,8 +675,8 @@ void PdfDocument::AttachFile( const PdfFileSpec & rFileSpec )
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
 
-    // XXX FIXME TODO We unsafely assume that the filespec refers to an indirect object.
-    // This need not be the case.
+    // XXX FIXME TODO We unsafely assume that the filespec refers to an
+    // indirect object.  This need not be the case.
     pNames->AddValue( "EmbeddedFiles", rFileSpec.GetFilename(), static_cast<const PdfObject*>(rFileSpec.GetObject())->Reference() );
 }
 

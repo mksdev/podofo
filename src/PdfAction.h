@@ -67,8 +67,6 @@ typedef enum EPdfAction {
  */
 class PODOFO_API PdfAction : public PdfElement {
 
-    friend class PdfAnnotation;
-
  public:
     /** Create a new PdfAction object
      *  \param eAction type of this action
@@ -79,8 +77,8 @@ class PODOFO_API PdfAction : public PdfElement {
     virtual ~PdfAction() { }
 
     /** Create a PdfAction object from an existing 
-     *  variant.
-     *  TODO unclear/insufficient documentation.
+     *  variant. The variant is not copied and ownership
+     *  is not taken, so it must be maintained elsewhere.
      */
     PdfAction( PdfVariant* pVariant );
 
@@ -105,7 +103,8 @@ class PODOFO_API PdfAction : public PdfElement {
     inline const EPdfAction GetType() const;
 
  private:
-    PdfAction( const PdfAction & rhs );
+    PdfAction( const PdfAction & );
+    PdfAction& operator=( const PdfAction& );
 
  private:
 

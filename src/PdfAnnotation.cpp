@@ -199,11 +199,11 @@ void PdfAnnotation::SetAction( const PdfAction & rAction )
     if( m_pAction )
         delete m_pAction;
 
-    m_pAction = new PdfAction( rAction );
-    // XXX FIXME TODO: we can not safely assume actions are indirect objects. We must
-    // be able to handle including them literally, or as a reference. Currently
-    // we INCORRECTLY assume they're always indirect. We never could assume this, we'd just insert
-    // an invalid reference (-1,-1) here before.
+    m_pAction = new PdfAction( rAction.GetObject() );
+    // XXX FIXME TODO: we can not safely assume actions are indirect objects.
+    // We must be able to handle including them literally, or as a reference.
+    // Currently we INCORRECTLY assume they're always indirect. We never could
+    // assume this, we'd just insert an invalid reference (-1,-1) here before.
     GetObject()->GetDictionary().AddKey( "A", static_cast<PdfObject*>(m_pAction->GetObject())->Reference() );
 }
 
@@ -246,9 +246,10 @@ void PdfAnnotation::SetFileAttachement( const PdfFileSpec & rFileSpec )
     if( m_pFileSpec )
         delete m_pFileSpec;
 
-    m_pFileSpec = new PdfFileSpec( rFileSpec );
-    // XXX FIXME TODO We incorrectly assume that FileSpec objects contain an indirect object.
-    // That assumption is unsafe, but was made before. It needs to be fixed.
+    m_pFileSpec = new PdfFileSpec( rFileSpec.GetObject() );
+    // XXX FIXME TODO We incorrectly assume that FileSpec objects contain an
+    // indirect object.  That assumption is unsafe, but was made before. It
+    // needs to be fixed.
     GetObject()->GetDictionary().AddKey( "FS", static_cast<PdfObject*>(m_pFileSpec->GetObject())->Reference() );
 }
 

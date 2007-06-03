@@ -65,11 +65,20 @@ ENDIF(UNIX)
 
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
+
     MESSAGE("Using gcc specific compiler options")
     # We can be more specific about what we want out of g++
     # than with most other compilers.
+
+    # We can't request c++98 on win32 with mingw, because
+    # mingw doesn't expose _tzset or _timezone as needed by
+    # PdfDate . We still want it on other platforms.
+    IF(NOT WIN32)
+        ADD_DEFINITIONS(-std=c++98)
+    ENDIF(NOT WIN32)
+
+    # Basic set of warnings
     ADD_DEFINITIONS(
-        -std=c++98
         -Wall
         -Woverloaded-virtual
         -Wswitch-enum
@@ -79,12 +88,13 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
         -Wredundant-decls
         -Wreorder
         )
+
     # STLPort uses old style casts extensively, so if we're building against it
     # we'd best disable the warning.
     IF(NOT USE_STLPORT)
         ADD_DEFINITIONS(-Wold-style-cast)
     ENDIF(NOT USE_STLPORT)
-    #
+
     # Note that we do not need debug definitions here. Set
     # -DCMAKE_BUILD_TYPE=debug or (if you want an optimised
     # release build with debug info) -DCMAKE_CXX_FLAGS="-g3"
@@ -95,6 +105,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     IF(NOT WIN32)
         ADD_DEFINITIONS(-W)
     ENDIF(NOT WIN32)
+
     # If they've enabled the use of gcc4 symbol visibility, use it.
     IF(PODOFO_USE_VISIBILITY)
         ADD_DEFINITIONS(
@@ -102,6 +113,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
             -fvisibility=hidden
             )
     ENDIF(PODOFO_USE_VISIBILITY)
+
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 FIND_PACKAGE(ZLIB REQUIRED)

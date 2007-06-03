@@ -27,17 +27,16 @@
 namespace PoDoFo {
 
 PdfElement::PdfElement( const char* pszType, PdfVecObjects* pParent )
+    : m_pVariant( pParent->CreateObject( pszType ) )
 {
-    // Create a new indirect object to use
-    m_pVariant = pParent->CreateObject( pszType );
-    PODOFO_RAISE_LOGIC_IF( !m_pVariant->IsDictionary(), "Created non-dictionary base object for PdfElement");
+    PODOFO_RAISE_LOGIC_IF( !m_pVariant->IsDictionary(), "Created non-dictionary base object for PdfElement, which requires a dictionary.");
 }
 
 PdfElement::PdfElement( const char* pszType, PdfVariant* pVariant )
     : m_pVariant(pVariant)
 {
     // Manage an existing PdfVariant (which may be a direct or indirect object)
-    // XXX TODO FIXME currently we just don't know if we own the variant or not.
+    // We never own this object.
     if( !m_pVariant )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
@@ -59,6 +58,7 @@ PdfElement::PdfElement( const char* pszType, PdfVariant* pVariant )
 
 PdfElement::~PdfElement()
 {
+    // We do not own m_pVariant and must never delete it.
 }
 
 const char* PdfElement::TypeNameForIndex( int i, const char** ppTypes, long lLen ) const
@@ -82,6 +82,7 @@ int PdfElement::TypeNameToIndex( const char* pszType, const char** ppTypes, long
 
 PdfIElement::~PdfIElement()
 {
+    // We do not own m_pVariant and must never delete it.
 }
 
 };

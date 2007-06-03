@@ -350,6 +350,13 @@ class PODOFO_API PdfVariant {
      */
     inline PdfArray & GetArray_NoDL();
 
+    /**
+     * Returns true iff the variant is part of an indirect object.
+     * The base implementation always returns false (and is inlined
+     * if you're working with a concrete instance).
+     */
+    virtual inline bool IsIndirect() const { return false; }
+
  private:
     /**
      * It's an easy mistake to pass a pointer to a PdfVariant when trying to

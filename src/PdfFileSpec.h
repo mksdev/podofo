@@ -47,6 +47,8 @@ class PODOFO_API PdfFileSpec : public PdfElement {
     const PdfString & GetFilename() const;
 
  private:
+    PdfFileSpec( const PdfFileSpec& );
+    PdfFileSpec& operator=( const PdfFileSpec& );
 
     /** Create a file specification string from a filename
      *  \param pszFilename filename 

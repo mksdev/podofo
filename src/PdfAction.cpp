@@ -69,13 +69,6 @@ PdfAction::PdfAction( PdfVariant* pVariant )
     m_eType = static_cast<EPdfAction>(TypeNameToIndex( GetObject()->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
 }
 
-// XXX FIXME TODO Lifetime managemnet of copy of the variant - we leak it at the moment!
-PdfAction::PdfAction( const PdfAction & rhs )
-    : PdfElement( "Action", new PdfVariant( *rhs.GetObject() ) )
-{
-    m_eType = static_cast<EPdfAction>(TypeNameToIndex( GetObject()->GetDictionary().GetKeyAsName( "S" ).GetName().c_str(), s_names, s_lNumActions ));
-}
-
 void PdfAction::SetURI( const PdfString & sUri )
 {
     GetObject()->GetDictionary().AddKey( "URI", sUri );

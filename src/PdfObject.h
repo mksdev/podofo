@@ -136,6 +136,14 @@ class PODOFO_API PdfObject : public PdfVariant {
 
     virtual ~PdfObject();
 
+    /**
+     * Returns true if the object is indirect. PdfObject is always
+     * indirect. This overrides the base behaviour in PdfVariant
+     * so the result is correct when working with a reference to a
+     * PdfVariant of real type PdfObject.
+     */
+    virtual bool IsIndirect() const { return true; }
+
     /** Get the keys value out of the dictionary. If the key is a reference, 
      *  the reference is resolved and the object pointed to by the reference is returned.
      *

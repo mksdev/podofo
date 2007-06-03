@@ -266,6 +266,11 @@ class PODOFO_API PdfAnnotation : public PdfElement {
     inline EPdfAnnotation GetType() const;
 
  private:
+    /** There is no copy ctor */
+    PdfAnnotation( const PdfAnnotation & );
+    /** There is no assignment operator for annotations */
+    PdfAnnotation & operator=( const PdfAnnotation &);
+
     /** Convert an annotation enum to its string representation
      *  which can be written to the PDF file.
      *  \returns the string representation or NULL for unsupported annotation types
