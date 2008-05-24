@@ -21,12 +21,12 @@
 #include "Globals.h"
 #include "../Exception.h"
 #include "../asn1/ObjectID.h"
-//#include "../asn1/OIDs.h"
-//#include "../asn1/DistinguishedName.h"
-//#include "../asn1/GeneralName.h"
-//#include "../x509/X509Extension.h"
-//#include "../x509//extensions/SubjectAltName.h"
-//#include "../x509/X509Certificate.h"
+#include "../asn1/OIDs.h"
+#include "../asn1/DistinguishedName.h"
+#include "../asn1/GeneralName.h"
+#include "../x509/X509Extension.h"
+#include "../x509//extensions/SubjectAltName.h"
+#include "../x509/X509Certificate.h"
 
 // -------------- OpenSSL Includes -----------------------
 #include <openssl/err.h>
@@ -82,148 +82,11 @@ IMPLEMENT_ASN1_DUP_FUNCTION_EX(PKCS12);
 
 
 //---------------------------------------------------------------------------------------
-// Function name	: 
-// Description	    : 
-// Return type		: 
-// Argument         : 
-//---------------------------------------------------------------------------------------
-int OIDtoNID(const PKIBox::asn1::ObjectID &OID)
-{
-	using namespace PKIBox::asn1;
-
-	/*if(OID == COIDs::commonName)
-		return NID_commonName;
-
-	else if(OID == COIDs::countryName)
-		return NID_countryName;
-
-	else if(OID == COIDs::localityName)
-		return NID_localityName;
-
-	else if(OID == COIDs::stateOrProvinceName)
-		return NID_stateOrProvinceName;
-
-	else if(OID == COIDs::organizationName)
-		return NID_organizationName;
-
-	else if(OID == COIDs::organizationalUnitName)
-		return NID_organizationalUnitName;
-
-	else if(OID == COIDs::id_ce_cRLDistributionPoints)
-		return NID_crl_distribution_points;
-
-	else if(OID == COIDs::id_ce_authorityKeyIdentifier)
-		return NID_authority_key_identifier;
-
-	else if(OID == COIDs::id_ce_keyUsage)
-		return NID_key_usage;
-
-	else if(OID == COIDs::id_ce_extKeyUsage)
-		return NID_ext_key_usage;
-
-	else if(OID == COIDs::id_pe_authorityInfoAccess)
-		return NID_info_access;
-
-	else if(OID == COIDs::id_ce_certificatePolicies)
-		return NID_certificate_policies;
-
-	else if(OID == COIDs::id_ce_subjectKeyIdentifier)
-		return NID_subject_key_identifier;
-
-	else if(OID == COIDs::id_ce_subjectAltName)
-		return NID_subject_alt_name;
-
-	else if(OID == COIDs::id_ce_basicConstraints)
-		return NID_basic_constraints;
-
-	else if(OID == COIDs::id_ce_invalidityDate)
-		return NID_invalidity_date;
-
-	else if(OID == COIDs::id_ce_cRLNumber)
-		return NID_crl_number;
-
-	else if(OID == COIDs::id_ce_cRLReasons)
-		return NID_crl_reason;
-
-	else if(OID == COIDs::id_ce_deltaCRLIndicator)
-		return NID_delta_crl;
-
-	else if(OID == COIDs::id_pkix_ocsp_nocheck)
-		return NID_id_pkix_OCSP_noCheck;
-
-	else if(OID == COIDs::id_pkix_ocsp_basic)
-		return NID_id_pkix_OCSP_basic;
-
-	else if(OID == COIDs::id_pkix_ocsp_nonce)
-		return NID_id_pkix_OCSP_Nonce;
-
-	else if(OID == COIDs::id_pkix_ocsp_response)
-		return NID_id_pkix_OCSP_acceptableResponses;
-
-	else if(OID == COIDs::id_pkix_ocsp_crl)
-		return NID_id_pkix_OCSP_CrlID;
-
-	else if(OID == COIDs::id_pkix_ocsp_archive_cutoff)
-		return NID_id_pkix_OCSP_archiveCutoff;
-
-	else if(OID == COIDs::id_pkix_ocsp_service_locator)
-		return NID_id_pkix_OCSP_serviceLocator;
-
-	else if(OID == COIDs::id_emailAddress)
-		return NID_pkcs9_emailAddress;
-
-	else if(OID == COIDs::id_unstructuredName)
-		return NID_pkcs9_unstructuredName;
-
-	else if(OID == COIDs::id_contentType)
-		return NID_pkcs9_contentType;
-
-	else if(OID == COIDs::id_messageDigest)
-		return NID_pkcs9_messageDigest;
-
-	else if(OID == COIDs::id_signingTime)
-		return NID_pkcs9_signingTime;
-
-	else if(OID == COIDs::id_counterSignature)
-		return NID_pkcs9_countersignature;
-
-	else if(OID == COIDs::id_challengePassword)
-		return NID_pkcs9_challengePassword;
-
-	else if(OID == COIDs::id_unstructuredAddress)
-		return NID_pkcs9_unstructuredAddress;
-
-	else if(OID == COIDs::id_extendedCertificateAttributes)
-		return NID_pkcs9_extCertAttributes;
-
-	else if(OID == COIDs::keyBag)
-		return NID_keyBag;
-
-	else if(OID == COIDs::pkcs_8ShroudedKeyBag)
-		return NID_pkcs8ShroudedKeyBag;
-
-	else if(OID == COIDs::certBag)
-		return NID_certBag;
-
-	else if(OID == COIDs::crlBag)
-		return NID_crlBag;
-
-	else if(OID == COIDs::secretBag)
-		return NID_secretBag;
-
-	else if(OID == COIDs::safeContentsBag)
-		return NID_safeContentsBag;
-
-	else*/
-		return NID_undef;
-}
-
-//---------------------------------------------------------------------------------------
 // Name			: 
 // Description	:
 // Return Type	:
 //---------------------------------------------------------------------------------------
-#ifdef _WIN32
+#ifdef WIN32
 string GetErrorDescription(DWORD dw)
 {
 	LPVOID lpMsgBuf;
@@ -244,7 +107,7 @@ string GetErrorDescription(DWORD dw)
 
 	return s;
 }
-#endif // _WIN32
+#endif // WIN32
 
 //---------------------------------------------------------------------------------------
 // Name			: 
@@ -252,80 +115,80 @@ string GetErrorDescription(DWORD dw)
 // Arguments	: 
 // Return Type	: 
 //---------------------------------------------------------------------------------------
-string GetCertName(const PKIBox::x509::CX509Certificate &Cert)
+string GetCertName(const PKIBox::x509::X509Certificate &Cert)
 {
-	//try
-	//{
-	//	PKIBox::asn1::CDistinguishedName DN = Cert.GetSubjectDN();
-	//	string szCertName = DN.GetRDN(PKIBox::asn1::COIDs::commonName);
-	//	string::size_type RetVal = szCertName.find('/');
-	//	if( RetVal != string::npos )
-	//	{
-	//		szCertName.clear();
-	//	}
-	//	if(szCertName.empty())
-	//	{
-	//		std::auto_ptr<PKIBox::x509::CX509Extension> pExt = Cert.GetExtension(PKIBox::asn1::COIDs::id_ce_subjectAltName);
-	//		std::auto_ptr<PKIBox::x509::extensions::CSubjectAltName> pSubjectAltNameExt( dynamic_cast< PKIBox::x509::extensions::CSubjectAltName * >(pExt.release()));
-	//		if(pSubjectAltNameExt.get())
-	//		{
-	//			vector<PKIBox::asn1::CGeneralName> vGeneralNames = pSubjectAltNameExt->GetGeneralNames();
-	//			if(!vGeneralNames.empty())
-	//			{
-	//				if( PKIBox::asn1::CGeneralName::directoryName == vGeneralNames[0].GetType() )
-	//				{
-	//					szCertName = vGeneralNames[0].GetDirectoryName().GetRDN(PKIBox::asn1::COIDs::commonName);
-	//					if(!szCertName.empty())
-	//						return szCertName;
-	//				}
-	//			}
-	//		}
+	try
+	{
+		PKIBox::asn1::DistinguishedName DN = Cert.GetSubjectDN();
+		string szCertName = DN.GetRDN(PKIBox::asn1::OIDs::commonName);
+		string::size_type RetVal = szCertName.find('/');
+		if( RetVal != string::npos )
+		{
+			szCertName.clear();
+		}
+		if(szCertName.empty())
+		{
+			std::auto_ptr<PKIBox::x509::X509Extension> pExt = Cert.GetExtension(PKIBox::asn1::OIDs::id_ce_subjectAltName);
+			std::auto_ptr<PKIBox::x509::extensions::SubjectAltName> pSubjectAltNameExt( dynamic_cast< PKIBox::x509::extensions::SubjectAltName * >(pExt.release()));
+			if(pSubjectAltNameExt.get())
+			{
+				vector<PKIBox::asn1::GeneralName> vGeneralNames = pSubjectAltNameExt->GetGeneralNames();
+				if(!vGeneralNames.empty())
+				{
+					if( PKIBox::asn1::GeneralName::directoryName == vGeneralNames[0].GetType() )
+					{
+						szCertName = vGeneralNames[0].GetDirectoryName().GetRDN(PKIBox::asn1::OIDs::commonName);
+						if(!szCertName.empty())
+							return szCertName;
+					}
+				}
+			}
 
-	//		szCertName = DN.GetRDN(PKIBox::asn1::COIDs::organizationalUnitName);
-	//		RetVal = szCertName.find('/');
-	//		if( RetVal != string::npos )
-	//		{
-	//			szCertName.clear();
-	//		}
-	//		if(szCertName.empty())
-	//		{
-	//			szCertName = DN.GetRDN(PKIBox::asn1::COIDs::organizationName);
-	//			RetVal = szCertName.find('/');
-	//			if( RetVal != string::npos )
-	//			{
-	//				szCertName.clear();
-	//			}
-	//			if(szCertName.empty())
-	//			{
-	//				szCertName = DN.GetRDN(PKIBox::asn1::COIDs::localityName);
-	//				RetVal = szCertName.find('/');
-	//				if( RetVal != string::npos )
-	//				{
-	//					szCertName.clear();
-	//				}
-	//				if(szCertName.empty())
-	//				{
-	//					szCertName = DN.GetRDN(PKIBox::asn1::COIDs::stateOrProvinceName);
-	//					RetVal = szCertName.find('/');
-	//					if( RetVal != string::npos )
-	//					{
-	//						szCertName.clear();
-	//					}
-	//					if(szCertName.empty())
-	//					{
-	//						szCertName = DN.GetRDN(PKIBox::asn1::COIDs::countryName);
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
+			szCertName = DN.GetRDN(PKIBox::asn1::OIDs::organizationalUnitName);
+			RetVal = szCertName.find('/');
+			if( RetVal != string::npos )
+			{
+				szCertName.clear();
+			}
+			if(szCertName.empty())
+			{
+				szCertName = DN.GetRDN(PKIBox::asn1::OIDs::organizationName);
+				RetVal = szCertName.find('/');
+				if( RetVal != string::npos )
+				{
+					szCertName.clear();
+				}
+				if(szCertName.empty())
+				{
+					szCertName = DN.GetRDN(PKIBox::asn1::OIDs::localityName);
+					RetVal = szCertName.find('/');
+					if( RetVal != string::npos )
+					{
+						szCertName.clear();
+					}
+					if(szCertName.empty())
+					{
+						szCertName = DN.GetRDN(PKIBox::asn1::OIDs::stateOrProvinceName);
+						RetVal = szCertName.find('/');
+						if( RetVal != string::npos )
+						{
+							szCertName.clear();
+						}
+						if(szCertName.empty())
+						{
+							szCertName = DN.GetRDN(PKIBox::asn1::OIDs::countryName);
+						}
+					}
+				}
+			}
+		}
 
-	//	return szCertName;
-	//}
-	//catch (PKIBox::CException &)
-	//{
-	//	
-	//}
+		return szCertName;
+	}
+	catch (PKIBox::Exception &)
+	{
+		
+	}
 	return "";
 }
 

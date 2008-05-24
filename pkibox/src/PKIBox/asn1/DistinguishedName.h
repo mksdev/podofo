@@ -18,8 +18,8 @@ namespace PKIBox
 	// Forward declarations.
 	namespace x509
 	{
-		class CX509Certificate;
-		class CX509CRL;
+		class X509Certificate;
+		class X509CRL;
 		class CX509Store;
 	}
 
@@ -71,8 +71,8 @@ namespace PKIBox
 		class DistinguishedName
 		{
 			friend class GeneralName;
-			friend class x509::CX509Certificate;
-			friend class x509::CX509CRL;
+			friend class x509::X509Certificate;
+			friend class x509::X509CRL;
 			friend class x509::CX509Store;
 			friend class ocsp::CResponderID;
 			friend class ocsp::extensions::CServiceLocator;

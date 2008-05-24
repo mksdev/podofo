@@ -12,10 +12,10 @@ namespace PKIBox
 	{
 		namespace extensions
 		{
-			class CSubjectAltName;
-			class CIssuerAltName;
-			class CCRLDistributionPoint;
-			class CAccessDescription;
+			class SubjectAltName;
+			class IssuerAltName;
+			class CRLDistributionPoint;
+			class AccessDescription;
 		}
 
 		namespace attr
@@ -96,10 +96,10 @@ namespace PKIBox
 		*/
 		class GeneralName
 		{
-			friend class x509::extensions::CSubjectAltName;
-			friend class x509::extensions::CIssuerAltName;
-			friend class x509::extensions::CCRLDistributionPoint;
-			friend class x509::extensions::CAccessDescription;
+			friend class x509::extensions::SubjectAltName;
+			friend class x509::extensions::IssuerAltName;
+			friend class x509::extensions::CRLDistributionPoint;
+			friend class x509::extensions::AccessDescription;
 			friend class x509::attr::CIssuerSerial;
 			friend class x509::attr::CHolder;
 			friend class x509::attr::CV1Form;

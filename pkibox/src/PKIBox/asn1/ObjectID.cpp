@@ -183,7 +183,7 @@ namespace PKIBox
 		// Function name	: SetValue
 		// Description	    : Sets the value of this ObjectID
 		// Return type		: void
-		// Argument         : const CAscByteArray &baValue
+		// Argument         : const CByteArray &baValue
 		//---------------------------------------------------------------------------------------
 		void ObjectID::SetValue(const utils::ByteArray &baValue)
 		{

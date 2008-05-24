@@ -36,8 +36,7 @@ namespace PKIBox
 		RelativeDistinguishedName::RelativeDistinguishedName(const ObjectID &objectID,
 			const utils::ByteArray &baValue) : m_pNameEntry(NULL)
 		{
-			int NID = ::OIDtoNID(objectID);
-			m_pNameEntry = ::X509_NAME_ENTRY_create_by_NID(NULL, NID, V_ASN1_APP_CHOOSE , 
+			m_pNameEntry = ::X509_NAME_ENTRY_create_by_NID(NULL, ::OBJ_obj2nid(objectID.m_pObjectID), V_ASN1_APP_CHOOSE , 
 				const_cast<unsigned char *>(baValue.GetData()), baValue.GetLength());
 			if(!m_pNameEntry)
 			{

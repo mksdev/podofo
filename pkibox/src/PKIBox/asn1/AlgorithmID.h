@@ -13,9 +13,9 @@ namespace PKIBox
 
 	namespace x509
 	{
-		class CPublicKeyInfo;
-		class CX509Certificate;
-		class CX509CRL;
+		class PublicKeyInfo;
+		class X509Certificate;
+		class X509CRL;
 		namespace attr
 		{
 			class CObjectDigestInfo;
@@ -73,7 +73,7 @@ namespace PKIBox
 
 			An AlgorithmID object may be, for instance, used for specifying the signature algorithm when signing a X509Certificate, e,g.: 
 
-			CX509Certificate cert;
+			X509Certificate cert;
 			...
 			AlgorithmID algoID(OIDs::sha1);
 			cert.sign(algoID, issuerPrivateKey);
@@ -81,9 +81,9 @@ namespace PKIBox
 		*/
 		class AlgorithmID
 		{
-			friend class x509::CPublicKeyInfo;
-			friend class x509::CX509Certificate;
-			friend class x509::CX509CRL;
+			friend class x509::PublicKeyInfo;
+			friend class x509::X509Certificate;
+			friend class x509::X509CRL;
 			friend class x509::attr::CObjectDigestInfo;
 			friend class pkcs7::CSignedData;
 			friend class pkcs7::CSignerInfo;

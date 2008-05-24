@@ -32,7 +32,7 @@ namespace PKIBox
 		// Return type		: 
 		// Argument         : 
 		//---------------------------------------------------------------------------------------
-		AttributeValue::AttributeValue(ASC_ASN1_TYPE type, void *pValue) : m_pAttValue(NULL)
+		AttributeValue::AttributeValue(_ASN1_TYPE type, void *pValue) : m_pAttValue(NULL)
 		{
 			switch(type)
 			{

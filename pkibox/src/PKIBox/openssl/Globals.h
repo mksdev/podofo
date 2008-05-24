@@ -43,13 +43,14 @@ namespace PKIBox
 
 	namespace x509
 	{
-		class CX509Certificate;
+		class X509Certificate;
 	}
 }
 
-extern int OIDtoNID(const PKIBox::asn1::ObjectID &OID);
-extern std::string GetErrorDescription(DWORD dw);
-extern std::string GetCertName(const PKIBox::x509::CX509Certificate &Cert);
+#ifdef WIN32
+	extern std::string GetErrorDescription(DWORD dw);
+#endif
+extern std::string GetCertName(const PKIBox::x509::X509Certificate &Cert);
 
 extern time_t ASN1_GENERALIZEDTIME_get(ASN1_GENERALIZEDTIME *time);
 extern time_t ASN1_UTCTIME_get(ASN1_TIME *s);

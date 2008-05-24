@@ -34,17 +34,17 @@ namespace PKIBox
 
 	namespace x509
 	{
-		class CX509Certificate;
-		class CX509Extension;
-		class CX509CRLEntry;
-		class CX509CRL;
+		class X509Certificate;
+		class X509Extension;
+		class X509CRLEntry;
+		class X509CRL;
 		namespace extensions
 		{
-			class CExtendedKeyUsage;
-			class CAccessDescription;
-			class CPolicyQualifierInfo;
-			class CPolicyInformation;
-			class CHoldInstructionCode;
+			class ExtendedKeyUsage;
+			class AccessDescription;
+			class PolicyQualifierInfo;
+			class PolicyInformation;
+			class HoldInstructionCode;
 		}
 
 		namespace attr
@@ -121,15 +121,15 @@ namespace PKIBox
 			friend class AlgorithmID;
 			friend class RelativeDistinguishedName;
 			friend class DistinguishedName;
-			friend class x509::CX509Certificate;
-			friend class x509::CX509Extension;
-			friend class x509::CX509CRLEntry;
-			friend class x509::CX509CRL;
-			friend class x509::extensions::CAccessDescription;
-			friend class x509::extensions::CExtendedKeyUsage;
-			friend class x509::extensions::CPolicyQualifierInfo;
-			friend class x509::extensions::CPolicyInformation;
-			friend class x509::extensions::CHoldInstructionCode;
+			friend class x509::X509Certificate;
+			friend class x509::X509Extension;
+			friend class x509::X509CRLEntry;
+			friend class x509::X509CRL;
+			friend class x509::extensions::AccessDescription;
+			friend class x509::extensions::ExtendedKeyUsage;
+			friend class x509::extensions::PolicyQualifierInfo;
+			friend class x509::extensions::PolicyInformation;
+			friend class x509::extensions::HoldInstructionCode;
 			friend class x509::attr::CObjectDigestInfo;
 			friend class ocsp::CCertID;
 			friend class ocsp::CResponseBytes;

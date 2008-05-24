@@ -68,7 +68,7 @@ namespace PKIBox
 
 			}
 
-			m_pAttribute = X509_ATTRIBUTE_create( OIDtoNID(type), value.m_pAttValue->type, pValue);
+			m_pAttribute = X509_ATTRIBUTE_create(::OBJ_obj2nid(type.m_pObjectID), value.m_pAttValue->type, pValue);
 			if(!m_pAttribute)
 			{
 				const char *pc = ::ERR_reason_error_string(::ERR_get_error());

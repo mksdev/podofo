@@ -39,25 +39,25 @@ namespace PKIBox
 
 		public:
 
-			enum ASC_ASN1_TYPE
+			enum _ASN1_TYPE
 			{
-				ASC_ASN1_BOOLEAN,
-				ASC_ASN1_STRING,
-				ASC_ASN1_OBJECT,
-				ASC_ASN1_INTEGER,
-				ASC_ASN1_ENUMERATED,
-				ASC_ASN1_BIT_STRING,
-				ASC_ASN1_OCTET_STRING,
-				ASC_ASN1_PRINTABLESTRING,
-				ASC_ASN1_T61STRING,
-				ASC_ASN1_IA5STRING,
-				ASC_ASN1_GENERALSTRING,
-				ASC_ASN1_BMPSTRING,
-				ASC_ASN1_UNIVERSALSTRING,
-				ASC_ASN1_UTCTIME,
-				ASC_ASN1_GENERALIZEDTIME,
-				ASC_ASN1_VISIBLESTRING,
-				ASC_ASN1_UTF8STRING,
+				_ASN1_BOOLEAN,
+				_ASN1_STRING,
+				_ASN1_OBJECT,
+				_ASN1_INTEGER,
+				_ASN1_ENUMERATED,
+				_ASN1_BIT_STRING,
+				_ASN1_OCTET_STRING,
+				_ASN1_PRINTABLESTRING,
+				_ASN1_T61STRING,
+				_ASN1_IA5STRING,
+				_ASN1_GENERALSTRING,
+				_ASN1_BMPSTRING,
+				_ASN1_UNIVERSALSTRING,
+				_ASN1_UTCTIME,
+				_ASN1_GENERALIZEDTIME,
+				_ASN1_VISIBLESTRING,
+				_ASN1_UTF8STRING,
 			};
 
 			//! Default constructor.
@@ -65,10 +65,10 @@ namespace PKIBox
 
 			//! Creates AttributeValue of a certain ASN.1 type.
 			/*!
-				\param ASC_ASN1_TYPE type: type of an attribute value
+				\param _ASN1_TYPE type: type of an attribute value
 				\param void *pValue: value of an attribute
 			*/
-			AttributeValue(ASC_ASN1_TYPE type, void *pValue);
+			AttributeValue(_ASN1_TYPE type, void *pValue);
 
 			virtual ~AttributeValue(void);
 
