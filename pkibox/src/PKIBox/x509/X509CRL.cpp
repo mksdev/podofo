@@ -8,7 +8,7 @@
 
 #include "../openssl/Globals.h"
 #include "../Exception.h"
-#include "../NullPointerException.h "
+#include "../NullPointerException.h"
 #include "../InvalidArgumentException.h"
 #include "../utils/ByteArray.h"
 #include "../utils/DateTime.h"
