@@ -1,0 +1,24 @@
+SUBDIRS(
+	ContentParser
+	CreationTest
+	DeviceTest
+	FilterTest
+	FormTest
+	LargeTest
+	ObjectParserTest
+	ParserTest
+	TokenizerTest
+	VariantTest
+	WatermarkTest
+	unit
+	)
+
+ADD_EXECUTABLE(PdfError_Test PdfError_Test.cpp)
+TARGET_LINK_LIBRARIES(PdfError_Test ${PODOFO_LIB} ${PODOFO_LIB_DEPENDS})
+SET_TARGET_PROPERTIES(PdfError_Test PROPERTIES COMPILE_FLAGS "${PODOFO_CFLAGS}")
+ADD_DEPENDENCIES(PdfError_Test ${PODOFO_DEPEND_TARGET})
+
+ADD_EXECUTABLE(PdfString_Test PdfString_Test.cpp)
+TARGET_LINK_LIBRARIES(PdfString_Test ${PODOFO_LIB} ${PODOFO_LIB_DEPENDS})
+SET_TARGET_PROPERTIES(PdfString_Test PROPERTIES COMPILE_FLAGS "${PODOFO_CFLAGS}")
+ADD_DEPENDENCIES(PdfString_Test ${PODOFO_DEPEND_TARGET})
