@@ -1,5 +1,5 @@
 /***************************************************************************
-*   Copyright (C) 2006 by Dominik Seichter                                *
+*   Copyriht (C) 2006 by Dominik Seichter                                *
 *   domseichter@web.de                                                    *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -73,9 +73,6 @@ int PdfPagesTree::GetTotalNumberOfPages() const
 
 PdfPage* PdfPagesTree::GetPage( int nIndex )
 {
-    const PdfObject* pObj;
-    PdfPage*   pPage;
-
     // if you try to get a page past the end, return NULL
     // we use >= since nIndex is 0 based
     if ( nIndex >= GetTotalNumberOfPages() )
@@ -83,18 +80,15 @@ PdfPage* PdfPagesTree::GetPage( int nIndex )
 
 
     PdfObjectList lstParents;
-    pObj = this->GetPageNode(nIndex, this->GetRoot(), lstParents);
-
-    /*
-    // if we already have the page in our list, return it
-    // otherwise, we need to find it, add it and return it
-    pPage = m_deqPageObjs[ nIndex ];
-    if ( !pPage ) 
-    {
-    }
-    */
+    PdfObject* pObj = this->GetPageNode(nIndex, this->GetRoot(), lstParents);
     
-    return pPage;
+    if( pObj ) 
+    {
+        PdfPage* pPage = new PdfPage( pObj, lstParents );
+        return pPage;
+    }
+
+    return NULL;
 }
 
 PdfPage* PdfPagesTree::GetPage( const PdfReference & ref )
@@ -118,14 +112,50 @@ void PdfPagesTree::InsertPage( int inAfterPageNumber, PdfPage* inPage )
     this->InsertPage( inAfterPageNumber, inPage->GetObject() );
 }
 
-void PdfPagesTree::InsertPage( int inAfterPageNumber, PdfObject* pPage )
+void PdfPagesTree::InsertPage( int nAfterPageNumber, PdfObject* pPage )
 {
+    bool bInsertBefore = false;
+
+    if( ePdfPageInsertionPoint_InsertBeforeFirstPage == nAfterPageNumber )
+    {
+        bInsertBefore = true;
+        nAfterPageNumber = 0;
+    }
+    else if( nAfterPageNumber < 0 ) 
+    {
+        // Only ePdfPageInsertionPoint_InsertBeforeFirstPage is valid here
+        PdfError::LogMessage( eLogSeverity_Information,
+                              "Invalid argument to PdfPagesTree::InsertPage: %i (Only ePdfPageInsertionPoint_InsertBeforeFirstPage is valid here).",
+                              nAfterPageNumber );
+        return;
+    }
+
+    PdfObjectList lstParents;
+    PdfObject* pPageBefore = this->GetPageNode( nAfterPageNumber, this->GetRoot(), lstParents );
+    
+    if( !pPageBefore || lstParents.size() == 0 ) 
+    {
+        PdfError::LogMessage( eLogSeverity_Critical,
+                              "Cannot find page %i or page %i has no parents. Cannot insert new page.",
+                              nAfterPageNumber, nAfterPageNumber );
+        return;
+    }
+
+
+    PdfObject* pParent = lstParents.back();
+    int nKidsIndex = bInsertBefore  ? -1 : this->GetPosInKids( pPageBefore, pParent );
+
+    InsertPageIntoNode( pParent, lstParents, nKidsIndex, pPage );
 }
 
 
 PdfPage* PdfPagesTree::CreatePage( const PdfRect & rSize )
 {
+    PdfPage* pPage = new PdfPage( rSize, GetRoot()->GetOwner() );
 
+    InsertPage( this->GetTotalNumberOfPages(), pPage );
+
+    return pPage;
 }
 
 void PdfPagesTree::DeletePage( int inPageNumber )
@@ -138,8 +168,8 @@ void PdfPagesTree::DeletePage( int inPageNumber )
 // Private methods
 ////////////////////////////////////////////////////
 
-const PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent, 
-                                            PdfObjectList & rLstParents ) const 
+PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent, 
+                                      PdfObjectList & rLstParents ) 
 {
     if( !pParent ) 
     {
@@ -161,15 +191,23 @@ const PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
     PdfArray::const_iterator it = rKidsArray.begin();
 
     const size_t numDirectKids = rKidsArray.size();
-    const size_t numKinds = pParent->GetDictionary().GetKeyAsLong( "Count", 0L );
+    const size_t numKids = pParent->GetDictionary().GetKeyAsLong( "Count", 0L );
 
-    if( numDirectKids == numKinds )
+    if( numDirectKids == numKids && static_cast<size_t>(nPageNum) < numDirectKids )
     {
         // This node has only page nodes as kids,
         // so we can access the array directly
         rLstParents.push_back( pParent );
         return GetPageNodeFromArray( nPageNum, rKidsArray, rLstParents );
     } 
+    else if( numDirectKids == numKids && static_cast<size_t>(nPageNum) < numDirectKids )
+    {
+        // This node has only page nodes as kids,
+        // but does not contain our page,
+        // skip it - this case should never occur because
+        // of handling of childs in the else part below.
+        return NULL;
+    }
     else
     {
         // We have to traverse the tree
@@ -178,7 +216,8 @@ const PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
             if( (*it).IsArray() ) 
             {
                 // Fixes some broken PDFs who have trees with 1 element kids arrays
-                
+                rLstParents.push_back( pParent );
+                return GetPageNodeFromArray( nPageNum, (*it).GetArray(), rLstParents ); 
             }
             else if( (*it).IsReference() ) 
             {
@@ -190,17 +229,30 @@ const PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
                     return NULL;
                 }
 
-                int childCount = this->GetChildCount( pChild );
-                if( childCount < nPageNum ) 
+                if( this->IsTypePages(pChild) ) 
                 {
-                    // skip this page node
-                    // and go to the next one
-                    nPageNum -= childCount;
+                    int childCount = this->GetChildCount( pChild );
+                    if( childCount < nPageNum ) 
+                    {
+                        // skip this page node
+                        // and go to the next one
+                        nPageNum -= childCount;
+                    }
+                    else
+                    {
+                        rLstParents.push_back( pParent );
+                        return this->GetPageNode( nPageNum, pChild, rLstParents );
+                    }
                 }
-                else
+                else // Type == Page
                 {
-                    rLstParents.push_back( pParent );
-                    return this->GetPageNode( nPageNum, pChild, rLstParents );
+                    // Skip a normal page
+                    nPageNum--;
+
+                    if( 0 == nPageNum )
+                    {
+                        return pChild;
+                    } 
                 }
             }
             else
@@ -214,11 +266,11 @@ const PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
         }
     }
 
-
+    printf("End of function reached :(\n");
     return NULL;
 }
 
-const PdfObject* PdfPagesTree::GetPageNodeFromArray( int nPageNum, const PdfArray & rKidsArray, PdfObjectList & rLstParents ) const
+PdfObject* PdfPagesTree::GetPageNodeFromArray( int nPageNum, const PdfArray & rKidsArray, PdfObjectList & rLstParents )
 {
     if ( static_cast<size_t>(nPageNum) >= rKidsArray.GetSize() )
     {
@@ -227,6 +279,8 @@ const PdfObject* PdfPagesTree::GetPageNodeFromArray( int nPageNum, const PdfArra
         return NULL;
     }
 
+    // TODO: Fill cache immediately with all pages 
+    //       in this kids array
     PdfVariant rVar = rKidsArray[nPageNum];
     while ( true ) 
     {
@@ -289,6 +343,93 @@ int PdfPagesTree::GetChildCount( const PdfObject* pNode ) const
 
     return static_cast<int>(pNode->GetDictionary().GetKeyAsLong("Count", 0L));
 }
+
+int PdfPagesTree::GetPosInKids( PdfObject* pPageObj, PdfObject* pPageParent )
+{
+    if( !pPageParent )
+    {
+        return -1;
+    }
+
+    const PdfArray & rKids = pPageParent->GetDictionary().GetKey( PdfName("Kids") )->GetArray();
+    PdfArray::const_iterator it = rKids.begin();
+
+    int index = 0;
+    while( it != rKids.end() ) 
+    {
+        if( (*it).GetReference() == pPageObj->Reference() )
+        {
+            return index;
+        }
+
+        ++index;
+        ++it;
+    }
+
+    return -1;
+}
+
+void PdfPagesTree::InsertPageIntoNode( PdfObject* pParent, const PdfObjectList & lstParents, 
+                                       int nIndex, PdfObject* pPage )
+{
+    if( !pParent || !pPage ) 
+    {
+        PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
+    }
+
+    // 1. Add the reference of the new page to the kids array of pParent
+    // 2. Increase count of every node in lstParents (which also includes pParent)
+
+    // 1. Add reference
+    const PdfArray oldKids = pParent->GetDictionary().GetKey( PdfName("Kids") )->GetArray();
+    PdfArray::const_iterator it = oldKids.begin();
+    PdfArray newKids;
+
+    newKids.reserve( oldKids.GetSize() + 1 );
+
+    if( nIndex < 0 ) 
+    {
+        newKids.push_back( pParent->Reference() );
+    }
+
+    int i = 0;
+    while( it != oldKids.end() ) 
+    {
+        newKids.push_back( *it );
+
+        if( i == nIndex ) 
+            newKids.push_back( pParent->Reference() );
+
+        ++nIndex;
+        ++it;
+    }
+
+    pParent->GetDictionary().AddKey( PdfName("Kids"), newKids );
+
+    // 2. increase count
+    PdfObjectList::const_reverse_iterator itParents = lstParents.rbegin();
+    while( itParents != lstParents.rend() )
+    {
+        this->ChangePagesCount( *itParents, 1 );
+
+        ++itParents;
+    } 
+}
+
+int PdfPagesTree::ChangePagesCount( PdfObject* pPageObj, int nDelta )
+{
+    // Increment or decrement inPagesDict's Count by inDelta, and return the new count.
+    // Simply return the current count if inDelta is 0.
+    int	cnt = pPageObj->GetDictionary().GetKey( "Count" )->GetNumber();
+    if( 0 != nDelta ) 
+    {
+        cnt += nDelta ;
+        pPageObj->GetDictionary().AddKey( "Count", PdfVariant( static_cast<long>(cnt) ) );
+    }
+
+    return cnt ;
+}
+
 
 /*
 PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pPagesObject, 

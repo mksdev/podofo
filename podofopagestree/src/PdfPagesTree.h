@@ -31,13 +31,13 @@ class PdfObject;
 class PdfPage;
 class PdfRect;
 
-typedef enum {
-    PageInsertBeforeFirstPage	= -1,
-    PageInsertLastPage		= -2,
-    PageInsertAllPages		= -3,
-    PageInsertOddPagesOnly	= -4,
-    PageInsertEvenPagesOnly	= -5
-} PageInsertionPoints;
+enum EPdfPageInsertionPoint {
+    ePdfPageInsertionPoint_InsertBeforeFirstPage	= -1,
+    ePdfPageInsertionPoint_InsertLastPage		= -2,
+    ePdfPageInsertionPoint_InsertAllPages		= -3,
+    ePdfPageInsertionPoint_InsertOddPagesOnly	= -4,
+    ePdfPageInsertionPoint_InsertEvenPagesOnly	= -5
+};
 
 /** Class for managing the tree of Pages in a PDF document
  *  Don't use this class directly. Use PdfDocument instead.
@@ -89,18 +89,23 @@ class PODOFO_API PdfPagesTree : public PdfElement
     /** Inserts an existing page object into the internal page tree. 
      *	after the specified page number
      *
-     *  \param inAfterPageNumber an integer specifying after what page - may be one of the special values
+     *  \param nAfterPageNumber an integer specifying after what page
+     *         - may be one of the special values from EPdfPageInsertionPoint.
+     *         Pages are 0 based.
+     *         
      *  \param pPage musst be a PdfObject with type /Page
      */
-    void InsertPage( int inAfterPageNumber, PdfObject* pPage );
+    void InsertPage( int nAfterPageNumber, PdfObject* pPage );
 
     /** Inserts an existing page object into the internal page tree. 
      *	after the specified page number
      *
-     *  \param inAfterPageNumber an integer specifying after what page - may be one of the special values
-     *  \param inPage a PdfPage to be inserted
+     *  \param nAfterPageNumber an integer specifying after what page
+     *         - may be one of the special values  from EPdfPageInsertionPoint.
+     *         Pages are 0 based.
+     *  \param nPage a PdfPage to be inserted
      */
-    void InsertPage( int inAfterPageNumber, PdfPage* inPage );
+    void InsertPage( int nAfterPageNumber, PdfPage* pPage );
 
     /** Creates a new page object and inserts it into the internal
      *  page tree.
@@ -124,8 +129,8 @@ class PODOFO_API PdfPagesTree : public PdfElement
  private:
     PdfPagesTree();	// don't allow construction from nothing!
 
-    const PdfObject* GetPageNode( int nPageNum, PdfObject* pParent, PdfObjectList & rLstParents ) const;
-    const PdfObject* GetPageNodeFromArray( int nPageNum, const PdfArray & rKidsArray, PdfObjectList & rLstParents ) const;
+    PdfObject* GetPageNode( int nPageNum, PdfObject* pParent, PdfObjectList & rLstParents );
+    PdfObject* GetPageNodeFromArray( int nPageNum, const PdfArray & rKidsArray, PdfObjectList & rLstParents );
 
     int GetChildCount( const PdfObject* pNode ) const;
 
@@ -141,6 +146,28 @@ class PODOFO_API PdfPagesTree : public PdfElement
      */
     bool IsTypePages( const PdfObject* pObject ) const; 
 
+    /**
+     * Find the position of pPageObj in the kids array of pPageParent
+     *
+     * @returns the index in the kids array or -1 if pPageObj is no child of pPageParent
+     */
+    int GetPosInKids( PdfObject* pPageObj, PdfObject* pPageParent );
+
+    /** Private method for adjusting the page count in a tree
+     */
+    int ChangePagesCount( PdfObject* inPageObj, int inDelta );
+
+    /**
+     * Insert a page object into a pages node
+     *
+     * @param pNode the pages node whete pPage is to be inserted
+     * @param lstParents list of all (future) parent pages nodes in the pages tree
+     *                   of pPage
+     * @param nIndex index where pPage is to be inserted in pNode's kids array
+     * @param pPage the page object which is to be inserted
+     */
+    void InsertPageIntoNode( PdfObject* pNode, const PdfObjectList & lstParents, 
+                             int nIndex, PdfObject* pPage );
     /** Private method for actually traversing the /Pages tree
      *
      *  \param rListOfParents all parents of the page node will be added to this lists,
