@@ -23,6 +23,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace PoDoFo {
+class PdfMemDocument;
+class PdfPage;
+};
+
 /** This test tests the class PdfPagesTree
  */
 class PagesTreeTest : public CppUnit::TestFixture
