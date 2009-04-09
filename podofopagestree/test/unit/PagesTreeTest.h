@@ -28,14 +28,37 @@
 class PagesTreeTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( PagesTreeTest );
+  CPPUNIT_TEST( testEmptyTree );
   CPPUNIT_TEST( testCreateDelete );
+  CPPUNIT_TEST( testGetPages );
+  CPPUNIT_TEST( testGetPagesReverse );
+  CPPUNIT_TEST( testInsert );
   CPPUNIT_TEST_SUITE_END();
 
  public:
   void setUp();
   void tearDown();
 
+  void testEmptyTree();
   void testCreateDelete();
+  void testGetPages();
+  void testGetPagesReverse();
+  void testInsert();
+
+ private:
+  /**
+   * Create a pages tree with 100 pages,
+   * where every page object has an additional
+   * key PoDoFoTestPageNumber with the original 
+   * page number of the page.
+   *
+   * You can check the page number ussing IsPageNumber()
+   *
+   * @see IsPageNumber
+   */
+  void CreateTestTree( PoDoFo::PdfMemDocument & rDoc );
+
+  bool IsPageNumber( PoDoFo::PdfPage* pPage, int nNumber );
 };
 
 #endif // _PAGES_TREE_TEST_H_
