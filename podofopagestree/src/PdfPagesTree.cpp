@@ -130,7 +130,7 @@ void PdfPagesTree::InsertPage( int nAfterPageNumber, PdfObject* pPage )
         return;
     }
 
-    printf("Fetching page node: %i\n", nAfterPageNumber);
+    //printf("Fetching page node: %i\n", nAfterPageNumber);
     PdfObjectList lstParents;
     PdfObject* pPageBefore = this->GetPageNode( nAfterPageNumber, this->GetRoot(), lstParents );
     
@@ -167,14 +167,38 @@ PdfPage* PdfPagesTree::CreatePage( const PdfRect & rSize )
 {
     PdfPage* pPage = new PdfPage( rSize, GetRoot()->GetOwner() );
 
-    InsertPage( this->GetTotalNumberOfPages(), pPage );
+    InsertPage( this->GetTotalNumberOfPages() - 1, pPage );
 
     return pPage;
 }
 
-void PdfPagesTree::DeletePage( int inPageNumber )
+void PdfPagesTree::DeletePage( int nPageNumber )
 {
+    PdfObjectList lstParents;
+    PdfObject* pPageNode = this->GetPageNode( nPageNumber, this->GetRoot(), lstParents );
+    
+    if( !pPageNode ) 
+    {
+        PdfError::LogMessage( eLogSeverity_Information,
+                              "Invalid argument to PdfPagesTree::DeletePage: %i - Page not found\n",
+                              nPageNumber );
+        PODOFO_RAISE_ERROR( ePdfError_PageNotFound );
+    }
 
+    if( lstParents.size() > 0 ) 
+    {
+        PdfObject* pParent = lstParents.back();
+        int nKidsIndex = this->GetPosInKids( pPageNode, pParent );
+        
+        DeletePageFromNode( pParent, lstParents, nKidsIndex, pPageNode );
+    }
+    else
+    {
+        PdfError::LogMessage( eLogSeverity_Error,
+                              "PdfPagesTree::DeletePage: Page %i has no parent - cannot be deleted.\n",
+                              nPageNumber );
+        PODOFO_RAISE_ERROR( ePdfError_PageNotFound );
+    }
 }
 
 
@@ -215,7 +239,7 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
         return NULL;
     }
 
-    printf("Fetching: %i %i %i\n", numDirectKids, numKids, nPageNum );
+    //printf("Fetching: %i %i %i\n", numDirectKids, numKids, nPageNum );
     if( numDirectKids == numKids && static_cast<size_t>(nPageNum) < numDirectKids )
     {
         // This node has only page nodes as kids,
@@ -236,9 +260,6 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
         // We have to traverse the tree
         while( it != rKidsArray.end() ) 
         {
-            std::string str;
-            (*it).ToString(str);
-            printf("Kidsarray: %s\n", str.c_str());
             if( (*it).IsArray() ) 
             {
                 // Fixes some broken PDFs who have trees with 1 element kids arrays
@@ -296,7 +317,6 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
         }
     }
 
-    printf("End of function reached :(\n");
     return NULL;
 }
 
@@ -314,12 +334,8 @@ PdfObject* PdfPagesTree::GetPageNodeFromArray( int nPageNum, const PdfArray & rK
     PdfVariant rVar = rKidsArray[nPageNum];
     while ( true ) 
     {
-        std::string str;
-        rVar.ToString(str);
-        printf("Loop rVar=%s\n", str.c_str() );
         if ( rVar.IsArray() ) 
         {
-            printf("Got array\n");
             // Fixes some broken PDFs who have trees with 1 element kids arrays
             return GetPageNodeFromArray( nPageNum, rVar.GetArray(), rLstParents );
         }
@@ -327,7 +343,7 @@ PdfObject* PdfPagesTree::GetPageNodeFromArray( int nPageNum, const PdfArray & rK
             return NULL;	// can't handle inline pages just yet...
 
         PdfObject* pgObject = GetRoot()->GetOwner()->GetObject( rVar.GetReference() );
-        printf("Reading %s\n", pgObject->Reference().ToString().c_str());
+        //printf("Reading %s\n", pgObject->Reference().ToString().c_str());
         // make sure the object is a /Page and not a /Pages with a single kid
         if( this->IsTypePage(pgObject) ) 
         {
@@ -403,7 +419,7 @@ int PdfPagesTree::GetPosInKids( PdfObject* pPageObj, PdfObject* pPageParent )
     return -1;
 }
 
-void PdfPagesTree::InsertPageIntoNode( PdfObject* pParent, const PdfObjectList & lstParents, 
+void PdfPagesTree::InsertPageIntoNode( PdfObject* pParent, const PdfObjectList & rlstParents, 
                                        int nIndex, PdfObject* pPage )
 {
     if( !pParent || !pPage ) 
@@ -434,25 +450,72 @@ void PdfPagesTree::InsertPageIntoNode( PdfObject* pParent, const PdfObjectList &
         if( i == nIndex ) 
             newKids.push_back( pPage->Reference() );
 
-        ++nIndex;
+        ++i;
         ++it;
     }
 
     pParent->GetDictionary().AddKey( PdfName("Kids"), newKids );
-
-    PdfVariant var(newKids);
-    std::string str;
-    var.ToString(str);
-    printf("New Array: %s\n", str.c_str());
  
     // 2. increase count
-    PdfObjectList::const_reverse_iterator itParents = lstParents.rbegin();
-    while( itParents != lstParents.rend() )
+    PdfObjectList::const_reverse_iterator itParents = rlstParents.rbegin();
+    while( itParents != rlstParents.rend() )
     {
         this->ChangePagesCount( *itParents, 1 );
 
         ++itParents;
     } 
+}
+
+void PdfPagesTree::DeletePageFromNode( PdfObject* pParent, const PdfObjectList & rlstParents, 
+                                       int nIndex, PdfObject* pPage )
+{
+    if( !pParent || !pPage ) 
+    {
+        PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
+    }
+
+    // 1. Delete the reference from the kids array of pParent
+    // 2. Decrease count of every node in lstParents (which also includes pParent)
+    // 3. Remove empty page nodes
+
+    // TODO: Tell cache to free page object
+
+    // 1. Delete reference
+    this->DeletePageNode( pParent, nIndex ) ;
+
+    // 2. Decrease count
+    PdfObjectList::const_reverse_iterator itParents = rlstParents.rbegin();
+    while( itParents != rlstParents.rend() )
+    {
+        this->ChangePagesCount( *itParents, -1 );
+
+        ++itParents;
+    } 
+
+    // 3. Remove empty pages nodes
+    itParents = rlstParents.rbegin();
+    while( itParents != rlstParents.rend() )
+    {
+        // Never delete root node
+        if( IsEmptyPageNode( *itParents ) && *itParents != GetRoot() ) 
+        {
+            PdfObject* pParentOfNode = *(itParents + 1);
+            int nKidsIndex = this->GetPosInKids( *itParents, pParentOfNode );
+            DeletePageNode( pParentOfNode, nKidsIndex );
+
+            // Delete empty page nodes
+            delete this->GetObject()->GetOwner()->RemoveObject( (*itParents)->Reference() );
+        }
+
+        ++itParents;
+    } 
+}
+
+void PdfPagesTree::DeletePageNode( PdfObject* pParent, int nIndex ) 
+{
+    PdfArray kids = pParent->GetDictionary().GetKey( PdfName("Kids") )->GetArray();
+    kids.erase( kids.begin() + nIndex );
+    pParent->GetDictionary().AddKey( PdfName("Kids"), kids );
 }
 
 int PdfPagesTree::ChangePagesCount( PdfObject* pPageObj, int nDelta )
@@ -469,6 +532,18 @@ int PdfPagesTree::ChangePagesCount( PdfObject* pPageObj, int nDelta )
     return cnt ;
 }
 
+bool PdfPagesTree::IsEmptyPageNode( PdfObject* pPageNode ) 
+{
+    long lCount = pPageNode->GetDictionary().GetKeyAsLong( PdfName("Count"), 0L );
+    bool bKidsEmpty = true;
+
+    if( pPageNode->GetDictionary().HasKey( PdfName("Kids") ) )
+    {
+        bKidsEmpty = pPageNode->GetDictionary().GetKey( PdfName("Kids") )->GetArray().empty();
+    }
+
+    return ( lCount == 0L || bKidsEmpty );
+}
 
 /*
 PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pPagesObject, 

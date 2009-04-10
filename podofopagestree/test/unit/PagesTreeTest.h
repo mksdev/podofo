@@ -34,10 +34,12 @@ class PagesTreeTest : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( PagesTreeTest );
   CPPUNIT_TEST( testEmptyTree );
+  CPPUNIT_TEST( testEmptyDoc );
   CPPUNIT_TEST( testCreateDelete );
   CPPUNIT_TEST( testGetPages );
   CPPUNIT_TEST( testGetPagesReverse );
   CPPUNIT_TEST( testInsert );
+  CPPUNIT_TEST( testDeleteAll );
   CPPUNIT_TEST_SUITE_END();
 
  public:
@@ -45,11 +47,13 @@ class PagesTreeTest : public CppUnit::TestFixture
   void tearDown();
 
   void testEmptyTree();
+  void testEmptyDoc();
   void testCreateDelete();
   void testGetPages();
   void testGetPagesReverse();
   void testInsert();
-
+  void testDeleteAll();
+    
  private:
   /**
    * Create a pages tree with 100 pages,

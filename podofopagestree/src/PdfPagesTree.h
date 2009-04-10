@@ -123,6 +123,7 @@ class PODOFO_API PdfPagesTree : public PdfElement
      *   \param inPageNumber the page number (0-based) to be removed
      *
      *   The PdfPage object refering to this page will be deleted by this call!
+     *   Empty page nodes will also be deleted.
      */
     void DeletePage( int inPageNumber );
 
@@ -161,13 +162,42 @@ class PODOFO_API PdfPagesTree : public PdfElement
      * Insert a page object into a pages node
      *
      * @param pNode the pages node whete pPage is to be inserted
-     * @param lstParents list of all (future) parent pages nodes in the pages tree
+     * @param rlstParents list of all (future) parent pages nodes in the pages tree
      *                   of pPage
      * @param nIndex index where pPage is to be inserted in pNode's kids array
      * @param pPage the page object which is to be inserted
      */
-    void InsertPageIntoNode( PdfObject* pNode, const PdfObjectList & lstParents, 
+    void InsertPageIntoNode( PdfObject* pNode, const PdfObjectList & rlstParents, 
                              int nIndex, PdfObject* pPage );
+
+    
+    /**
+     * Delete a page object from a pages node
+     *
+     * @param pNode which is the direct parent of pPage and where the page must be deleted
+     * @param rlstParents list of all parent pages nodes in the pages tree
+     *                   of pPage
+     * @param nIndex index where pPage is to be deleted in pNode's kids array
+     * @param pPage the page object which is to be deleted
+     */
+    void DeletePageFromNode( PdfObject* pNode, const PdfObjectList & rlstParents, 
+                             int nIndex, PdfObject* pPage );
+    
+    /**
+     * Delete a single page node or page object from the kids array of pParent
+     *
+     * @param pParent the parent of the page node which is deleted
+     * @param nIndex index to remove from the kids array of pParent
+     */
+    void DeletePageNode( PdfObject* pParent, int nIndex );
+
+    /**
+     * Tests if a page node is emtpy
+     *
+     * @returns true if Count of page is 0 or the Kids array is empty
+     */
+    bool IsEmptyPageNode( PdfObject* pPageNode );
+
     /** Private method for actually traversing the /Pages tree
      *
      *  \param rListOfParents all parents of the page node will be added to this lists,

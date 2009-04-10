@@ -46,14 +46,28 @@ void PagesTreeTest::testEmptyTree()
     CPPUNIT_ASSERT_EQUAL( writer.GetPageCount(), 0 );
 
     // Retrieving any page from an empty document must be NULL
-    PdfPage* pPage = writer.GetPage( 0 );
+    PdfPage* pPage = writer.GetPagesTree()->GetPage( 0 );
     CPPUNIT_ASSERT_EQUAL( pPage, static_cast<PdfPage*>(NULL) );
 
-    pPage = writer.GetPage( -1 );
+    pPage = writer.GetPagesTree()->GetPage( -1 );
     CPPUNIT_ASSERT_EQUAL( pPage, static_cast<PdfPage*>(NULL) );
 
-    pPage = writer.GetPage( 1 );
+    pPage = writer.GetPagesTree()->GetPage( 1 );
     CPPUNIT_ASSERT_EQUAL( pPage, static_cast<PdfPage*>(NULL) );
+}
+
+void PagesTreeTest::testEmptyDoc()
+{
+    // PdfPagesTree does not throw exceptions but PdfDocument does
+    PdfMemDocument  writer;
+
+    // Empty document must have page count == 0
+    CPPUNIT_ASSERT_EQUAL( writer.GetPageCount(), 0 );
+
+    // Retrieving any page from an empty document must be NULL
+    CPPUNIT_ASSERT_THROW( writer.GetPage( 0 ), PdfError );
+    CPPUNIT_ASSERT_THROW( writer.GetPage( -1 ), PdfError );
+    CPPUNIT_ASSERT_THROW( writer.GetPage( 1 ), PdfError );
 }
 
 void PagesTreeTest::testCreateDelete()
@@ -78,7 +92,7 @@ void PagesTreeTest::testCreateDelete()
     painter.DrawText( 200, 200, "Page 1"  );
     painter.FinishPage();
     CPPUNIT_ASSERT_EQUAL( writer.GetPageCount(), 1 );
-    
+
 	// write 2. page
     pPage = writer.CreatePage( PdfPage::CreateStandardPageSize( ePdfPageSize_A4 ) );
     painter.SetPage( pPage );
@@ -129,7 +143,7 @@ void PagesTreeTest::testGetPages()
     const int DELETED_PAGE = 50;
     doc.GetPagesTree()->DeletePage( DELETED_PAGE );
 
-    for(int i=0; i<PODOFO_TEST_NUM_PAGES - 1; i++) 
+    for(int i=0; i<PODOFO_TEST_NUM_PAGES - 2; i++) 
     {
         PdfPage* pPage = doc.GetPage( i );
 
@@ -164,7 +178,7 @@ void PagesTreeTest::testGetPagesReverse()
     // Now delete first page 
     doc.GetPagesTree()->DeletePage( 0 );
 
-    for(int i=PODOFO_TEST_NUM_PAGES-1; i>=0; i--)
+    for(int i=PODOFO_TEST_NUM_PAGES-2; i>=0; i--)
     {
         PdfPage* pPage = doc.GetPage( i );
 
@@ -180,18 +194,21 @@ void PagesTreeTest::testInsert()
 
     CreateTestTree( doc );
 
-    const int INSERTED_PAGE_FLAG= 0xabcd;
-    const int INSERTED_PAGE_FLAG1= 0xabcd + 1;
-    const int INSERTED_PAGE_FLAG2= 0xabcd + 2;
-    PdfPage* pPage = doc.CreatePage( PdfPage::CreateStandardPageSize( ePdfPageSize_A4 ) );
+    const int INSERTED_PAGE_FLAG= 1234;
+    const int INSERTED_PAGE_FLAG1= 1234 + 1;
+    const int INSERTED_PAGE_FLAG2= 1234 + 2;
+
+    PdfPage* pPage = new PdfPage( PdfPage::CreateStandardPageSize( ePdfPageSize_A4 ),
+                                  &(doc.GetObjects()) );
     pPage->GetObject()->GetDictionary().AddKey( PODOFO_TEST_PAGE_KEY, 
                                                 static_cast<long>(INSERTED_PAGE_FLAG) );
 
+    // Insert page at the beginning
     doc.GetPagesTree()->InsertPage(
         ePdfPageInsertionPoint_InsertBeforeFirstPage,
         pPage );
 
-    // Find inserted page
+    // Find inserted page (beginning)
     pPage = doc.GetPage( 0 );
     CPPUNIT_ASSERT_EQUAL( IsPageNumber( pPage, INSERTED_PAGE_FLAG ), true );
     
@@ -199,16 +216,17 @@ void PagesTreeTest::testInsert()
     pPage = doc.GetPage( 1 );
     CPPUNIT_ASSERT_EQUAL( IsPageNumber( pPage, 0 ), true );
 
-    // Insert at end
+    // Insert at end 
     pPage = doc.CreatePage( PdfPage::CreateStandardPageSize( ePdfPageSize_A4 ) );
     pPage->GetObject()->GetDictionary().AddKey( PODOFO_TEST_PAGE_KEY, 
                                                 static_cast<long>(INSERTED_PAGE_FLAG1) );
 
-    pPage = doc.GetPage( doc.GetPageCount() );
+    pPage = doc.GetPage( doc.GetPageCount() - 1 );
     CPPUNIT_ASSERT_EQUAL( IsPageNumber( pPage, INSERTED_PAGE_FLAG1 ), true );
-    
+
     // Insert in middle
-    pPage = doc.CreatePage( PdfPage::CreateStandardPageSize( ePdfPageSize_A4 ) );
+    pPage = new PdfPage( PdfPage::CreateStandardPageSize( ePdfPageSize_A4 ),
+                                  &(doc.GetObjects()) );
     pPage->GetObject()->GetDictionary().AddKey( PODOFO_TEST_PAGE_KEY, 
                                                 static_cast<long>(INSERTED_PAGE_FLAG2) );
 
@@ -216,6 +234,22 @@ void PagesTreeTest::testInsert()
     doc.GetPagesTree()->InsertPage( INSERT_POINT, pPage );
     pPage = doc.GetPage( INSERT_POINT + 1 );
     CPPUNIT_ASSERT_EQUAL( IsPageNumber( pPage, INSERTED_PAGE_FLAG2 ), true );
+}
+
+void PagesTreeTest::testDeleteAll() 
+{
+    PdfMemDocument doc;
+
+    CreateTestTree( doc );
+
+    for(int i=0; i<PODOFO_TEST_NUM_PAGES; i++) 
+    {
+        doc.GetPagesTree()->DeletePage(0);
+
+        CPPUNIT_ASSERT_EQUAL( doc.GetPageCount(), PODOFO_TEST_NUM_PAGES - (i + 1) );
+    }
+
+    CPPUNIT_ASSERT_EQUAL( doc.GetPageCount(), 0 );
 }
 
 void PagesTreeTest::CreateTestTree( PoDoFo::PdfMemDocument & rDoc )
@@ -235,7 +269,7 @@ bool PagesTreeTest::IsPageNumber( PoDoFo::PdfPage* pPage, int nNumber )
 
     if( lPageNumber != static_cast<long>(nNumber) )
     {
-        printf("Expected page number %i but got %li.\n", nNumber, lPageNumber);
+        printf("PagesTreeTest: Expected page number %i but got %li.\n", nNumber, lPageNumber);
         return false;
     }
     else
