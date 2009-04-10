@@ -24,6 +24,7 @@
 #include "PdfArray.h"
 #include "PdfDefines.h"
 #include "PdfElement.h"
+#include "PdfPagesTreeCache.h"
 
 namespace PoDoFo {
 
@@ -46,7 +47,6 @@ enum EPdfPageInsertionPoint {
  */
 class PODOFO_API PdfPagesTree : public PdfElement
 {
-	typedef std::deque< PdfPage* >    PdfPageList;
 	typedef std::deque< PdfObject* >  PdfObjectList;
 
  public:
@@ -225,10 +225,8 @@ class PODOFO_API PdfPagesTree : public PdfElement
     PdfObject* GetRoot()	{ return m_pObject; }
     const PdfObject* GetRoot() const	{ return m_pObject; }
 
-
-  private:
-    PdfPageList    m_deqPageObjs;
-    
+private:
+    PdfPagesTreeCache m_cache;
 };
 
 };

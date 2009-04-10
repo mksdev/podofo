@@ -44,23 +44,11 @@ PdfPagesTree::PdfPagesTree( PdfObject* pPagesRoot )
     {
         PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
     }
-
-    // pre-allocate enough elements
-    // better performance and allows for a "sparse array"
-    m_deqPageObjs.resize( GetTotalNumberOfPages() );
 }
 
 PdfPagesTree::~PdfPagesTree() 
 {
-    PdfPageList::iterator it = m_deqPageObjs.begin();
-
-    while( it != m_deqPageObjs.end() )
-    {
-        delete (*it);
-        ++it;
-    }
-        
-    m_deqPageObjs.clear();
+    m_cache.ClearCache();
 }
 
 int PdfPagesTree::GetTotalNumberOfPages() const
@@ -69,8 +57,6 @@ int PdfPagesTree::GetTotalNumberOfPages() const
              m_pObject->GetDictionary().GetKeyAsLong( "Count", 0 ) : 0 );
 }
 
-
-
 PdfPage* PdfPagesTree::GetPage( int nIndex )
 {
     // if you try to get a page past the end, return NULL
@@ -78,13 +64,19 @@ PdfPage* PdfPagesTree::GetPage( int nIndex )
     if ( nIndex >= GetTotalNumberOfPages() )
         return NULL;
 
+    // Take a look into the cache first
+    PdfPage* pPage = m_cache.GetPage( nIndex );
+    if( pPage )
+        return pPage;
 
+    // Not in cache -> search tree
     PdfObjectList lstParents;
     PdfObject* pObj = this->GetPageNode(nIndex, this->GetRoot(), lstParents);
     
     if( pObj ) 
     {
-        PdfPage* pPage = new PdfPage( pObj, lstParents );
+        pPage = new PdfPage( pObj, lstParents );
+        m_cache.AddPage( nIndex, pPage );
         return pPage;
     }
 
@@ -174,9 +166,13 @@ PdfPage* PdfPagesTree::CreatePage( const PdfRect & rSize )
 
 void PdfPagesTree::DeletePage( int nPageNumber )
 {
+    // Delete from cache
+    m_cache.DeletePage( nPageNumber );
+
+    // Delete from pages tree
     PdfObjectList lstParents;
     PdfObject* pPageNode = this->GetPageNode( nPageNumber, this->GetRoot(), lstParents );
-    
+
     if( !pPageNode ) 
     {
         PdfError::LogMessage( eLogSeverity_Information,
