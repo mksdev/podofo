@@ -21,11 +21,13 @@
 #include "PdfPagesTreeCache.h"
 
 #include "PdfPage.h"
+#include "PdfPagesTree.h"
 
 namespace PoDoFo {
 
-PdfPagesTreeCache::PdfPagesTreeCache()
+PdfPagesTreeCache::PdfPagesTreeCache( int nInitialSize )
 {
+    m_deqPageObjs.resize( nInitialSize );
 }
 
 PdfPagesTreeCache::~PdfPagesTreeCache()
@@ -35,18 +37,18 @@ PdfPagesTreeCache::~PdfPagesTreeCache()
 
 PdfPage* PdfPagesTreeCache::GetPage( int nIndex )
 {
-    /*
-    PdfPageMap::iterator it = m_mapPageObjs.find( nIndex );
-    if( it != m_mapPageObjs.end() ) 
+    if( nIndex < 0 || nIndex > static_cast<int>(m_deqPageObjs.size()) ) 
     {
-        return (*it).second;
+        PdfError::LogMessage( eLogSeverity_Error,
+                              "PdfPagesTreeCache::GetPage( %i ) index out of range. Size of cache is %i\n",
+                              nIndex, m_deqPageObjs.size() );
+        return NULL;
     }
-    */
 
-    return NULL;
+    return m_deqPageObjs[nIndex];
 }
 
-void PdfPagesTreeCache::AddPage( int nIndex, PdfPage* pPage )
+void PdfPagesTreeCache::AddPageObject( int nIndex, PdfPage* pPage )
 {
     // TODO: What happens with insert page events ... ???
 
@@ -54,39 +56,53 @@ void PdfPagesTreeCache::AddPage( int nIndex, PdfPage* pPage )
     PdfPage* pOldPage = GetPage( nIndex );
     delete pOldPage;
 
-    m_mapPageObjs[nIndex] = pPage;
+    m_deqPageObjs[nIndex] = pPage;
+}
+
+void PdfPagesTreeCache::InsertPage( int nIndex ) 
+{
+    if( nIndex == ePdfPageInsertionPoint_InsertBeforeFirstPage ) 
+    {
+        m_deqPageObjs.push_front( NULL );
+    } 
+    else if( nIndex < 0 || nIndex > static_cast<int>(m_deqPageObjs.size()) ) 
+    {
+        PdfError::LogMessage( eLogSeverity_Error,
+                              "PdfPagesTreeCache::DeletePage( %i ) index out of range. Size of cache is %i\n",
+                              nIndex, m_deqPageObjs.size() );
+        return;
+    }
+    else
+    {
+        m_deqPageObjs.insert( m_deqPageObjs.begin() + nIndex, NULL );
+    }
 }
 
 void PdfPagesTreeCache::DeletePage( int nIndex )
 {
-    PdfPageMap::iterator it = m_mapPageObjs.find( nIndex );
-
-    if( it != m_mapPageObjs.end() ) 
+    if( nIndex < 0 || nIndex > static_cast<int>(m_deqPageObjs.size()) ) 
     {
-        // Delete the actual object
-        delete (*it).second;
-        m_mapPageObjs.erase( it );
-
-        // Decrease index of every larger page object
-        while( it != m_mapPageObjs.end() ) 
-        {
-            
-            ++it;
-        }
+        PdfError::LogMessage( eLogSeverity_Error,
+                              "PdfPagesTreeCache::DeletePage( %i ) index out of range. Size of cache is %i\n",
+                              nIndex, m_deqPageObjs.size() );
+        return;
     }
+
+    delete m_deqPageObjs[nIndex];
+    m_deqPageObjs.erase( m_deqPageObjs.begin() + nIndex );
 }
 
 void PdfPagesTreeCache::ClearCache() 
 {
-    PdfPageMap::iterator it = m_mapPageObjs.begin();
+    PdfPageList::iterator it = m_deqPageObjs.begin();
 
-    while( it != m_mapPageObjs.end() )
+    while( it != m_deqPageObjs.end() )
     {
-        delete (*it).second;
+        delete (*it);
         ++it;
     }
         
-    m_mapPageObjs.clear();
+    m_deqPageObjs.clear();
 }
 
 };

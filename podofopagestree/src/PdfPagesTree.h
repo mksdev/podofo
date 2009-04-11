@@ -103,7 +103,7 @@ class PODOFO_API PdfPagesTree : public PdfElement
      *  \param nAfterPageNumber an integer specifying after what page
      *         - may be one of the special values  from EPdfPageInsertionPoint.
      *         Pages are 0 based.
-     *  \param nPage a PdfPage to be inserted
+     *  \param nPage a PdfPage to be inserted, the PdfPage will not get owned by the PdfPagesTree
      */
     void InsertPage( int nAfterPageNumber, PdfPage* pPage );
 
@@ -126,6 +126,18 @@ class PODOFO_API PdfPagesTree : public PdfElement
      *   Empty page nodes will also be deleted.
      */
     void DeletePage( int inPageNumber );
+
+    /**
+     * Clear internal cache of PdfPage objects.
+     * All references to PdfPage object will become invalid
+     * when calling this method. All PdfPages will be deleted.
+     *
+     * You normally will never have to call this method.
+     * It is only useful if one modified the page nodes 
+     * of the pagestree manually.
+     *
+     */
+    inline void ClearCache();
 
  private:
     PdfPagesTree();	// don't allow construction from nothing!
@@ -228,6 +240,14 @@ class PODOFO_API PdfPagesTree : public PdfElement
 private:
     PdfPagesTreeCache m_cache;
 };
+
+// -----------------------------------------------------
+// 
+// -----------------------------------------------------
+inline void PdfPagesTree::ClearCache() 
+{
+    m_cache.ClearCache();
+}
 
 };
 

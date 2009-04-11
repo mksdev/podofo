@@ -207,6 +207,7 @@ void PagesTreeTest::testInsert()
     doc.GetPagesTree()->InsertPage(
         ePdfPageInsertionPoint_InsertBeforeFirstPage,
         pPage );
+    delete pPage;
 
     // Find inserted page (beginning)
     pPage = doc.GetPage( 0 );
@@ -232,6 +233,8 @@ void PagesTreeTest::testInsert()
 
     const int INSERT_POINT = 50;
     doc.GetPagesTree()->InsertPage( INSERT_POINT, pPage );
+    delete pPage;
+
     pPage = doc.GetPage( INSERT_POINT + 1 );
     CPPUNIT_ASSERT_EQUAL( IsPageNumber( pPage, INSERTED_PAGE_FLAG2 ), true );
 }

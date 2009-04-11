@@ -34,12 +34,14 @@ class PdfPage;
  */
 class PODOFO_API PdfPagesTreeCache
 {
-	typedef std::map< int, PdfPage* > PdfPageMap;
+	typedef std::deque< PdfPage* > PdfPageList;
 
  public:
     /** Construct a new PdfCachedPagesTree.
+     *  
+     *  @param nInitialSize initial size of the pagestree
      */
-    PdfPagesTreeCache();
+    PdfPagesTreeCache( int nInitialSize );
     
     /** Close/down destruct a PdfCachedPagesTree
      */
@@ -55,11 +57,19 @@ class PODOFO_API PdfPagesTreeCache
     virtual PdfPage* GetPage( int nIndex );
 
     /**
-     * Add a PdfPage to the cache
+     * Add a PdfPage object to the cache
      * @param nIndex index of the page
      * @param pPage page object
      */
-    virtual void AddPage( int nIndex, PdfPage* pPage );
+    virtual void AddPageObject( int nIndex, PdfPage* pPage );
+
+    /**
+     * A page was inserted into the pagestree,
+     * therefore the cache has to be updated
+     *
+     * @param nIndex index where the page was inserted
+     */
+    virtual void InsertPage( int nIndex );
 
     /**
      * Delete a PdfPage from the cache
@@ -74,7 +84,13 @@ class PODOFO_API PdfPagesTreeCache
     virtual void ClearCache();
 
 private:
-    PdfPageMap    m_mapPageObjs;
+    /**
+     * Avoid construction of empty objects
+     */
+    PdfPagesTreeCache() { }
+
+private:
+    PdfPageList    m_deqPageObjs;
 };
 
 };

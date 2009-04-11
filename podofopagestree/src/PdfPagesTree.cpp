@@ -31,14 +31,16 @@
 namespace PoDoFo {
 
 PdfPagesTree::PdfPagesTree( PdfVecObjects* pParent )
-    : PdfElement( "Pages", pParent )
+    : PdfElement( "Pages", pParent ),
+      m_cache( 0 )
 {
     GetObject()->GetDictionary().AddKey( "Kids", PdfArray() ); // kids->Reference() 
     GetObject()->GetDictionary().AddKey( "Count", PdfObject( 0L ) );
 }
 
 PdfPagesTree::PdfPagesTree( PdfObject* pPagesRoot )
-    : PdfElement( "Pages", pPagesRoot )
+    : PdfElement( "Pages", pPagesRoot ),
+      m_cache( pPagesRoot->GetDictionary().GetKeyAsLong( "Count", 0L ) )
 {
     if( !m_pObject ) 
     {
@@ -76,7 +78,7 @@ PdfPage* PdfPagesTree::GetPage( int nIndex )
     if( pObj ) 
     {
         pPage = new PdfPage( pObj, lstParents );
-        m_cache.AddPage( nIndex, pPage );
+        m_cache.AddPageObject( nIndex, pPage );
         return pPage;
     }
 
@@ -142,7 +144,6 @@ void PdfPagesTree::InsertPage( int nAfterPageNumber, PdfObject* pPage )
             lstPagesTree.push_back( m_pObject );
             // Use -1 as index to insert before the empty kids array
             InsertPageIntoNode( m_pObject, lstPagesTree, -1, pPage );
-            return;
         }
     }
     else
@@ -152,6 +153,8 @@ void PdfPagesTree::InsertPage( int nAfterPageNumber, PdfObject* pPage )
 
         InsertPageIntoNode( pParent, lstParents, nKidsIndex, pPage );
     }
+
+    m_cache.InsertPage( nAfterPageNumber );
 }
 
 
@@ -160,7 +163,8 @@ PdfPage* PdfPagesTree::CreatePage( const PdfRect & rSize )
     PdfPage* pPage = new PdfPage( rSize, GetRoot()->GetOwner() );
 
     InsertPage( this->GetTotalNumberOfPages() - 1, pPage );
-
+    m_cache.AddPageObject( this->GetTotalNumberOfPages() - 1, pPage );
+    
     return pPage;
 }
 
@@ -168,7 +172,7 @@ void PdfPagesTree::DeletePage( int nPageNumber )
 {
     // Delete from cache
     m_cache.DeletePage( nPageNumber );
-
+    
     // Delete from pages tree
     PdfObjectList lstParents;
     PdfObject* pPageNode = this->GetPageNode( nPageNumber, this->GetRoot(), lstParents );
