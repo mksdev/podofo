@@ -126,8 +126,10 @@ void PdfPagesTree::InsertPage( int nAfterPageNumber, PdfObject* pPage )
 
     //printf("Fetching page node: %i\n", nAfterPageNumber);
     PdfObjectList lstParents;
+    //printf("Searching page=%i\n", nAfterPageNumber );
     PdfObject* pPageBefore = this->GetPageNode( nAfterPageNumber, this->GetRoot(), lstParents );
     
+    //printf("pPageBefore=%p lstParents=%i\n", pPageBefore,lstParents.size() );
     if( !pPageBefore || lstParents.size() == 0 ) 
     {
         if( this->GetTotalNumberOfPages() != 0 ) 
@@ -149,7 +151,9 @@ void PdfPagesTree::InsertPage( int nAfterPageNumber, PdfObject* pPage )
     else
     {
         PdfObject* pParent = lstParents.back();
+        //printf("bInsertBefore=%i\n", bInsertBefore );
         int nKidsIndex = bInsertBefore  ? -1 : this->GetPosInKids( pPageBefore, pParent );
+        //printf("Inserting into node: %p at pos %i\n", pParent, nKidsIndex );
 
         InsertPageIntoNode( pParent, lstParents, nKidsIndex, pPage );
     }
@@ -216,6 +220,7 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
 
     if( !pParent->GetDictionary().HasKey( PdfName("Kids") ) )
     {
+        //printf("Does not have kids\n");
         return NULL;
     }
 
@@ -223,6 +228,7 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
     const PdfObject* pObj = pParent->GetDictionary().GetKey( "Kids" );
     if( !pObj->IsArray() )
     {
+        //printf("Is no array\n");
         return NULL;
     }
 
@@ -232,7 +238,7 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
     const size_t numDirectKids = rKidsArray.size();
     const size_t numKids = pParent->GetDictionary().GetKeyAsLong( "Count", 0L );
 
-    if( static_cast<int>(numKids) <= nPageNum ) 
+    if( static_cast<int>(numKids) < nPageNum ) 
     {
         PdfError::LogMessage( eLogSeverity_Critical, "Cannot retrieve page %i from a document with only %i pages.",
                               nPageNum, static_cast<int>(numKids) );
@@ -269,19 +275,16 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
             else if( (*it).IsReference() ) 
             {
                 PdfObject* pChild = GetRoot()->GetOwner()->GetObject( (*it).GetReference() );
-                printf("pChild=%p\n", pChild);
                 if (!pChild) 
                 {
                     PdfError::LogMessage( eLogSeverity_Critical, "Requesting page index %i. Child not found: %s\n", 
                                           nPageNum, (*it).GetReference().ToString().c_str()); 
                     return NULL;
                 }
-                printf("pChild=%s\n", pChild->Reference().ToString().c_str());
+
                 if( this->IsTypePages(pChild) ) 
                 {
-                    printf("pChild is PAGES\n");
                     int childCount = this->GetChildCount( pChild );
-                    printf("childCount=%i nPageNum=%i\n", childCount, nPageNum);
                     if( childCount < nPageNum ) 
                     {
                         // skip this page node
@@ -296,12 +299,11 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
                 }
                 else // Type == Page
                 {
-                    printf("pChild is PAGE\n");
                     // Skip a normal page
                     nPageNum--;
-                    printf("nPageNum=%i\n", nPageNum);
                     if( 0 == nPageNum )
                     {
+                        rLstParents.push_back( pParent );
                         return pChild;
                     } 
                 }
@@ -317,6 +319,7 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
         }
     }
 
+    //printf("END REACHED\n");
     return NULL;
 }
 
@@ -398,6 +401,7 @@ int PdfPagesTree::GetPosInKids( PdfObject* pPageObj, PdfObject* pPageParent )
 {
     if( !pPageParent )
     {
+        //printf("pPageParent=%p\n", pPageParent );
         return -1;
     }
 
@@ -409,6 +413,7 @@ int PdfPagesTree::GetPosInKids( PdfObject* pPageObj, PdfObject* pPageParent )
     {
         if( (*it).GetReference() == pPageObj->Reference() )
         {
+            //printf("Found at: %i \n", index );
             return index;
         }
 
@@ -416,6 +421,8 @@ int PdfPagesTree::GetPosInKids( PdfObject* pPageObj, PdfObject* pPageParent )
         ++it;
     }
 
+    //printf("Not found %i 0 R in %i 0 R\n", pPageObj->Reference().ObjectNumber(),
+    //       pPageParent->Reference().ObjectNumber());
     return -1;
 }
 
@@ -453,6 +460,13 @@ void PdfPagesTree::InsertPageIntoNode( PdfObject* pParent, const PdfObjectList &
         ++i;
         ++it;
     }
+
+    /*
+    PdfVariant var2( newKids );
+    std::string str2;
+    var2.ToString(str2);
+    printf("newKids= %s\n", str2.c_str() );
+    */
 
     pParent->GetDictionary().AddKey( PdfName("Kids"), newKids );
  
