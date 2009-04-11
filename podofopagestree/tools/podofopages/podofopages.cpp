@@ -49,6 +49,10 @@ void print_help()
   printf("Options:\n");
   printf("\t--delete NUMBER\n");
   printf("\tDeletes the page NUMBER (number is 0-based)\n"); 
+  printf("\tThe page will not really be deleted from the PDF.\n");
+  printf("\tIt is only removed from the so called pagestree and\n");
+  printf("\ttherefore invisible. The content of the page can still\n");
+  printf("\tbe retrieved from the document though.\n\n");
   printf("\t--move FROM TO\n");
   printf("\tMoves a page FROM TO in the document (FROM and TO are 0-based)\n\n"); 
 
