@@ -285,7 +285,7 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
                 if( this->IsTypePages(pChild) ) 
                 {
                     int childCount = this->GetChildCount( pChild );
-                    if( childCount < nPageNum ) 
+                    if( childCount < nPageNum + 1 ) // Pages are 0 based, but count is not
                     {
                         // skip this page node
                         // and go to the next one
@@ -319,7 +319,6 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pParent,
         }
     }
 
-    //printf("END REACHED\n");
     return NULL;
 }
 

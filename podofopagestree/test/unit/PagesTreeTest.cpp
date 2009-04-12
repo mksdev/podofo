@@ -112,18 +112,32 @@ void PagesTreeTest::testCreateDelete()
     CPPUNIT_ASSERT_EQUAL( writer.GetPageCount(), 2 );
 }
 
-void PagesTreeTest::testGetPages() 
+void PagesTreeTest::testGetPagesCustom() 
 {
     PdfMemDocument doc;
     
-    CreateTestTree( doc );
+    CreateTestTreeCustom( doc );
 
+    testGetPages( doc );
+}
+
+void PagesTreeTest::testGetPagesPoDoFo() 
+{
+    PdfMemDocument doc;
+    
+    CreateTestTreePoDoFo( doc );
+
+    testGetPages( doc );
+}
+
+void PagesTreeTest::testGetPages( PdfMemDocument & doc ) 
+{
     for(int i=0; i<PODOFO_TEST_NUM_PAGES; i++) 
     {
         PdfPage* pPage = doc.GetPage( i );
 
         CPPUNIT_ASSERT_EQUAL( pPage != NULL, true );
-        
+
         CPPUNIT_ASSERT_EQUAL( IsPageNumber( pPage, i ), true );
     }
 
@@ -160,12 +174,26 @@ void PagesTreeTest::testGetPages()
     }
 }
 
-void PagesTreeTest::testGetPagesReverse() 
+void PagesTreeTest::testGetPagesReverseCustom() 
 {
     PdfMemDocument doc;
     
-    CreateTestTree( doc );
+    CreateTestTreeCustom( doc );
 
+    testGetPagesReverse( doc );
+}
+
+void PagesTreeTest::testGetPagesReversePoDoFo() 
+{
+    PdfMemDocument doc;
+    
+    CreateTestTreePoDoFo( doc );
+
+    testGetPagesReverse( doc );
+}
+
+void PagesTreeTest::testGetPagesReverse( PdfMemDocument & doc ) 
+{
     for(int i=PODOFO_TEST_NUM_PAGES-1; i>=0; i--)
     {
         PdfPage* pPage = doc.GetPage( i );
@@ -188,12 +216,26 @@ void PagesTreeTest::testGetPagesReverse()
     }
 }
 
-void PagesTreeTest::testInsert() 
+void PagesTreeTest::testInsertCustom() 
 {
     PdfMemDocument doc;
 
-    CreateTestTree( doc );
+    CreateTestTreeCustom( doc );
 
+    testInsert( doc );
+}
+
+void PagesTreeTest::testInsertPoDoFo() 
+{
+    PdfMemDocument doc;
+
+    CreateTestTreePoDoFo( doc );
+
+    testInsert( doc );
+}
+
+void PagesTreeTest::testInsert( PdfMemDocument & doc ) 
+{
     const int INSERTED_PAGE_FLAG= 1234;
     const int INSERTED_PAGE_FLAG1= 1234 + 1;
     const int INSERTED_PAGE_FLAG2= 1234 + 2;
@@ -239,12 +281,26 @@ void PagesTreeTest::testInsert()
     CPPUNIT_ASSERT_EQUAL( IsPageNumber( pPage, INSERTED_PAGE_FLAG2 ), true );
 }
 
-void PagesTreeTest::testDeleteAll() 
+void PagesTreeTest::testDeleteAllCustom() 
 {
     PdfMemDocument doc;
 
-    CreateTestTree( doc );
+    CreateTestTreeCustom( doc );
 
+    testDeleteAll( doc );
+}
+
+void PagesTreeTest::testDeleteAllPoDoFo() 
+{
+    PdfMemDocument doc;
+
+    CreateTestTreePoDoFo( doc );
+
+    testDeleteAll( doc );
+}
+
+void PagesTreeTest::testDeleteAll( PdfMemDocument & doc ) 
+{
     for(int i=0; i<PODOFO_TEST_NUM_PAGES; i++) 
     {
         doc.GetPagesTree()->DeletePage(0);
@@ -255,7 +311,7 @@ void PagesTreeTest::testDeleteAll()
     CPPUNIT_ASSERT_EQUAL( doc.GetPageCount(), 0 );
 }
 
-void PagesTreeTest::CreateTestTree( PoDoFo::PdfMemDocument & rDoc )
+void PagesTreeTest::CreateTestTreePoDoFo( PoDoFo::PdfMemDocument & rDoc )
 {
     for(int i=0; i<PODOFO_TEST_NUM_PAGES; i++) 
     {
@@ -265,6 +321,39 @@ void PagesTreeTest::CreateTestTree( PoDoFo::PdfMemDocument & rDoc )
         CPPUNIT_ASSERT_EQUAL( rDoc.GetPageCount(), i + 1 );
     }
 }
+
+void PagesTreeTest::CreateTestTreeCustom( PoDoFo::PdfMemDocument & rDoc )
+{
+    const int COUNT = PODOFO_TEST_NUM_PAGES / 10;
+    PdfObject* pRoot = rDoc.GetPagesTree()->GetObject();
+    PdfArray rootKids;
+    
+
+    for(int z=0; z<COUNT; z++) 
+    {
+        PdfObject* pNode = rDoc.GetObjects().CreateObject("Pages");
+        PdfArray nodeKids;
+
+        for(int i=0; i<COUNT; i++) 
+        {
+            PdfPage* pPage = new PdfPage( PdfPage::CreateStandardPageSize( ePdfPageSize_A4 ),
+                                          &(rDoc.GetObjects()) );
+            pPage->GetObject()->GetDictionary().AddKey( PODOFO_TEST_PAGE_KEY, 
+                                                        static_cast<long>(z * COUNT + i) );
+
+            //printf("Creating page %i z=%i i=%i\n", z * COUNT + i, z, i );
+            nodeKids.push_back( pPage->GetObject()->Reference() );
+        }
+
+        pNode->GetDictionary().AddKey( PdfName("Kids"), nodeKids );
+        pNode->GetDictionary().AddKey( PdfName("Count"), static_cast<long>(COUNT) );
+        rootKids.push_back( pNode->Reference() );
+    }
+
+    pRoot->GetDictionary().AddKey( PdfName("Kids"), rootKids );
+    pRoot->GetDictionary().AddKey( PdfName("Count"), static_cast<long>(PODOFO_TEST_NUM_PAGES) );
+}
+
 
 bool PagesTreeTest::IsPageNumber( PoDoFo::PdfPage* pPage, int nNumber )
 {

@@ -37,7 +37,7 @@ PdfPagesTreeCache::~PdfPagesTreeCache()
 
 PdfPage* PdfPagesTreeCache::GetPage( int nIndex )
 {
-    if( nIndex < 0 || nIndex > static_cast<int>(m_deqPageObjs.size()) ) 
+    if( nIndex < 0 || nIndex >= static_cast<int>(m_deqPageObjs.size()) ) 
     {
         PdfError::LogMessage( eLogSeverity_Error,
                               "PdfPagesTreeCache::GetPage( %i ) index out of range. Size of cache is %i\n",
@@ -50,11 +50,14 @@ PdfPage* PdfPagesTreeCache::GetPage( int nIndex )
 
 void PdfPagesTreeCache::AddPageObject( int nIndex, PdfPage* pPage )
 {
-    // TODO: What happens with insert page events ... ???
-
     // Delete an old page if it is at the same position
     PdfPage* pOldPage = GetPage( nIndex );
     delete pOldPage;
+
+    if( nIndex > static_cast<int>(m_deqPageObjs.size()) )
+    {
+        m_deqPageObjs.resize( nIndex );
+    }
 
     m_deqPageObjs[nIndex] = pPage;
 }
@@ -65,22 +68,20 @@ void PdfPagesTreeCache::InsertPage( int nIndex )
     {
         m_deqPageObjs.push_front( NULL );
     } 
-    else if( nIndex < 0 || nIndex > static_cast<int>(m_deqPageObjs.size()) ) 
-    {
-        PdfError::LogMessage( eLogSeverity_Error,
-                              "PdfPagesTreeCache::DeletePage( %i ) index out of range. Size of cache is %i\n",
-                              nIndex, m_deqPageObjs.size() );
-        return;
-    }
     else
     {
+        if( nIndex > static_cast<int>(m_deqPageObjs.size()) )
+        {
+            m_deqPageObjs.resize( nIndex );
+        }
+        
         m_deqPageObjs.insert( m_deqPageObjs.begin() + nIndex, NULL );
     }
 }
 
 void PdfPagesTreeCache::DeletePage( int nIndex )
 {
-    if( nIndex < 0 || nIndex > static_cast<int>(m_deqPageObjs.size()) ) 
+    if( nIndex < 0 || nIndex >= static_cast<int>(m_deqPageObjs.size()) ) 
     {
         PdfError::LogMessage( eLogSeverity_Error,
                               "PdfPagesTreeCache::DeletePage( %i ) index out of range. Size of cache is %i\n",
