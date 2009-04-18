@@ -1,0 +1,10 @@
+SUBDIRS(
+	podofoencrypt
+	podofoimgextract
+	podofomerge
+	podofopdfinfo
+	podofotxt2pdf
+	podofotxtextract
+	podofouncompress
+	podofoimpose
+	)
