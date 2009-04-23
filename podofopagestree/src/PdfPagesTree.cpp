@@ -435,6 +435,7 @@ void PdfPagesTree::InsertPageIntoNode( PdfObject* pParent, const PdfObjectList &
 
     // 1. Add the reference of the new page to the kids array of pParent
     // 2. Increase count of every node in lstParents (which also includes pParent)
+    // 3. Add Parent key to the page
 
     // 1. Add reference
     const PdfArray oldKids = pParent->GetDictionary().GetKey( PdfName("Kids") )->GetArray();
@@ -477,6 +478,9 @@ void PdfPagesTree::InsertPageIntoNode( PdfObject* pParent, const PdfObjectList &
 
         ++itParents;
     } 
+
+    // 3. add parent key to the page
+    pPage->GetDictionary().AddKey( PdfName("Parent"), pParent->Reference() );
 }
 
 void PdfPagesTree::DeletePageFromNode( PdfObject* pParent, const PdfObjectList & rlstParents, 
