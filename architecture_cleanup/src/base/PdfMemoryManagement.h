@@ -46,6 +46,13 @@ PODOFO_API void* podofo_realloc( void* buffer, size_t size );
  */
 PODOFO_API void podofo_free( void* buffer );
 
+/**
+ * Check during runtime if the current architecture is big- or little-endian.
+ * \returns true if the architecture is little-endian
+ */
+PODOFO_API bool podofo_is_little_endian();
+
+
 };
 
 #endif // _PDF_XREF_STREAM_PARSER_OBJECT_H_

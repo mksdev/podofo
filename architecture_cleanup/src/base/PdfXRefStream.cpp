@@ -35,13 +35,6 @@
 
 namespace PoDoFo {
 
-/* TODO CR: Why is this here?!? */
-bool podofo_is_little_endian()
-{ 
-    int _p = 1;
-    return ((reinterpret_cast<char*>(&_p))[0] == 1);
-}
-
 PdfXRefStream::PdfXRefStream( PdfVecObjects* pParent, PdfWriter* pWriter )
     : m_pParent( pParent ), m_pWriter( pWriter ), m_pObject( NULL )
 {

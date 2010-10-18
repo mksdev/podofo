@@ -32,7 +32,6 @@ class PdfOutputDevice;
 class PdfVecObjects;
 class PdfWriter;
 
-
 /**
  * Creates an XRef table that is a stream object.
  * Requires at least PDF 1.5. XRef streams are more

@@ -23,6 +23,12 @@
 
 namespace PoDoFo {
 
+bool podofo_is_little_endian()
+{ 
+    int _p = 1;
+    return ((reinterpret_cast<char*>(&_p))[0] == 1);
+}
+
 void* podofo_malloc( size_t size )
 {
     return malloc( size );
