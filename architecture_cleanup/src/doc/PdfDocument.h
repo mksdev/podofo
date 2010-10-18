@@ -60,7 +60,6 @@ class PdfXObject;
  *  \see PdfMemDocument
  */
 class PODOFO_API PdfDocument {
-    friend class PdfWriter;
     friend class PdfElement;
 
  public:
