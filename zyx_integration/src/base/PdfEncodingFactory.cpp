@@ -25,6 +25,7 @@
 #include "PdfName.h"
 #include "PdfObject.h"
 #include "PdfDefinesPrivate.h"
+#include "doc/PdfIdentityEncoding.h"
 
 namespace PoDoFo {
 
@@ -35,6 +36,7 @@ const PdfStandardEncoding*     PdfEncodingFactory::s_pStandardEncoding     = NUL
 const PdfMacExpertEncoding*    PdfEncodingFactory::s_pMacExpertEncoding    = NULL; // OC 13.08.2010 New.
 const PdfSymbolEncoding*       PdfEncodingFactory::s_pSymbolEncoding       = NULL; // OC 13.08.2010 New.
 const PdfZapfDingbatsEncoding* PdfEncodingFactory::s_pZapfDingbatsEncoding = NULL; // OC 13.08.2010 New.
+const PdfIdentityEncoding *    PdfEncodingFactory::s_pIdentityEncoding = NULL;
 
 Util::PdfMutex PdfEncodingFactory::s_mutex;
 
@@ -133,6 +135,18 @@ const PdfEncoding* PdfEncodingFactory::GlobalZapfDingbatsEncodingInstance()
     return s_pZapfDingbatsEncoding;
 }
 
+const PdfEncoding* PdfEncodingFactory::GlobalIdentityEncodingInstance()
+{
+    if(!s_pIdentityEncoding) // First check
+    {
+        Util::PdfMutexWrapper wrapper( PdfEncodingFactory::s_mutex ); 
+        
+        if(!s_pIdentityEncoding) // Double check
+            s_pIdentityEncoding = new PdfIdentityEncoding( 0, 0xffff, false );
+    }
+
+    return s_pIdentityEncoding;
+}
 
 int podofo_number_of_clients = 0;
 
@@ -173,6 +187,10 @@ void PdfEncodingFactory::FreeGlobalEncodingInstances()
         {
             delete s_pZapfDingbatsEncoding;
         }
+		  if (NULL != s_pIdentityEncoding)
+		  {
+				delete s_pIdentityEncoding;
+		  }
 
         s_pMacRomanEncoding     = NULL;
         s_pWinAnsiEncoding      = NULL;
@@ -181,6 +199,7 @@ void PdfEncodingFactory::FreeGlobalEncodingInstances()
         s_pMacExpertEncoding    = NULL; // OC 13.08.2010
         s_pSymbolEncoding       = NULL; // OC 13.08.2010
         s_pZapfDingbatsEncoding = NULL; // OC 13.08.2010
+		  s_pIdentityEncoding     = NULL;
     }
 }
 

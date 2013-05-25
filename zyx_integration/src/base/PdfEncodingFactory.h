@@ -36,6 +36,7 @@ class PdfStandardEncoding; // OC 13.08.2010
 class PdfMacExpertEncoding; // OC 13.08.2010
 class PdfSymbolEncoding; // OC 13.08.2010
 class PdfZapfDingbatsEncoding; // OC 13.08.2010
+class PdfIdentityEncoding;
 
 /** This factory creates a PdfEncoding
  *  from an existing object in the PDF.
@@ -94,6 +95,13 @@ class PODOFO_API PdfEncodingFactory {
      *  \returns global instance of ZapfDingbatsEncoding
      */
     static const PdfEncoding* GlobalZapfDingbatsEncodingInstance();
+
+    /** Singleton method which returns a global instance
+     *  of IndentityEncoding useful for writing direct UTF8 strings.
+     *
+     *  \returns global instance of IdentityEncoding
+     */
+    static const PdfEncoding* GlobalIdentityEncodingInstance();
 
     /** Free's the memory allocated by
      *  the global encoding instancess in this singleton.
@@ -156,6 +164,8 @@ class PODOFO_API PdfEncodingFactory {
      *  as heap allocation is expensive for PdfZapfDingbatsEncoding.
      */
     static const PdfZapfDingbatsEncoding* s_pZapfDingbatsEncoding;
+
+	 static const PdfIdentityEncoding *s_pIdentityEncoding;
 
     static Util::PdfMutex s_mutex;
 };
