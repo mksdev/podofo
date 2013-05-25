@@ -97,6 +97,7 @@ class PODOFO_API PdfString : public PdfDataType{
      *  \param pszString the string to copy
      */
 #if defined(_MSC_VER)  &&  _MSC_VER <= 1200			// nicht für Visualstudio 6
+	 PdfString (const unsigned short *pszString_wchart, pdf_long lLen, bool dummy);
 #else
 	PdfString( const wchar_t* pszString );
 #endif
@@ -349,6 +350,12 @@ class PODOFO_API PdfString : public PdfDataType{
      *  \returns a unicode version of this string
      */
     PdfString ToUnicode() const;
+
+	 /** Returns internal buffer; do not free it, it's owned by the PdfString
+	  *
+	  * \returns internal buffer; do not free it, it's owned by the PdfString
+	  */
+	 PdfRefCountedBuffer &GetBuffer(void);
 
     static const PdfString StringNull;
 
