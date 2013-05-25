@@ -2204,18 +2204,18 @@ const PdfEncodingDifference & PdfEncodingDifference::operator=( const PdfEncodin
     return *this;
 }
 
-void PdfEncodingDifference::AddDifference( int nCode )
+void PdfEncodingDifference::AddDifference( int nCode, pdf_utf16be unicodeValue)
 {
+	pdf_utf16be inCodePoint = unicodeValue;
+
 #ifdef PODOFO_IS_LITTLE_ENDIAN
-    pdf_utf16be inCodePoint = ((nCode & 0xff00) >> 8) | ((nCode & 0xff) << 8);
-#else
-    pdf_utf16be inCodePoint = nCode;
+    inCodePoint = ((inCodePoint & 0xff00) >> 8) | ((inCodePoint & 0xff) << 8);
 #endif // PODOFO_IS_LITTLE_ENDIAN
 
-    this->AddDifference( nCode, PdfDifferenceEncoding::UnicodeIDToName( inCodePoint ) );
+    this->AddDifference( nCode, unicodeValue, PdfDifferenceEncoding::UnicodeIDToName( inCodePoint ) );
 }
 
-void PdfEncodingDifference::AddDifference( int nCode, const PdfName & rName )
+void PdfEncodingDifference::AddDifference( int nCode, pdf_utf16be unicodeValue, const PdfName & rName )
 {
     if( nCode > 255 || nCode < 0 ) 
     {
@@ -2225,7 +2225,7 @@ void PdfEncodingDifference::AddDifference( int nCode, const PdfName & rName )
     TDifference dif;
     dif.nCode        = nCode;
     dif.name         = rName;
-    dif.unicodeValue = 0;
+    dif.unicodeValue = unicodeValue;
 
     std::pair<TIVecDifferences,TCIVecDifferences> it = 
         std::equal_range( m_vecDifferences.begin(), m_vecDifferences.end(), dif, DifferenceComparatorPredicate() );
@@ -2267,6 +2267,24 @@ bool PdfEncodingDifference::Contains( int nCode, PdfName & rName, pdf_utf16be & 
     }
 
     return false;
+}
+
+bool PdfEncodingDifference::ContainsUnicodeValue( pdf_utf16be unicodeValue, char &rValue ) const
+{
+#ifdef PODOFO_IS_LITTLE_ENDIAN
+	unicodeValue = ((unicodeValue & 0xff00) >> 8) | ((unicodeValue & 0xff) << 8);
+#endif // PODOFO_IS_LITTLE_ENDIAN
+
+	TCIVecDifferences it, end = m_vecDifferences.end();
+	for (it = m_vecDifferences.begin(); it != end; it++) {
+		pdf_utf16be uv = it->unicodeValue;
+		if (uv == unicodeValue) {
+			rValue = it->nCode;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void PdfEncodingDifference::ToArray( PdfArray & rArray )
@@ -2370,7 +2388,7 @@ PdfDifferenceEncoding::PdfDifferenceEncoding( PdfObject* pObject, bool bAutoDele
                 curCode = (*it).GetNumber();
             else if( (*it).IsName() ) 
             {
-                m_differences.AddDifference( static_cast<int>(curCode), (*it).GetName() );
+                m_differences.AddDifference( static_cast<int>(curCode), 0, (*it).GetName() );
                 ++curCode;
             }
             
@@ -2558,6 +2576,8 @@ PdfRefCountedBuffer PdfDifferenceEncoding::ConvertToEncoding( const PdfString & 
     if( rString.IsUnicode() )
     {
         lLen = rString.GetCharacterLength();
+		  if( !lLen )
+           return PdfRefCountedBuffer();
         pszUtf16 = static_cast<pdf_utf16be*>(malloc(sizeof(pdf_utf16be)*lLen));
         if( !pszUtf16 )
         {
@@ -2570,6 +2590,8 @@ PdfRefCountedBuffer PdfDifferenceEncoding::ConvertToEncoding( const PdfString & 
         // Only do a copy if we really have to
         PdfString str = rString.ToUnicode();
         lLen = str.GetCharacterLength();
+		  if( !lLen )
+			  return PdfRefCountedBuffer();
         pszUtf16 = static_cast<pdf_utf16be*>(malloc(sizeof(pdf_utf16be)*lLen));
         if( !pszUtf16 )
         {
@@ -2578,23 +2600,36 @@ PdfRefCountedBuffer PdfDifferenceEncoding::ConvertToEncoding( const PdfString & 
         memcpy( pszUtf16, str.GetUnicode(), lLen * sizeof(pdf_utf16be) );
     }
 
+    char* pDest = static_cast<char*>(malloc( sizeof(char) * (lLen + 1) ));
+    if( !pDest ) 
+    {
+        PODOFO_RAISE_ERROR( ePdfError_OutOfMemory );
+    }
+
+    char *pCur = pDest;
+    long lNewLen = 0L;
+
     for( int i=0;i<lLen;i++ ) 
     {
         pdf_utf16be val = pszUtf16[i];
-#ifdef PODOFO_IS_LITTLE_ENDIAN
-        val = ((val & 0xff00) >> 8) | ((val & 0xff) << 8);
-#endif // PODOFO_IS_LITTLE_ENDIAN
 
-        PdfName     name;
-        pdf_utf16be value;
-        if( m_differences.Contains( static_cast<int>(val), name, value ) )
-            pszUtf16[i] = value;
+		  if (!m_differences.ContainsUnicodeValue(val, *pCur))
+			  *pCur = static_cast<const PdfSimpleEncoding *>(pEncoding)->GetUnicodeCharCode(val);
+        if( *pCur) // ignore 0 characters, as they cannot be converted to the current encoding
+        {
+            ++pCur; 
+            ++lNewLen;
+        }
     }
 
-    PdfString ret( pszUtf16, lLen );
-    free( pszUtf16 );
+    *pCur = '\0';
 
-    return pEncoding->ConvertToEncoding( ret, pFont );
+    PdfRefCountedBuffer cDest( lNewLen );
+    memcpy( cDest.GetBuffer(), pDest, lNewLen );
+    free( pDest );
+	 free (pszUtf16);
+
+    return cDest;
 }
 
 const PdfEncoding* PdfDifferenceEncoding::GetBaseEncoding() const

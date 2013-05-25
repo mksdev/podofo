@@ -64,14 +64,14 @@ class PODOFO_DOC_API PdfEncodingDifference {
      *  \see AddDifference if you know the name of the code point
      *       use the overload below which is faster
      */
-    void AddDifference( int nCode );
+    void AddDifference( int nCode, pdf_utf16be unicodeValue );
 
     /** Add a difference to the object.
      * 
      *  \param nCode unicode code point of the difference (0 to 255 are legal values)
      *  \param rName name of the different code point or .notdef if none
      */
-    void AddDifference( int nCode, const PdfName & rName );
+    void AddDifference( int nCode, pdf_utf16be unicodeValue, const PdfName & rName );
 
     /** Tests if the specified code is part of the 
      *  differences.
@@ -84,6 +84,8 @@ class PODOFO_DOC_API PdfEncodingDifference {
      *  \returns true if the code is part of the difference
      */
     bool Contains( int nCode, PdfName & rName, pdf_utf16be & rValue ) const;
+
+    bool ContainsUnicodeValue( pdf_utf16be unicodeValue, char &rValue ) const;
 
     /** Convert the PdfEncodingDifference to an array
      *
