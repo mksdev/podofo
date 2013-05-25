@@ -97,6 +97,7 @@ SET(PODOFO_DOC_SOURCES
   doc/PdfSignOutputDevice.cpp
   doc/PdfStreamedDocument.cpp
   doc/PdfTable.cpp
+  doc/PdfTilingPattern.cpp
   doc/PdfXObject.cpp
   doc/PdfCMapEncoding.cpp
   )
@@ -216,6 +217,7 @@ SET(PODOFO_DOC_HEADERS
   doc/PdfSignOutputDevice.h
   doc/PdfStreamedDocument.h
   doc/PdfTable.h
+  doc/PdfTilingPattern.h
   doc/PdfXObject.h
   doc/PdfCMapEncoding.h
   )
