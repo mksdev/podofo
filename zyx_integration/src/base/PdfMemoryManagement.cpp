@@ -41,7 +41,7 @@ void* podofo_realloc( void* buffer, size_t size )
 
 void podofo_free( void* buffer )
 {
-    return free( buffer );
+    free( buffer );
 }
 
 };

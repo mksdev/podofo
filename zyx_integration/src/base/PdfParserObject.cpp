@@ -235,7 +235,7 @@ void PdfParserObject::ParseStream()
     assert(!DelayedStreamLoadDone());
 #endif
 
-    long long         lLen  = -1;
+    pdf_int64         lLen  = -1;
     int          c;
 
     if( !m_device.Device() || !m_pOwner )
