@@ -1305,7 +1305,7 @@ void PdfCCITTFilter::BeginDecodeImpl( const PdfDictionary* pDict )
 }
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
-#endif __GNUC__
+#endif // __GNUC__
 
 void PdfCCITTFilter::DecodeBlockImpl( const char*, pdf_long )
 {
