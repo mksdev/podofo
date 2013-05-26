@@ -98,11 +98,15 @@ static inline bool IsSpaceChar(pdf_utf16be ch)
 PdfPainter::PdfPainter()
 : m_pCanvas( NULL ), m_pPage( NULL ), m_pFont( NULL ), m_nTabWidth( 4 ),
   m_curColor( PdfColor( 0.0, 0.0, 0.0 ) ),
-  m_isTextOpen( false ), m_oss()
+  m_isTextOpen( false ), m_oss(), m_curPath()
 {
     m_oss.flags( std::ios_base::fixed );
     m_oss.precision( clPainterDefaultPrecision );
     PdfLocaleImbue(m_oss);
+
+    m_curPath.flags( std::ios_base::fixed );
+    m_curPath.precision( clPainterDefaultPrecision );
+    PdfLocaleImbue(m_curPath);
 
     lpx  = 
     lpy  = 
@@ -568,6 +572,13 @@ void PdfPainter::SetClipRect( double dX, double dY, double dWidth, double dHeigh
           << dHeight        
           << " re W n" << std::endl;
     m_pCanvas->Append( m_oss.str() );
+
+	 m_curPath
+			 << dX << " "
+          << dY << " "
+          << dWidth << " "
+          << dHeight        
+          << " re W n" << std::endl;
 }
 
 void PdfPainter::SetMiterLimit(double value)
@@ -583,6 +594,15 @@ void PdfPainter::DrawLine( double dStartX, double dStartY, double dEndX, double 
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );    
 
+	 m_curPath.str("");
+    m_curPath
+		    << dStartX << " "
+          << dStartY
+          << " m "
+          << dEndX << " "
+          << dEndY        
+          << " l" << std::endl;
+
     m_oss.str("");
     m_oss << dStartX << " "
           << dStartY
@@ -593,8 +613,8 @@ void PdfPainter::DrawLine( double dStartX, double dStartY, double dEndX, double 
     m_pCanvas->Append( m_oss.str() );
 }
 
-void PdfPainter::DrawRect( double dX, double dY, double dWidth, double dHeight,
-                           double dRoundX, double dRoundY )
+void PdfPainter::Rectangle( double dX, double dY, double dWidth, double dHeight,
+                            double dRoundX, double dRoundY )
 { 
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );    
 
@@ -614,58 +634,27 @@ void PdfPainter::DrawRect( double dX, double dY, double dWidth, double dHeight,
         CubicBezierTo(x + rx * b, y + h, x, y + h - ry * b, x, y + h - ry);
         LineTo(x, y + ry);
         CubicBezierTo(x, y + ry * b, x + rx * b, y, x + rx, y);
-        m_pCanvas->Append( "S\n" );
     } 
     else 
     {
+        m_curPath 
+				  << dX << " "
+              << dY << " "
+              << dWidth << " "
+              << dHeight        
+              << " re" << std::endl;
+
         m_oss.str("");
         m_oss << dX << " "
               << dY << " "
               << dWidth << " "
               << dHeight        
-              << " re S" << std::endl;
+              << " re" << std::endl;
         m_pCanvas->Append( m_oss.str() );
     }
 }
 
-void PdfPainter::FillRect( double dX, double dY, double dWidth, double dHeight,
-                           double dRoundX, double dRoundY )
-{
-    PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
-
-    m_oss.str("");
-
-    if ( static_cast<int>(dRoundX) || static_cast<int>(dRoundY) ) 
-    {
-        double    x = dX, y = dY, 
-            w = dWidth, h = dHeight,
-            rx = dRoundX, ry = dRoundY;
-        double b = 0.4477f;
-
-        MoveTo(x + rx, y);
-        LineTo(x + w - rx, y);
-        CubicBezierTo(x + w - rx * b, y, x + w, y + ry * b, x + w, y + ry);
-        LineTo(x + w, y + h - ry);
-        CubicBezierTo(x + w, y + h - ry * b, x + w - rx * b, y + h, x + w - rx, y + h);
-        LineTo(x + rx, y + h);
-        CubicBezierTo(x + rx * b, y + h, x, y + h - ry * b, x, y + h - ry);
-        LineTo(x, y + ry);
-        CubicBezierTo(x, y + ry * b, x + rx * b, y, x + rx, y);
-        m_pCanvas->Append( "f\n" );
-    }
-    else 
-    {
-        m_oss << dX << " "
-            << dY << " "
-            << dWidth << " "
-            << dHeight        
-            << " re f" << std::endl;
-    }
-
-    m_pCanvas->Append( m_oss.str() );
-}
-
-void PdfPainter::DrawEllipse( double dX, double dY, double dWidth, double dHeight )
+void PdfPainter::Ellipse( double dX, double dY, double dWidth, double dHeight )
 {
     double dPointX[BEZIER_POINTS];
     double dPointY[BEZIER_POINTS];
@@ -675,6 +664,10 @@ void PdfPainter::DrawEllipse( double dX, double dY, double dWidth, double dHeigh
 
     ConvertRectToBezier( dX, dY, dWidth, dHeight, dPointX, dPointY );
 
+    m_curPath
+			 << dPointX[0] << " "
+          << dPointY[0]
+          << " m" << std::endl;
 
     m_oss.str("");
     m_oss << dPointX[0] << " "
@@ -683,7 +676,16 @@ void PdfPainter::DrawEllipse( double dX, double dY, double dWidth, double dHeigh
 
     for( i=1;i<BEZIER_POINTS; i+=3 )
     {
-        m_oss << dPointX[i] << " "
+        m_curPath
+				  << dPointX[i] << " "
+              << dPointY[i] << " "
+              << dPointX[i+1] << " "
+              << dPointY[i+1] << " "
+              << dPointX[i+2] << " "
+              << dPointY[i+2]    
+              << " c" << std::endl;
+
+		  m_oss << dPointX[i] << " "
               << dPointY[i] << " "
               << dPointX[i+1] << " "
               << dPointY[i+1] << " "
@@ -693,63 +695,9 @@ void PdfPainter::DrawEllipse( double dX, double dY, double dWidth, double dHeigh
     }
 
     m_pCanvas->Append( m_oss.str() );
-    m_pCanvas->Append( "S\n" );
 }
 
-void PdfPainter::FillEllipse( double dX, double dY, double dWidth, double dHeight )
-{
-    double dPointX[BEZIER_POINTS];
-    double dPointY[BEZIER_POINTS];
-    int    i;
-
-    PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
-
-    ConvertRectToBezier( dX, dY, dWidth, dHeight, dPointX, dPointY );
-
-    m_oss.str("");
-    m_oss << dPointX[0] << " "
-          << dPointY[0]
-          << " m" << std::endl;
-
-    for( i=1;i<BEZIER_POINTS; i+=3 )
-    {
-        m_oss << dPointX[i] << " "
-              << dPointY[i] << " "
-              << dPointX[i+1] << " "
-              << dPointY[i+1] << " "
-              << dPointX[i+2] << " "
-              << dPointY[i+2]    
-              << " c" << std::endl;
-    }
-
-    m_pCanvas->Append( m_oss.str() );
-    m_pCanvas->Append( "f\n" );
-}
-
-void PdfPainter::FillCircle( double dX, double dY, double dRadius )
-{
-    PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
-
-    /* draw four Bezier curves to approximate a circle */
-    MoveTo( dX + dRadius, dY );
-    CubicBezierTo( dX + dRadius, dY + dRadius*ARC_MAGIC,
-             dX + dRadius*ARC_MAGIC, dY + dRadius,
-             dX, dY + dRadius );
-    CubicBezierTo( dX - dRadius*ARC_MAGIC, dY + dRadius,
-            dX - dRadius, dY + dRadius*ARC_MAGIC,
-            dX - dRadius, dY );
-    CubicBezierTo( dX - dRadius, dY - dRadius*ARC_MAGIC,
-            dX - dRadius*ARC_MAGIC, dY - dRadius,
-            dX, dY - dRadius );
-    CubicBezierTo( dX + dRadius*ARC_MAGIC, dY - dRadius,
-            dX + dRadius, dY - dRadius*ARC_MAGIC,
-            dX + dRadius, dY );
-    Close();
-
-    m_pCanvas->Append( "f\n" );
-}
-
-void PdfPainter::DrawCircle( double dX, double dY, double dRadius )
+void PdfPainter::Circle( double dX, double dY, double dRadius )
 {
     if( !m_pCanvas )
     {
@@ -771,8 +719,6 @@ void PdfPainter::DrawCircle( double dX, double dY, double dRadius )
             dX + dRadius, dY - dRadius*ARC_MAGIC,
             dX + dRadius, dY );
     Close();
-
-    m_pCanvas->Append( "S\n" );
 }
 
 void PdfPainter::DrawText( double dX, double dY, const PdfString & sText )
@@ -1315,13 +1261,20 @@ void PdfPainter::ClosePath()
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
 
+	 m_curPath << "h" << std::endl;
+
     m_pCanvas->Append( "h\n" );
 }
 
 void PdfPainter::LineTo( double dX, double dY )
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
-    
+
+	 m_curPath
+			 << dX << " "
+          << dY
+          << " l" << std::endl;
+
     m_oss.str("");
     m_oss << dX << " "
           << dY
@@ -1333,6 +1286,11 @@ void PdfPainter::MoveTo( double dX, double dY )
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
     
+	 m_curPath
+			 << dX << " "
+          << dY
+          << " m" << std::endl;
+
     m_oss.str("");
     m_oss << dX << " "
           << dY
@@ -1343,6 +1301,15 @@ void PdfPainter::MoveTo( double dX, double dY )
 void PdfPainter::CubicBezierTo( double dX1, double dY1, double dX2, double dY2, double dX3, double dY3 )
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
+
+	 m_curPath
+			 << dX1 << " "
+          << dY1 << " "
+          << dX2 << " "
+          << dY2 << " "
+          << dX3 << " "
+          << dY3 
+          << " c" << std::endl;
 
     m_oss.str("");
     m_oss << dX1 << " "
@@ -1523,7 +1490,7 @@ void PdfPainter::ArcTo( double inX, double inY, double inRadiusX, double inRadiu
 }
 
 // Peter Petrov 5 January 2009 was delivered from libHaru
-bool PdfPainter::DrawArc(double dX, double dY, double dRadius, double dAngle1, double dAngle2)
+bool PdfPainter::Arc(double dX, double dY, double dRadius, double dAngle1, double dAngle2)
 {
     bool cont_flg = false;
 
@@ -1622,6 +1589,8 @@ void PdfPainter::Close()
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
     
+	 m_curPath << "h" << std::endl;
+
     m_pCanvas->Append( "h\n" );
 }
 
@@ -1629,12 +1598,16 @@ void PdfPainter::Stroke()
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
 
+    m_curPath.str("");
+
     m_pCanvas->Append( "S\n" );
 }
 
 void PdfPainter::Fill(bool useEvenOddRule)
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
+
+    m_curPath.str("");
 
 	 if (useEvenOddRule)
 			m_pCanvas->Append( "f*\n" );
@@ -1645,6 +1618,8 @@ void PdfPainter::Fill(bool useEvenOddRule)
 void PdfPainter::FillAndStroke(bool useEvenOddRule)
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
+
+	 m_curPath.str("");
 
 	 if (useEvenOddRule)
 			m_pCanvas->Append( "B*\n" );
@@ -1665,6 +1640,8 @@ void PdfPainter::Clip( bool useEvenOddRule )
 void PdfPainter::EndPath(void)
 {
     PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
+
+    m_curPath << "n" << std::endl;
 
     m_pCanvas->Append( "n\n" );
 }
@@ -1691,6 +1668,20 @@ void PdfPainter::AddToPageResources( const PdfName & rIdentifier, const PdfRefer
     }
 
     m_pPage->AddResource( rIdentifier, rRef, rName );
+}
+
+void PdfPainter::AddRawCommands(const std::string &commands, bool addToPath)
+{
+    PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
+
+    if (commands.empty()) {
+        return;
+    }
+
+    if (addToPath)
+        m_curPath << commands;
+
+    m_pCanvas->Append( commands.c_str() );
 }
 
 void PdfPainter::ConvertRectToBezier( double dX, double dY, double dWidth, double dHeight, double pdPointX[], double pdPointY[] )

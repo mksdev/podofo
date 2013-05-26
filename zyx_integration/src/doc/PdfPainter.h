@@ -318,7 +318,7 @@ class PODOFO_DOC_API PdfPainter {
      */
     void DrawLine( double dStartX, double dStartY, double dEndX, double dEndY );
 
-    /** Draw a rectangle with the current stroking settings
+    /** Add a rectangle into the current path
      *  \param dX x coordinate of the rectangle (left coordinate)
      *  \param dY y coordinate of the rectangle (bottom coordinate)
      *  \param dWidth width of the rectangle
@@ -326,10 +326,10 @@ class PODOFO_DOC_API PdfPainter {
      *  \param dRoundX rounding factor, x direction
      *  \param dRoundY rounding factor, y direction
      */
-    void DrawRect( double dX, double dY, double dWidth, double dHeight,
-                   double dRoundX=0.0, double dRoundY=0.0 );
+    void Rectangle( double dX, double dY, double dWidth, double dHeight,
+                    double dRoundX=0.0, double dRoundY=0.0 );
 
-    /** Draw a rectangle with the current stroking settings
+    /** Add a rectangle into the current path
      *	
      *  \param rRect the rectangle area
      *  \param dRoundX rounding factor, x direction
@@ -337,58 +337,22 @@ class PODOFO_DOC_API PdfPainter {
      *
      *  \see DrawRect
      */
-	inline void DrawRect( const PdfRect & rRect, double dRoundX=0.0, double dRoundY=0.0 );
+	inline void Rectangle( const PdfRect & rRect, double dRoundX=0.0, double dRoundY=0.0 );
 
-    /** Fill a rectangle with the current fill settings
-     *  \param dX x coordinate of the rectangle (left coordinate)
-     *  \param dY y coordinate of the rectangle (bottom coordinate) 
-     *  \param dWidth width of the rectangle 
-     *  \param dHeight absolute height of the rectangle
-     *  \param dRoundX rounding factor, x direction
-     *  \param dRoundY rounding factor, y direction
-     */
-    void FillRect( double dX, double dY, double dWidth, double dHeight,
-                   double dRoundX=0.0, double dRoundY=0.0 );
-
-    /** Fill a rectangle with the current fill settings
-     *	
-     *  \param rRect the rectangle area
-     *  \param dRoundX rounding factor, x direction
-     *  \param dRoundY rounding factor, y direction
-     *
-     *  \see FillRect
-     */
-    inline void FillRect( const PdfRect & rRect, double dRoundX=0.0, double dRoundY=0.0 );
-
-    /** Draw an ellipse with the current stroking settings
+    /** Add an ellipse into the current path
      *  \param dX x coordinate of the ellipse (left coordinate)
      *  \param dY y coordinate of the ellipse (top coordinate)
      *  \param dWidth width of the ellipse
      *  \param dHeight absolute height of the ellipse
      */
-    void DrawEllipse( double dX, double dY, double dWidth, double dHeight ); 
+    void Ellipse( double dX, double dY, double dWidth, double dHeight ); 
 
-    /** Fill an ellipse with the current fill settings
-     *  \param dX x coordinate of the ellipse (left coordinate)
-     *  \param dY y coordinate of the ellipse (top coordinate)
-     *  \param dWidth width of the ellipse 
-     *  \param dHeight absolute height of the ellipse
-     */
-    void FillEllipse( double dX, double dY, double dWidth, double dHeight ); 
-
-    /** Draw a circle with the current stroking settings
+    /** Add a circle into the current path
      *  \param dX x center coordinate of the circle
      *  \param dY y coordinate of the circle
      *  \param dRadius radius of the circle
      */
-    void DrawCircle( double dX, double dY, double dRadius );
-
-    /** Fill a Circle with the current fill settings
-     *  \param dX x center coordinate of the circle
-     *  \param dY y coordinate of the circle
-     *  \param dRadius radius of the circle
-     */
-    void FillCircle( double dX, double dY, double dRadius );
+    void Circle( double dX, double dY, double dRadius );
 
     /** Draw a single-line text string on a page using a given font object.
      *  You have to call SetFont before calling this function.
@@ -660,7 +624,7 @@ class PODOFO_DOC_API PdfPainter {
     // Peter Petrov 5 January 2009 was delivered from libHaru
     /**
     */
-    bool DrawArc(double dX, double dY, double dRadius, double dAngle1, double dAngle2);
+    bool Arc(double dX, double dY, double dRadius, double dAngle1, double dAngle2);
     
     /** Close the current path. Matches the PDF 'h' operator.
      */
@@ -775,6 +739,18 @@ class PODOFO_DOC_API PdfPainter {
      */
     inline unsigned short GetPrecision() const;
 
+    /** Get current path string. This can be later used in \ref AddRawCommands.
+     * Stroke/Fill commands clear current path.
+     * \returns std::string representing current path
+     */
+    inline std::string GetCurrentPath(void) const;
+
+    /** Adds raw commands into Canvas stream.
+     *  \param commands raw PDF commands
+     *  \param addToPath whether to add also to current path; default is false
+     */
+    void AddRawCommands(const std::string &commands, bool addToPath = false);
+
  private:
     /** Register an object in the resource dictionary of this page
      *  so that it can be used for any following drawing operations.
@@ -869,8 +845,12 @@ class PODOFO_DOC_API PdfPainter {
      */
     std::ostringstream  m_oss;
 
-	EPdfTextRenderingMode currentTextRenderingMode;
-	void SetCurrentTextRenderingMode( void );
+    /** current path
+     */
+    std::ostringstream  m_curPath;
+
+    EPdfTextRenderingMode currentTextRenderingMode;
+    void SetCurrentTextRenderingMode( void );
 
     double		lpx, lpy, lpx2, lpy2, lpx3, lpy3, 	// points for this operation
         lcx, lcy, 							// last "current" point
@@ -935,6 +915,14 @@ unsigned short PdfPainter::GetPrecision() const
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
+inline std::string PdfPainter::GetCurrentPath(void) const
+{
+	return m_curPath.str();
+}
+
+// -----------------------------------------------------
+// 
+// -----------------------------------------------------
 void PdfPainter::SetClipRect( const PdfRect & rRect )
 {
     this->SetClipRect( rRect.GetLeft(), rRect.GetBottom(), rRect.GetWidth(), rRect.GetHeight() );
@@ -943,21 +931,11 @@ void PdfPainter::SetClipRect( const PdfRect & rRect )
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-void PdfPainter::DrawRect( const PdfRect & rRect, double dRoundX, double dRoundY )
+void PdfPainter::Rectangle( const PdfRect & rRect, double dRoundX, double dRoundY )
 {
-    this->DrawRect( rRect.GetLeft(), rRect.GetBottom(), 
-                    rRect.GetWidth(), rRect.GetHeight(), 
-                    dRoundX, dRoundY );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfPainter::FillRect( const PdfRect & rRect, double dRoundX, double dRoundY )
-{
-    this->FillRect( rRect.GetLeft(), rRect.GetBottom(), 
-                    rRect.GetWidth(), rRect.GetHeight(), 
-                    dRoundX, dRoundY );
+    this->Rectangle( rRect.GetLeft(), rRect.GetBottom(), 
+                     rRect.GetWidth(), rRect.GetHeight(), 
+                     dRoundX, dRoundY );
 }
 
 // -----------------------------------------------------
