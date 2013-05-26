@@ -67,10 +67,6 @@ class PODOFO_DOC_API PdfDocument {
 
  public:
     /** Close down/destruct the PdfDocument
-     *
-     * You also might want to free some other resources
-     * like globally allocated font encodings.
-     * \see PdfEncodingFactory::FreeGlobalEncodingInstances
      */
     virtual ~PdfDocument();
 
@@ -150,6 +146,7 @@ class PODOFO_DOC_API PdfDocument {
 
     /** Creates a PdfFont object
      *  \param pszFontName name of the font as it is known to the system
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
      *  \param eFontCreationFlags special flag to specify how fonts should be created
      *  \param bEmbedd specifies whether this font should be embedded in the PDF file.
@@ -158,7 +155,7 @@ class PODOFO_DOC_API PdfDocument {
      *  \returns PdfFont* a pointer to a new PdfFont object.
      *           The returned object is owned by the PdfDocument.
      */
-    PdfFont* CreateFont( const char* pszFontName, 
+    PdfFont* CreateFont( const char* pszFontName, bool bSymbolCharset = false, 
                          const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), 
                          PdfFontCache::EFontCreationFlags eFontCreationFlags = PdfFontCache::eFontCreationFlags_AutoSelectBase14,
                          bool bEmbedd = true );
@@ -167,6 +164,7 @@ class PODOFO_DOC_API PdfDocument {
      *  \param pszFontName name of the font as it is known to the system
      *  \param bBold if true search for a bold font
      *  \param bItalic if true search for an italic font
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
      *  \param eFontCreationFlags special flag to specify how fonts should be created
      *  \param bEmbedd specifies whether this font should be embedded in the PDF file.
@@ -175,7 +173,7 @@ class PODOFO_DOC_API PdfDocument {
      *
      *  \returns PdfFont* a pointer to a new PdfFont object.
      */
-    PdfFont* CreateFont( const char* pszFontName, bool bBold, bool bItalic, 
+    PdfFont* CreateFont( const char* pszFontName, bool bBold, bool bItalic, bool bSymbolCharset = false,
                          const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), 
                          PdfFontCache::EFontCreationFlags eFontCreationFlags = PdfFontCache::eFontCreationFlags_AutoSelectBase14,
                          bool bEmbedd = true, const char* pszFileName = NULL );
@@ -183,6 +181,7 @@ class PODOFO_DOC_API PdfDocument {
 #ifdef _WIN32
     /** Creates a PdfFont object
      *  \param pszFontName name of the font as it is known to the system
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
      *  \param bEmbedd specifies whether this font should be embedded in the PDF file.
      *         Embedding fonts is usually a good idea.
@@ -194,13 +193,14 @@ class PODOFO_DOC_API PdfDocument {
      *  with unicode characters. On Unix systes you can also path
      *  UTF-8 to the const char* overload.
      */
-    PdfFont* CreateFont( const wchar_t* pszFontName, const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), 
+    PdfFont* CreateFont( const wchar_t* pszFontName, bool bSymbolCharset = false, const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), 
                          bool bEmbedd = true );
 
     /** Creates a PdfFont object
      *  \param pszFontName name of the font as it is known to the system
      *  \param bBold if true search for a bold font
      *  \param bItalic if true search for an italic font
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
      *  \param bEmbedd specifies whether this font should be embedded in the PDF file.
      *         Embedding fonts is usually a good idea.
@@ -212,20 +212,28 @@ class PODOFO_DOC_API PdfDocument {
      *  with unicode characters. On Unix systes you can also path
      *  UTF-8 to the const char* overload.
      */
-    PdfFont* CreateFont( const wchar_t* pszFontName, bool bBold, bool bItalic, 
+    PdfFont* CreateFont( const wchar_t* pszFontName, bool bBold, bool bItalic, bool bSymbolCharset = false,
                          const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), 
                          bool bEmbedd = true);
+
+	 PdfFont* CreateFont( const LOGFONTA &logFont, const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(),
+								 bool bEmbedd = true );
+
+	 PdfFont* CreateFont( const LOGFONTW &logFont, const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(),
+								 bool bEmbedd = true );
+
 #endif // _WIN32
 
     /** Creates a PdfFont object
      *  \param face a valid freetype font handle (will be free'd by PoDoFo)
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
      *  \param bEmbedd specifies whether this font should be embedded in the PDF file.
      *         Embedding fonts is usually a good idea.
      *  \returns PdfFont* a pointer to a new PdfFont object.
      *           The returned object is owned by the PdfDocument.
      */
-    PdfFont* CreateFont( FT_Face face, const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), bool bEmbedd = true );
+    PdfFont* CreateFont( FT_Face face, bool bSymbolCharset = false, const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), bool bEmbedd = true );
 
     /** Creates a duplicate Type1-PdfFont with a new Id
      *  \param pFont is the existing font 
@@ -244,12 +252,13 @@ class PODOFO_DOC_API PdfDocument {
      *  \param pszFontName name of the font as it is known to the system
      *  \param bBold if true search for a bold font
      *  \param bItalic if true search for an italic font
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
      *  \param pszFileName optional path of a fontfile which should be used
      *
      *  \returns PdfFont* a pointer to a new PdfFont object.
      */
-    PdfFont* CreateFontSubset( const char* pszFontName, bool bBold, bool bItalic, 
+    PdfFont* CreateFontSubset( const char* pszFontName, bool bBold, bool bItalic, bool bSymbolCharset = false,
 			       const PdfEncoding * const pEncoding = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(),
 			       const char* pszFileName = NULL);
 
@@ -261,6 +270,7 @@ class PODOFO_DOC_API PdfDocument {
      *  \param pszFontName name of the font as it is known to the system
      *  \param bBold if true search for a bold font
      *  \param bItalic if true search for an italic font
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
      *
      *  \returns PdfFont* a pointer to a new PdfFont object.
@@ -269,7 +279,7 @@ class PODOFO_DOC_API PdfDocument {
      *  with unicode characters. On Unix systes you can also path
      *  UTF-8 to the const char* overload.
      */
-    PdfFont* CreateFontSubset( const wchar_t* pszFontName, bool bBold, bool bItalic, 
+    PdfFont* CreateFontSubset( const wchar_t* pszFontName, bool bBold, bool bItalic, bool bSymbolCharset = false,
 			       const PdfEncoding * const = PdfEncodingFactory::GlobalWinAnsiEncodingInstance() );
 #endif // _WIN32
 

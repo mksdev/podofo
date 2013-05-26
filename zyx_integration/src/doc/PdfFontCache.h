@@ -29,6 +29,28 @@
 #include "PdfFont.h"
 #include "PdfFontConfigWrapper.h"
 
+#ifdef _WIN32
+
+// to have LOGFONTA/LOGFONTW available
+#include <windows.h>
+
+// Undefined stuff which windows does
+// define that breaks are build
+// e.g. GetObject is defined to either GetObjectA or GetObjectW
+#ifdef GetObject
+#undef GetObject
+#endif // GetObject
+
+#ifdef CreateFont
+#undef CreateFont
+#endif // CreateFont
+
+#ifdef DrawText
+#undef DrawText
+#endif // DrawText
+
+#endif // __WIN32
+
 namespace PoDoFo {
 
 class PdfFontMetrics;
@@ -42,22 +64,23 @@ struct TFontCacheElement {
         : m_pFont( NULL ),
 	  m_pEncoding( NULL ),
 	  m_bBold( false ),
-	  m_bItalic( false )
+	  m_bItalic( false ),
+	  m_bIsSymbolCharset (false)
     {
     }
 
-    TFontCacheElement( const char* pszFontName, bool bBold, bool bItalic, 
+    TFontCacheElement( const char* pszFontName, bool bBold, bool bItalic, bool bIsSymbolCharset,
 		               const PdfEncoding * const pEncoding )
-        : m_pFont(NULL), m_pEncoding( pEncoding ), m_bBold( bBold ), 
-          m_bItalic( bItalic ), m_sFontName( reinterpret_cast<const pdf_utf8*>(pszFontName) )
+        : m_pFont(NULL), m_pEncoding( pEncoding ), m_bBold( bBold ), m_bItalic( bItalic ),
+		    m_sFontName( reinterpret_cast<const pdf_utf8*>(pszFontName) ), m_bIsSymbolCharset (bIsSymbolCharset)
     {
     }
 
 #ifdef _WIN32
-    TFontCacheElement( const wchar_t* pszFontName, bool bBold, bool bItalic, 
+    TFontCacheElement( const wchar_t* pszFontName, bool bBold, bool bItalic, bool bIsSymbolCharset,
 		       const PdfEncoding * const pEncoding )
         : m_pFont(NULL), m_pEncoding( pEncoding ), m_bBold( bBold ), 
-          m_bItalic( bItalic ), m_sFontName( pszFontName )
+          m_bItalic( bItalic ), m_sFontName( pszFontName ), m_bIsSymbolCharset (bIsSymbolCharset)
     {
     }
 #endif // _WIN32
@@ -74,12 +97,16 @@ struct TFontCacheElement {
         m_bBold     = rhs.m_bBold;
         m_bItalic   = rhs.m_bItalic;
         m_sFontName = rhs.m_sFontName;
+        m_bIsSymbolCharset = rhs.m_bIsSymbolCharset;
         
         return *this;
     }
     
     bool operator<( const TFontCacheElement & rhs ) const
     {
+		  if (m_bIsSymbolCharset != rhs.m_bIsSymbolCharset) {
+			   return m_bIsSymbolCharset < rhs.m_bIsSymbolCharset;
+		  }
         if( m_sFontName == rhs.m_sFontName ) 
         {
             if( m_pEncoding == NULL  ||  rhs.m_pEncoding == NULL  ||  *m_pEncoding == *rhs.m_pEncoding ) 
@@ -107,6 +134,7 @@ struct TFontCacheElement {
     bool               m_bBold;
     bool               m_bItalic;
     PdfString          m_sFontName; ///< We use PdfString here as it can easily handle unicode on windows
+    bool               m_bIsSymbolCharset;
 };
 
 /**
@@ -185,6 +213,7 @@ class PODOFO_DOC_API PdfFontCache {
      *  \param pszFontName a valid fontname
      *  \param bBold if true search for a bold font
      *  \param bItalic if true search for an italic font
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param bEmbedd if true a font for embedding into 
      *                 PDF will be created
      *  \param eFontCreationFlags special flag to specify how fonts should be created
@@ -194,7 +223,7 @@ class PODOFO_DOC_API PdfFontCache {
      *  \returns a PdfFont object or NULL if the font could
      *           not be created or found.
      */
-    PdfFont* GetFont( const char* pszFontName, bool bBold, bool bItalic, 
+    PdfFont* GetFont( const char* pszFontName, bool bBold, bool bItalic, bool bSymbolCharset,
                       bool bEmbedd, EFontCreationFlags eFontCreationFlags = eFontCreationFlags_AutoSelectBase14,
                       const PdfEncoding * const = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(), 
                       const char* pszFileName = NULL );
@@ -206,6 +235,7 @@ class PODOFO_DOC_API PdfFontCache {
      *  \param pszFontName a valid fontname
      *  \param bBold if true search for a bold font
      *  \param bItalic if true search for an italic font
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param bEmbedd if true a font for embedding into 
      *                 PDF will be created
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
@@ -217,14 +247,19 @@ class PODOFO_DOC_API PdfFontCache {
      *  with unicode characters. On Unix systes you can also path
      *  UTF-8 to the const char* overload.
      */
-    PdfFont* GetFont( const wchar_t* pszFontName, bool bBold, bool bItalic, 
+    PdfFont* GetFont( const wchar_t* pszFontName, bool bBold, bool bItalic, bool bSymbolCharset,
                       bool bEmbedd, const PdfEncoding * const = PdfEncodingFactory::GlobalWinAnsiEncodingInstance() );
+
+	 PdfFont* GetFont( const LOGFONTA &logFont, bool bEmbedd, const PdfEncoding * const pEncoding );
+	 PdfFont* GetFont( const LOGFONTW &logFont, bool bEmbedd, const PdfEncoding * const pEncoding );
+
 #endif // _WIN32
 
     /** Get a font from the cache. If the font does not yet
      *  exist, add it to the cache.
      *
      *  \param face a valid freetype font face (will be free'd by PoDoFo)
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param bEmbedd if true a font for embedding into 
      *                 PDF will be created
      *  \param pEncoding the encoding of the font. The font will not take ownership of this object.     
@@ -232,7 +267,7 @@ class PODOFO_DOC_API PdfFontCache {
      *  \returns a PdfFont object or NULL if the font could
      *           not be created or found.
      */
-    PdfFont* GetFont( FT_Face face, bool bEmbedd, const PdfEncoding * const = PdfEncodingFactory::GlobalWinAnsiEncodingInstance() );
+    PdfFont* GetFont( FT_Face face, bool bSymbolCharset, bool bEmbedd, const PdfEncoding * const = PdfEncodingFactory::GlobalWinAnsiEncodingInstance() );
 
     /** Get a font with specific id from the cache. If the font does not yet
      *  exist, copy from existing type1-font and set id.
@@ -251,6 +286,7 @@ class PODOFO_DOC_API PdfFontCache {
      *  \param pszFontName a valid fontname
      *  \param bBold if true search for a bold font
      *  \param bItalic if true search for an italic font
+	  *  \param bSymbolCharset whether to use symbol charset, rather than unicode charset
      *  \param pEncoding the encoding of the font. All characters
      *                   of the encoding will be included in this subset.
      *                   The font will not take ownership of this object.     
@@ -259,7 +295,7 @@ class PODOFO_DOC_API PdfFontCache {
      *  \returns a PdfFont object or NULL if the font could
      *           not be created or found.
      */
-    PdfFont* GetFontSubset( const char* pszFontName, bool bBold, bool bItalic, 
+    PdfFont* GetFontSubset( const char* pszFontName, bool bBold, bool bItalic, bool bSymbolCharset,
 			    const PdfEncoding * const = PdfEncodingFactory::GlobalWinAnsiEncodingInstance(),
 			    const char* pszFileName = NULL);
 
@@ -330,7 +366,7 @@ class PODOFO_DOC_API PdfFontCache {
     PdfFont* CreateFontObject( TISortedFontList itSorted, TSortedFontList & vecContainer,
                                PdfFontMetrics* pMetrics, bool bEmbedd, bool bBold, 
                                bool bItalic, const char* pszFontName, const PdfEncoding * const pEncoding,
-							   bool bSubsetting = false );
+										 bool bSubsetting = false);
 
     /** Create a font subset.
      *  \param pMetrics a font metrics
@@ -362,20 +398,36 @@ class PODOFO_DOC_API PdfFontCache {
      *  \returns a font handle or NULL in case of error
      */
     PdfFont* GetWin32Font( TISortedFontList itSorted, TSortedFontList & vecContainer, const char* pszFontName, 
-			               bool bBold, bool bItalic, bool bEmbedd, const PdfEncoding * const pEncoding );
+			               bool bBold, bool bItalic, bool bSymbolCharset, bool bEmbedd, const PdfEncoding * const pEncoding, bool pSubsetting = false );
 
     PdfFont* GetWin32Font( TISortedFontList itSorted, TSortedFontList & vecContainer, const wchar_t* pszFontName, 
-			               bool bBold, bool bItalic, bool bEmbedd, const PdfEncoding * const pEncoding );
+			               bool bBold, bool bItalic, bool bSymbolCharset, bool bEmbedd, const PdfEncoding * const pEncoding, bool pSubsetting = false );
+
+    PdfFont* GetWin32Font( TISortedFontList itSorted, TSortedFontList & vecContainer, const LOGFONTA &logFont,
+								bool bEmbedd, const PdfEncoding * const pEncoding, bool pSubsetting = false );
+
+    PdfFont* GetWin32Font( TISortedFontList itSorted, TSortedFontList & vecContainer, const LOGFONTW &logFont,
+								bool bEmbedd, const PdfEncoding * const pEncoding, bool pSubsetting = false );
 #endif // _WIN32
 
+	#define SUBSET_BASENAME_LEN 6 // + 2 for "+\0"
+
+	// kind of ABCDEF+
+	const char *genSubsetBasename(void);
+
+ protected:
+    void Init(void);
+	
  private:
     TSortedFontList m_vecFonts;              ///< Sorted list of all fonts, currently in the cache
     TSortedFontList m_vecFontSubsets;
     FT_Library      m_ftLibrary;             ///< Handle to the freetype library
-
+ 
     PdfVecObjects*  m_pParent;               ///< Handle to parent for creating new fonts and objects
 
     PdfFontConfigWrapper m_fontConfig;       ///< Handle to the fontconfig library
+
+    char m_sSubsetBasename[SUBSET_BASENAME_LEN + 2]; //< For genSubsetBasename()
 };
 
 // Peter Petrov: 26 April 2008
