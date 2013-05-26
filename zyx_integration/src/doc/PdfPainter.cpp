@@ -341,6 +341,7 @@ void PdfPainter::SetStrokingColor( const PdfColor & rColor )
 				  " SCN" << std::endl;
             break;
         case ePdfColorSpace_Unknown:
+        case ePdfColorSpace_Indexed:
         {
             PODOFO_RAISE_ERROR( ePdfError_CannotConvertColor );
         }
@@ -388,6 +389,7 @@ void PdfPainter::SetColor( const PdfColor & rColor )
 				  " scn" << std::endl;
 			break;
         case ePdfColorSpace_Unknown:
+        case ePdfColorSpace_Indexed:
         {
             PODOFO_RAISE_ERROR( ePdfError_CannotConvertColor );
         }
