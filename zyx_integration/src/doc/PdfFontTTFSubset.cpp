@@ -118,13 +118,13 @@ void PdfFontTTFSubset::AddGlyph( unsigned short nGlyphIndex )
         std::equal_range( m_vGlyphIndice.begin(), m_vGlyphIndice.end(), 
                           nGlyphIndex );
     
-if( it.first == it.second )
-{
-    m_vGlyphIndice.insert( it.first, nGlyphIndex );
-}
+	 if( it.first == it.second )
+	 {
+		  m_vGlyphIndice.insert( it.first, nGlyphIndex );
+	 }
 }
 
-    void PdfFontTTFSubset::Init()
+void PdfFontTTFSubset::Init()
 {
     GetStartOfTTFOffsets();
     GetNumberOfTables();
@@ -153,7 +153,7 @@ void PdfFontTTFSubset::GetNumberOfGlyphs()
     GetData( ulMaxpOffset+__LENGTH_DWORD*1,&m_numGlyphs,__LENGTH_DWORD);
     m_numGlyphs = Big2Little(m_numGlyphs);
 
-    std::cout << "Number of Glyphs:	"<< m_numGlyphs << std::endl;
+    //std::cout << "Number of Glyphs:	"<< m_numGlyphs << std::endl;
 }
 
 void PdfFontTTFSubset::InitTables()
@@ -282,12 +282,12 @@ void PdfFontTTFSubset::BuildFont( PdfOutputDevice* pOutputDevice )
     std::vector<TTrueTypeTable> vOldTable = m_vTable;	//vOldTable will be used later.
 
     //Print the old table information:
-    for ( i = 0; i < m_numTables; i++)
+    /*for ( i = 0; i < m_numTables; i++)
     {
         std::cout << "OldTable:\t" << m_vTable[i].m_strTableName << std::endl;
         std::cout << "\tOffSet:\t" << m_vTable[i].m_offset << std::endl;
         std::cout << "\t\tLength:\t"<<m_vTable[i].m_length << std::endl;
-    }
+    }*/
 	
     //Change the offsets:
     m_vTable[0].m_offset = __LENGTH_HEADER12+__LENGTH_OFFSETTABLE16*m_numTables;
@@ -299,12 +299,12 @@ void PdfFontTTFSubset::BuildFont( PdfOutputDevice* pOutputDevice )
     }
 	
     //Print the new table information:
-    for ( i = 0; i < m_numTables; i++)
+    /*for ( i = 0; i < m_numTables; i++)
     {
         std::cout << "NewTable:\t" << m_vTable[i].m_strTableName <<std::endl;
         std::cout << "\tOffSet:\t" << m_vTable[i].m_offset <<std::endl;
         std::cout << "\t\tLength:\t"<<m_vTable[i].m_length <<std::endl;
-    }
+    }*/
 
     //The glyph data:
     if (m_bIsLongLoca)

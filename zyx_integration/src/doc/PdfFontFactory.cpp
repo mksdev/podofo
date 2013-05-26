@@ -42,7 +42,7 @@ namespace PoDoFo {
 
 PdfFont* PdfFontFactory::CreateFontObject( PdfFontMetrics* pMetrics, int nFlags, 
                                            const PdfEncoding* const pEncoding,
-                                           PdfVecObjects* pParent )
+                                           PdfVecObjects* pParent)
 {
     PdfFont*     pFont  = NULL;
     EPdfFontType eType  = pMetrics->GetFontType();
@@ -52,7 +52,7 @@ PdfFont* PdfFontFactory::CreateFontObject( PdfFontMetrics* pMetrics, int nFlags,
     try
     { 
         pFont = PdfFontFactory::CreateFontForType( eType, pMetrics, pEncoding, bEmbed, bSubsetting, pParent );
-        
+
         if( pFont ) 
         {
             pFont->SetBold( nFlags & ePdfFont_Bold ? true : false );
@@ -137,8 +137,8 @@ PdfFont* PdfFontFactory::CreateFontForType( EPdfFontType eType, PdfFontMetrics* 
         switch( eType ) 
         {
             case ePdfFontType_TrueType:
-                // Peter Petrov 30 April 2008 - added bEmbed parameter
-                pFont = new PdfFontCID( pMetrics, pEncoding, pParent, bEmbed );
+					 // Peter Petrov 30 April 2008 - added bEmbed parameter
+					 pFont = new PdfFontCID( pMetrics, pEncoding, pParent, bEmbed, bSubsetting );
                 break;
             case ePdfFontType_Type1Pfa:
             case ePdfFontType_Type1Pfb:
