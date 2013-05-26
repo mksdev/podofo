@@ -2241,6 +2241,10 @@ void PdfEncodingDifference::AddDifference( int nCode, pdf_utf16be unicodeValue, 
     }
 }
 
+void PdfEncodingDifference::AddDifference( int nCode, const PdfName & rName )
+{
+    this->AddDifference(nCode, 0, rName);
+}
 
 bool PdfEncodingDifference::Contains( int nCode, PdfName & rName, pdf_utf16be & rValue ) const
 {

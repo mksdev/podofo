@@ -73,6 +73,8 @@ class PODOFO_DOC_API PdfEncodingDifference {
      */
     void AddDifference( int nCode, pdf_utf16be unicodeValue, const PdfName & rName );
 
+    void AddDifference( int nCode, const PdfName & rName );
+
     /** Tests if the specified code is part of the 
      *  differences.
      *

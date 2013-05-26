@@ -122,7 +122,7 @@ namespace PoDoFo {
 #if defined(_MSC_VER)  &&  _MSC_VER <= 1200 // Visual Studio 6
 #   define PODOFO_MIN(_a, _b) ((_a) < (_b) ? (_a) : (_b))
 #else
-#   define PODOFO_MIN(_a, _b) (std:min((_a), (_b)))
+#   define PODOFO_MIN(_a, _b) (std::min((_a), (_b)))
 #endif
 
 // pdf_long is defined as ptrdiff_t . It's a pointer-sized signed quantity
