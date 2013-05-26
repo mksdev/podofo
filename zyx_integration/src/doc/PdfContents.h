@@ -57,13 +57,13 @@ class PODOFO_DOC_API PdfContents : private PdfElement {
 
     /** Virtual destructor - because ALL destructors should be...
      */
-    virtual ~PdfContents() {};
+    virtual ~PdfContents();
 
     /** Get access to the raw contents object.
      *  It will either be a PdfStream or a PdfArray
      *  \returns a contents object
      */
-    virtual PdfObject* GetContents() const { return mContObj; }
+    virtual PdfObject* GetContents() const;
 
     /** Get access to an object into which you can add contents
      *   at the end of the "stream".

@@ -41,6 +41,14 @@ inline bool ObjectLittle( const PoDoFo::PdfObject* p1, const PoDoFo::PdfObject* 
 
 namespace PoDoFo {
 
+PdfVecObjects::Observer::~Observer()
+{
+}
+
+PdfVecObjects::StreamFactory::~StreamFactory()
+{
+}
+
 struct ObjectComparatorPredicate {
 public:
     inline bool operator()( const PdfObject* const & pObj, const PdfObject* const & pObj2 ) const { 
@@ -594,6 +602,98 @@ std::string PdfVecObjects::GetNextSubsetPrefix()
 	return m_sSubsetPrefix;
 }
 
+size_t PdfVecObjects::GetObjectCount() const
+{
+	return m_nObjectCount;
+}
+
+size_t PdfVecObjects::GetSize() const
+{
+    return m_vector.size();
+}
+
+void PdfVecObjects::Reserve( size_t size )
+{
+    m_vector.reserve( size );
+}
+
+PdfDocument* PdfVecObjects::GetParentDocument() const
+{
+    return m_pDocument;
+}
+
+void PdfVecObjects::SetParentDocument( PdfDocument* pDocument )
+{
+    m_pDocument = pDocument;
+}
+
+void PdfVecObjects::SetAutoDelete( bool bAutoDelete ) 
+{
+    m_bAutoDelete = bAutoDelete;
+}
+
+bool PdfVecObjects::AutoDelete() const
+{
+    return m_bAutoDelete;
+}
+
+const TPdfReferenceList & PdfVecObjects::GetFreeObjects() const
+{
+    return m_lstFreeObjects;
+}
+
+void PdfVecObjects::Attach( Observer* pObserver )
+{
+    m_vecObservers.push_back( pObserver );
+}
+
+void PdfVecObjects::SetStreamFactory( StreamFactory* pFactory )
+{
+    m_pStreamFactory = pFactory;
+}
+
+TIVecObjects PdfVecObjects::begin()
+{
+    return m_vector.begin();
+}
+
+TCIVecObjects PdfVecObjects::begin() const
+{
+    return m_vector.begin();
+}
+
+TIVecObjects PdfVecObjects::end()
+{
+    return m_vector.end();
+}
+
+TCIVecObjects PdfVecObjects::end() const
+{
+    return m_vector.end();
+}
+
+PdfObject* PdfVecObjects::GetBack() 
+{ 
+    return m_vector.back(); 
+}
+
+void PdfVecObjects::SetObjectCount( const PdfReference & rRef ) 
+{
+    if( rRef.ObjectNumber() >= m_nObjectCount )
+    // Peter Petrov 18 September 2008
+    {
+        // This was a bug.
+        //++m_nObjectCount;
+
+        // In fact "m_bObjectCount" is used for the next free object number.
+        // We need to use the greatest object number + 1 for the next free object number.
+        // Otherwise, object number overlap would have occurred.
+        m_nObjectCount = rRef.ObjectNumber() + 1;
+    }
+}
+
+PdfObject*& PdfVecObjects::operator[](size_t index) { return m_vector[index]; }
+
+//inline PdfObject const * & PdfVecObjects::operator[](int index) const { return m_vector[index]; }
+
 };
-
-

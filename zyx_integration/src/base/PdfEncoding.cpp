@@ -45,6 +45,76 @@ PdfEncoding::~PdfEncoding()
 
 }
 
+PdfEncoding::const_iterator::const_iterator( const PdfEncoding* pEncoding, int nCur )
+	 : m_pEncoding( pEncoding ), m_nCur( nCur )
+{
+}
+
+PdfEncoding::const_iterator::const_iterator( const PdfEncoding::const_iterator & rhs ) 
+{
+	 this->operator=(rhs);
+}
+
+const PdfEncoding::const_iterator & PdfEncoding::const_iterator::operator=( const PdfEncoding::const_iterator & rhs ) 
+{
+	 m_nCur      = rhs.m_nCur;
+	 m_pEncoding = rhs.m_pEncoding;
+
+	 return *this;
+}
+
+bool PdfEncoding::const_iterator::operator==( const PdfEncoding::const_iterator & rhs ) const
+{
+	 return (m_nCur == rhs.m_nCur);
+}
+
+bool PdfEncoding::const_iterator::operator!=( const PdfEncoding::const_iterator & rhs ) const
+{
+	 return (m_nCur != rhs.m_nCur);
+}
+
+pdf_utf16be PdfEncoding::const_iterator::operator*() const 
+{
+	 return m_pEncoding->GetCharCode( m_nCur );
+}
+
+PdfEncoding::const_iterator & PdfEncoding::const_iterator::operator++()
+{
+	 m_nCur++;
+
+	 return *this;
+}
+
+bool PdfEncoding::operator<( const PdfEncoding & rhs ) const
+{
+    return (this->GetID() < rhs.GetID());
+}
+
+bool PdfEncoding::operator==( const PdfEncoding & rhs ) const
+{
+    return (this->GetID() == rhs.GetID());
+}
+
+int PdfEncoding::GetFirstChar() const
+{
+    return m_nFirstChar;
+}
+
+int PdfEncoding::GetLastChar() const
+{
+    return m_nLastChar;
+}
+
+PdfEncoding::const_iterator PdfEncoding::begin() const
+{
+    return PdfEncoding::const_iterator( this, this->GetFirstChar() );
+}
+
+PdfEncoding::const_iterator PdfEncoding::end() const
+{
+    return PdfEncoding::const_iterator( this, this->GetLastChar() + 1 );
+}
+
 // -----------------------------------------------------
 // PdfSimpleEncoding
 // -----------------------------------------------------
@@ -195,14 +265,36 @@ char PdfSimpleEncoding::GetUnicodeCharCode(pdf_utf16be unicodeValue) const
 
 	return m_pEncodingTable[unicodeValue];
 }
+const PdfName & PdfSimpleEncoding::GetID() const
+{
+    return m_name;
+}
+
+bool PdfSimpleEncoding::IsAutoDelete() const
+{
+    return false;
+}
+
+bool PdfSimpleEncoding::IsSingleByteEncoding() const
+{
+    return true;
+}
+
+const PdfName & PdfSimpleEncoding::GetName() const
+{
+    return m_name;
+}
 
 // -----------------------------------------------------
 // PdfDocEncoding
 // -----------------------------------------------------
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
+PdfDocEncoding::PdfDocEncoding()
+  : PdfSimpleEncoding( PdfName("PdfDocEncoding") )
+{
+
+}
+
 const pdf_utf16be* PdfDocEncoding::GetToUnicodeTable() const
 {
     return PdfDocEncoding::s_cEncoding;
@@ -472,9 +564,12 @@ const pdf_utf16be PdfDocEncoding::s_cEncoding[256] = {
 // See: http://www.microsoft.com/globaldev/reference/sbcs/1252.mspx
 // -----------------------------------------------------
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
+PdfWinAnsiEncoding::PdfWinAnsiEncoding()
+  : PdfSimpleEncoding( PdfName("WinAnsiEncoding") )
+{
+
+}
+
 const pdf_utf16be* PdfWinAnsiEncoding::GetToUnicodeTable() const
 {
     return PdfWinAnsiEncoding::s_cEncoding;
@@ -743,9 +838,12 @@ const pdf_utf16be PdfWinAnsiEncoding::s_cEncoding[256] = {
 // PdfMacRomanEncoding
 // -----------------------------------------------------
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
+PdfMacRomanEncoding::PdfMacRomanEncoding()
+  : PdfSimpleEncoding( PdfName("MacRomanEncoding") )
+{
+
+}
+
 const pdf_utf16be* PdfMacRomanEncoding::GetToUnicodeTable() const
 {
     return PdfMacRomanEncoding::s_cEncoding;
@@ -1019,9 +1117,12 @@ const pdf_utf16be PdfMacRomanEncoding::s_cEncoding[256] = {
 //      --> glyphs to unicodes
 // -----------------------------------------------------
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
+PdfMacExpertEncoding::PdfMacExpertEncoding()
+  : PdfSimpleEncoding( PdfName("MacExpertEncoding") )
+{
+
+}
+
 const pdf_utf16be* PdfMacExpertEncoding::GetToUnicodeTable() const
 {
     return PdfMacExpertEncoding::s_cEncoding;
@@ -1076,9 +1177,12 @@ const pdf_utf16be PdfMacExpertEncoding::s_cEncoding[256] = {
 // See: http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/stdenc.txt
 // -----------------------------------------------------
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
+PdfStandardEncoding::PdfStandardEncoding()
+  : PdfSimpleEncoding( PdfName("StandardEncoding") )
+{
+
+}
+
 const pdf_utf16be* PdfStandardEncoding::GetToUnicodeTable() const
 {
     return PdfStandardEncoding::s_cEncoding;
@@ -1313,9 +1417,12 @@ const pdf_utf16be PdfStandardEncoding::s_cEncoding[256] = {
 // See: http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/symbol.txt
 // -----------------------------------------------------
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
+PdfSymbolEncoding::PdfSymbolEncoding()
+  : PdfSimpleEncoding( PdfName("SymbolEncoding") )
+{
+
+}
+
 const pdf_utf16be* PdfSymbolEncoding::GetToUnicodeTable() const
 {
     return PdfSymbolEncoding::s_cEncoding;
@@ -1540,9 +1647,12 @@ const pdf_utf16be PdfSymbolEncoding::s_cEncoding[256] = {
 // See: http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/zdingbat.txt
 // -----------------------------------------------------
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
+PdfZapfDingbatsEncoding::PdfZapfDingbatsEncoding()
+  : PdfSimpleEncoding( PdfName("ZapfDingbatsEncoding") )
+{
+
+}
+
 const pdf_utf16be* PdfZapfDingbatsEncoding::GetToUnicodeTable() const
 {
     return PdfZapfDingbatsEncoding::s_cEncoding;

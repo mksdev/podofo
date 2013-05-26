@@ -79,20 +79,20 @@ class PODOFO_API PdfParserObject : public PdfObject, public PdfTokenizer {
      *  which has to be parsed.
      *  \returns true if there is a stream
      */
-    inline bool HasStreamToParse() const;
+    bool HasStreamToParse() const;
 
     /** \returns true if this PdfParser loads all objects at
      *                the time they are accessed for the first time.
      *                The default is to load all object immediately.
      *                In this case false is returned.
      */
-    inline bool IsLoadOnDemand() const;
+    bool IsLoadOnDemand() const;
 
     /** Sets wether this object shall be loaded on demand
      *  when it's data is accessed for the first time.
      *  \param bDelayed if true the object is loaded delayed.
      */
-    inline void SetLoadOnDemand( bool bDelayed );
+    void SetLoadOnDemand( bool bDelayed );
 
     /** Set the object number of this object.
      *  It is almost never necessary to use this call.
@@ -100,7 +100,7 @@ class PODOFO_API PdfParserObject : public PdfObject, public PdfTokenizer {
      *
      *  \param nObjNo the new object number of this object
      */
-    inline void SetObjectNumber( unsigned int nObjNo );
+    void SetObjectNumber( unsigned int nObjNo );
 
     /** Tries to free all memory allocated by this
      *  PdfObject (variables and streams) and reads
@@ -171,38 +171,6 @@ class PODOFO_API PdfParserObject : public PdfObject, public PdfTokenizer {
     bool m_bStream;
     pdf_long m_lStreamOffset;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfParserObject::SetObjectNumber( unsigned int nObjNo )
-{
-    m_reference.SetObjectNumber( nObjNo );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfParserObject::IsLoadOnDemand() const
-{
-    return m_bLoadOnDemand;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfParserObject::SetLoadOnDemand( bool bDelayed )
-{
-    m_bLoadOnDemand = bDelayed;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfParserObject::HasStreamToParse() const
-{
-    return m_bStream;
-}
 
 };
 

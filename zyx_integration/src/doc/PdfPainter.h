@@ -44,12 +44,9 @@ class PdfString;
 class PdfTilingPattern;
 class PdfXObject;
 
-struct TLineElement 
+struct TLineElement
 {
-	TLineElement()
-		: pszStart( NULL ), lLen( 0L )
-	{
-	}
+	TLineElement();
 
 	const char* pszStart;
 	pdf_long        lLen;
@@ -91,7 +88,7 @@ class PODOFO_DOC_API PdfPainter {
      *
      *  \returns the current page of the painter or NULL if none is set
      */
-    inline const PdfCanvas* GetPage() const;
+    const PdfCanvas* GetPage() const;
 
     /** Finish drawing onto a page.
      * 
@@ -284,12 +281,12 @@ class PODOFO_DOC_API PdfPainter {
 	/** Gets current text rendering mode.
 	 *  Default mode is ePdfTextRenderingMode_Fill.
 	 */
-	inline EPdfTextRenderingMode GetTextRenderingMode(void) const;
+	EPdfTextRenderingMode GetTextRenderingMode(void) const;
 
     /** Get the current font:
      *  \returns a font object or NULL if no font was set.
      */
-    inline PdfFont* GetFont() const;
+    PdfFont* GetFont() const;
 
     /** Set a clipping rectangle
      *
@@ -304,7 +301,7 @@ class PODOFO_DOC_API PdfPainter {
      *
      *  \param rRect rectangle
      */
-    inline void SetClipRect( const PdfRect & rRect );
+    void SetClipRect( const PdfRect & rRect );
 
 	 /** Set miter limit.
 	  */
@@ -337,7 +334,7 @@ class PODOFO_DOC_API PdfPainter {
      *
      *  \see DrawRect
      */
-	inline void Rectangle( const PdfRect & rRect, double dRoundX=0.0, double dRoundY=0.0 );
+	void Rectangle( const PdfRect & rRect, double dRoundX=0.0, double dRoundY=0.0 );
 
     /** Add an ellipse into the current path
      *  \param dX x coordinate of the ellipse (left coordinate)
@@ -402,7 +399,7 @@ class PODOFO_DOC_API PdfPainter {
      *  \param eVertical vertical alignment of the text in the given bounding box
      *  \param bClip set the clipping rectangle to the given rRect, otherwise no clipping is performed
      */
-    inline void DrawMultiLineText( const PdfRect & rRect, const PdfString & rsText, EPdfAlignment eAlignment = ePdfAlignment_Left,
+    void DrawMultiLineText( const PdfRect & rRect, const PdfString & rsText, EPdfAlignment eAlignment = ePdfAlignment_Left,
                                    EPdfVerticalAlignment eVertical = ePdfVerticalAlignment_Top, bool bClip = true );
 
     /** Gets the text divided into individual lines, using the current font and clipping rectangle.
@@ -718,7 +715,7 @@ class PODOFO_DOC_API PdfPainter {
      *  \see DrawText
      *  \see TabWidth
      */
-    inline void SetTabWidth( unsigned short nTabWidth );
+    void SetTabWidth( unsigned short nTabWidth );
 
     /** Get the currently set tab width
      *  \returns by how many spaces a tabulator will be replaced
@@ -726,24 +723,24 @@ class PODOFO_DOC_API PdfPainter {
      *  \see DrawText
      *  \see TabWidth
      */
-    inline unsigned short GetTabWidth() const;
+    unsigned short GetTabWidth() const;
 
     /** Set the floating point precision.
      *
      *  \param inPrec write this many decimal places
      */
-    inline void SetPrecision( unsigned short inPrec );
+    void SetPrecision( unsigned short inPrec );
 
     /** Get the currently set floating point precision
      *  \returns how many decimal places will be written out for any floating point value
      */
-    inline unsigned short GetPrecision() const;
+    unsigned short GetPrecision() const;
 
     /** Get current path string. This can be later used in \ref AddRawCommands.
      * Stroke/Fill commands clear current path.
      * \returns std::string representing current path
      */
-    inline std::string GetCurrentPath(void) const;
+    std::string GetCurrentPath(void) const;
 
     /** Adds raw commands into Canvas stream.
      *  \param commands raw PDF commands
@@ -856,97 +853,6 @@ class PODOFO_DOC_API PdfPainter {
         lcx, lcy, 							// last "current" point
         lrx, lry;							// "reflect points"
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfCanvas* PdfPainter::GetPage() const
-{
-    return m_pPage;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfTextRenderingMode PdfPainter::GetTextRenderingMode(void) const
-{
-	return currentTextRenderingMode;
-}
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfFont* PdfPainter::GetFont() const
-{
-    return m_pFont;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfPainter::SetTabWidth( unsigned short nTabWidth )
-{
-    m_nTabWidth = nTabWidth;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-unsigned short PdfPainter::GetTabWidth() const
-{
-    return m_nTabWidth;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfPainter::SetPrecision( unsigned short inPrec )
-{
-    m_oss.precision( inPrec );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-unsigned short PdfPainter::GetPrecision() const
-{
-    return static_cast<unsigned short>(m_oss.precision());
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline std::string PdfPainter::GetCurrentPath(void) const
-{
-	return m_curPath.str();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfPainter::SetClipRect( const PdfRect & rRect )
-{
-    this->SetClipRect( rRect.GetLeft(), rRect.GetBottom(), rRect.GetWidth(), rRect.GetHeight() );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfPainter::Rectangle( const PdfRect & rRect, double dRoundX, double dRoundY )
-{
-    this->Rectangle( rRect.GetLeft(), rRect.GetBottom(), 
-                     rRect.GetWidth(), rRect.GetHeight(), 
-                     dRoundX, dRoundY );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfPainter::DrawMultiLineText( const PdfRect & rRect, const PdfString & rsText, 
-                                    EPdfAlignment eAlignment, EPdfVerticalAlignment eVertical, bool bClip)
-{
-    this->DrawMultiLineText( rRect.GetLeft(), rRect.GetBottom(), rRect.GetWidth(), rRect.GetHeight(), 
-                             rsText, eAlignment, eVertical, bClip );
-}
 
 };
 

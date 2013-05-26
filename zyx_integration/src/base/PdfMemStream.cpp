@@ -284,5 +284,19 @@ pdf_long PdfMemStream::GetLength() const
     return m_lLength;
 }
 
+const char* PdfMemStream::Get() const
+{
+    return m_buffer.GetBuffer();
+}
+
+const char* PdfMemStream::GetInternalBuffer() const
+{
+    return m_buffer.GetBuffer();
+}
+
+pdf_long PdfMemStream::GetInternalBufferSize() const
+{
+    return m_lLength;
+}
 
 };

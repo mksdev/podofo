@@ -42,7 +42,7 @@ class PODOFO_DOC_API PdfExtGState : public PdfElement {
      *  in the pages resource dictionary.
      *  \returns PdfName containing the identifier (e.g. /ExtGS13)
      */
-    inline const PdfName & GetIdentifier() const;
+    const PdfName & GetIdentifier() const;
 
     /** Sets the opacity value to be used for fill operations
      *  \param opac a floating point value from 0 (transparent) to 1 (opaque)
@@ -97,12 +97,6 @@ class PODOFO_DOC_API PdfExtGState : public PdfElement {
  private: 
     PdfName m_Identifier;
 };
-
-
-const PdfName & PdfExtGState::GetIdentifier() const
-{
-    return m_Identifier;
-}
 
 };
 

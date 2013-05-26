@@ -198,23 +198,23 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
     /** Set the write mode to use when writing the PDF.
      *  \param eWriteMode write mode
      */
-    void SetWriteMode( EPdfWriteMode eWriteMode ) { m_eWriteMode = eWriteMode; }
+    void SetWriteMode( EPdfWriteMode eWriteMode );
 
     /** Get the write mode used for wirting the PDF
      *  \returns the write mode
      */
-    virtual EPdfWriteMode GetWriteMode() const { return m_eWriteMode; }
+    virtual EPdfWriteMode GetWriteMode() const;
 
     /** Set the PDF Version of the document. Has to be called before Write() to
      *  have an effect.
      *  \param eVersion  version of the pdf document
      */
-    void SetPdfVersion( EPdfVersion eVersion ) { m_eVersion = eVersion;}
+    void SetPdfVersion( EPdfVersion eVersion );
 
     /** Get the PDF version of the document
      *  \returns EPdfVersion version of the pdf document
      */
-    EPdfVersion GetPdfVersion() const { return m_eVersion; }
+    EPdfVersion GetPdfVersion() const;
 
     /** If you try to open an encrypted PDF file, which requires
      *  a password to open, PoDoFo will throw a PdfError( ePdfError_InvalidPassword ) 
@@ -268,24 +268,24 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
     /** 
      * \returns true if this PdfMemDocument creates an encrypted PDF file
      */
-    bool GetEncrypted() const { return (m_pEncrypt != NULL); }
+    bool GetEncrypted() const;
 
     /** Returns wether this PDF document is linearized, aka
      *  weboptimized
      *  \returns true if the PDF document is linearized
      */
-    bool IsLinearized() const { return m_bLinearized; }
+    bool IsLinearized() const;
     
     /** Get a reference to the sorted internal objects vector.
      *  \returns the internal objects vector.
      */
-    const PdfVecObjects & GetObjects() const { return *(PdfDocument::GetObjects()); }
+    const PdfVecObjects & GetObjects() const;
 
     /** Get a reference to the sorted internal objects vector.
      *  This is an overloaded function for your convinience.
      *  \returns the internal objects vector.
      */
-    PdfVecObjects & GetObjects() { return *(PdfDocument::GetObjects()); }
+    PdfVecObjects & GetObjects();
 
     /** Get access to the internal Catalog dictionary
      *  or root object.
@@ -293,7 +293,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *  \returns PdfObject the documents catalog or NULL 
      *                     if no catalog is available
      */
-    PdfObject* GetCatalog()  { return PdfDocument::GetCatalog(); }
+    PdfObject* GetCatalog();
 
     /** Get access to the internal Catalog dictionary
      *  or root object.
@@ -301,32 +301,32 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *  \returns PdfObject the documents catalog or NULL 
      *                     if no catalog is available
      */
-    const PdfObject* GetCatalog() const { return PdfDocument::GetCatalog(); }
+    const PdfObject* GetCatalog() const;
 
     /** Get the trailer dictionary
      *  which can be written unmodified to a pdf file.
      */
-    const PdfObject* GetTrailer() const { return PdfDocument::GetTrailer(); }
+    const PdfObject* GetTrailer() const;
     
     /** Get access to the StructTreeRoot dictionary
      *  \returns PdfObject the StructTreeRoot dictionary
      */
-    PdfObject* GetStructTreeRoot() const { return GetNamedObjectFromCatalog( "StructTreeRoot" ); }
+    PdfObject* GetStructTreeRoot() const;
 
     /** Get access to the Metadata stream
      *  \returns PdfObject the Metadata stream (should be in XML, using XMP grammar)
      */
-    PdfObject* GetMetadata() const { return GetNamedObjectFromCatalog( "Metadata" ); }
+    PdfObject* GetMetadata() const;
 
     /** Get access to the MarkInfo dictionary (ISO 32000-1:2008 14.7.1)
      *  \returns PdfObject the MarkInfo dictionary
      */
-    PdfObject* GetMarkInfo() const { return GetNamedObjectFromCatalog( "MarkInfo" ); }
+    PdfObject* GetMarkInfo() const;
 
     /** Get access to the RFC 3066 natural language id for the document (ISO 32000-1:2008 14.9.2.1)
      *  \returns PdfObject the language ID string
      */
-    PdfObject* GetLanguage() const { return GetNamedObjectFromCatalog( "Lang" ); }
+    PdfObject* GetLanguage() const;
 
     /** Creates a PdfFont object from an existing font.
      *
@@ -363,7 +363,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsPrintAllowed() const; 
+    virtual bool IsPrintAllowed() const; 
 
     /** Checks if modifiying this document (besides annotations, form fields or changing pages) is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -372,7 +372,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsEditAllowed() const;
+    virtual bool IsEditAllowed() const;
 
     /** Checks if text and graphics extraction is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -381,7 +381,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsCopyAllowed() const;
+    virtual bool IsCopyAllowed() const;
 
     /** Checks if it is allowed to add or modify annotations or form fields
      *  Every PDF consuming applications has to adhere this value!
@@ -390,7 +390,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsEditNotesAllowed() const;
+    virtual bool IsEditNotesAllowed() const;
 
     /** Checks if it is allowed to fill in existing form or signature fields
      *  Every PDF consuming applications has to adhere this value!
@@ -399,7 +399,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsFillAndSignAllowed() const;
+    virtual bool IsFillAndSignAllowed() const;
 
     /** Checks if it is allowed to extract text and graphics to support users with disabillities
      *  Every PDF consuming applications has to adhere this value!
@@ -408,7 +408,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsAccessibilityAllowed() const;
+    virtual bool IsAccessibilityAllowed() const;
 
     /** Checks if it is allowed to insert, create, rotate, delete pages or add bookmarks
      *  Every PDF consuming applications has to adhere this value!
@@ -417,7 +417,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsDocAssemblyAllowed() const;
+    virtual bool IsDocAssemblyAllowed() const;
 
     /** Checks if it is allowed to print a high quality version of this document 
      *  Every PDF consuming applications has to adhere this value!
@@ -426,7 +426,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsHighPrintAllowed() const;
+    virtual bool IsHighPrintAllowed() const;
 
     /** Tries to free all memory allocated by the given
      *  PdfObject (variables and streams) and reads
@@ -470,7 +470,7 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
     /** 
      * \returns the parsers encryption object or NULL if the read PDF file was not encrypted
      */
-    inline const PdfEncrypt* GetEncrypt() const;
+    const PdfEncrypt* GetEncrypt() const;
 
  private:
     /** Get a dictioary from the catalog dictionary by its name.
@@ -513,79 +513,6 @@ class PODOFO_DOC_API PdfMemDocument : public PdfDocument {
     EPdfWriteMode   m_eWriteMode;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsPrintAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsPrintAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsEditAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsEditAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsCopyAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsCopyAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsEditNotesAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsEditNotesAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsFillAndSignAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsFillAndSignAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsAccessibilityAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsAccessibilityAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsDocAssemblyAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsDocAssemblyAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfMemDocument::IsHighPrintAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsHighPrintAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfEncrypt* PdfMemDocument::GetEncrypt() const 
-{ 
-    return m_pEncrypt; 
-}
-
 };
-
 
 #endif	// _PDF_MEM_DOCUMENT_H_

@@ -357,13 +357,13 @@ class PODOFO_DOC_API PdfAnnotation : public PdfElement {
     /** Get the type of this annotation
      *  \returns the annotation type
      */
-    inline EPdfAnnotation GetType() const;
+    EPdfAnnotation GetType() const;
 
     /** Get the page of this PdfField
      *
      *  \returns the page of this PdfField
      */
-    inline PdfPage* GetPage() const;
+    PdfPage* GetPage() const;
 
  private:
     /** Convert an annotation enum to its string representation
@@ -382,22 +382,6 @@ class PODOFO_DOC_API PdfAnnotation : public PdfElement {
 
     PdfPage*       m_pPage;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline EPdfAnnotation PdfAnnotation::GetType() const
-{
-    return m_eAnnotation;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfPage* PdfAnnotation::GetPage() const
-{
-    return m_pPage;
-}
 
 };
 

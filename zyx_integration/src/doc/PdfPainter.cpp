@@ -95,6 +95,11 @@ static inline bool IsSpaceChar(pdf_utf16be ch)
 	return isspace( SwapCharBytesIfRequired(ch) & 0x00FF ) != 0;
 }
 
+TLineElement::TLineElement()
+	: pszStart( NULL ), lLen( 0L )
+{
+}
+
 PdfPainter::PdfPainter()
 : m_pCanvas( NULL ), m_pPage( NULL ), m_pFont( NULL ), m_nTabWidth( 4 ),
   m_curColor( PdfColor( 0.0, 0.0, 0.0 ) ),
@@ -1916,6 +1921,63 @@ PdfString PdfPainter::ExpandTabs( const PdfString & rsString, pdf_long lStringLe
 #endif
 }
 
+const PdfCanvas* PdfPainter::GetPage() const
+{
+    return m_pPage;
+}
+
+EPdfTextRenderingMode PdfPainter::GetTextRenderingMode(void) const
+{
+	return currentTextRenderingMode;
+}
+
+PdfFont* PdfPainter::GetFont() const
+{
+    return m_pFont;
+}
+
+void PdfPainter::SetTabWidth( unsigned short nTabWidth )
+{
+    m_nTabWidth = nTabWidth;
+}
+
+unsigned short PdfPainter::GetTabWidth() const
+{
+    return m_nTabWidth;
+}
+
+void PdfPainter::SetPrecision( unsigned short inPrec )
+{
+    m_oss.precision( inPrec );
+}
+
+unsigned short PdfPainter::GetPrecision() const
+{
+    return static_cast<unsigned short>(m_oss.precision());
+}
+
+std::string PdfPainter::GetCurrentPath(void) const
+{
+	return m_curPath.str();
+}
+
+void PdfPainter::SetClipRect( const PdfRect & rRect )
+{
+    this->SetClipRect( rRect.GetLeft(), rRect.GetBottom(), rRect.GetWidth(), rRect.GetHeight() );
+}
+
+void PdfPainter::Rectangle( const PdfRect & rRect, double dRoundX, double dRoundY )
+{
+    this->Rectangle( rRect.GetLeft(), rRect.GetBottom(), 
+                     rRect.GetWidth(), rRect.GetHeight(), 
+                     dRoundX, dRoundY );
+}
+
+void PdfPainter::DrawMultiLineText( const PdfRect & rRect, const PdfString & rsText, 
+                                    EPdfAlignment eAlignment, EPdfVerticalAlignment eVertical, bool bClip)
+{
+    this->DrawMultiLineText( rRect.GetLeft(), rRect.GetBottom(), rRect.GetWidth(), rRect.GetHeight(), 
+                             rsText, eAlignment, eVertical, bClip );
+}
+
 } /* namespace PoDoFo */
-
-

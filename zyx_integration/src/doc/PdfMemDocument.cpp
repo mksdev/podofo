@@ -299,6 +299,37 @@ void PdfMemDocument::Write( PdfOutputDevice* pDevice )
     writer.Write( pDevice );    
 }
 
+void PdfMemDocument::SetWriteMode( EPdfWriteMode eWriteMode )
+{
+	m_eWriteMode = eWriteMode;
+}
+
+EPdfWriteMode PdfMemDocument::GetWriteMode() const
+{
+	return m_eWriteMode;
+}
+
+void PdfMemDocument::SetPdfVersion( EPdfVersion eVersion )
+{
+	m_eVersion = eVersion;
+}
+
+EPdfVersion PdfMemDocument::GetPdfVersion() const
+{
+	return m_eVersion;
+}
+bool PdfMemDocument::GetEncrypted() const { return (m_pEncrypt != NULL); }
+bool PdfMemDocument::IsLinearized() const { return m_bLinearized; }
+const PdfVecObjects & PdfMemDocument::GetObjects() const { return *(PdfDocument::GetObjects()); }
+PdfVecObjects & PdfMemDocument::GetObjects() { return *(PdfDocument::GetObjects()); }
+PdfObject* PdfMemDocument::GetCatalog()  { return PdfDocument::GetCatalog(); }
+const PdfObject* PdfMemDocument::GetCatalog() const { return PdfDocument::GetCatalog(); }
+const PdfObject* PdfMemDocument::GetTrailer() const { return PdfDocument::GetTrailer(); }
+PdfObject* PdfMemDocument::GetStructTreeRoot() const { return GetNamedObjectFromCatalog( "StructTreeRoot" ); }
+PdfObject* PdfMemDocument::GetMetadata() const { return GetNamedObjectFromCatalog( "Metadata" ); }
+PdfObject* PdfMemDocument::GetMarkInfo() const { return GetNamedObjectFromCatalog( "MarkInfo" ); }
+PdfObject* PdfMemDocument::GetLanguage() const { return GetNamedObjectFromCatalog( "Lang" ); }
+
 PdfObject* PdfMemDocument::GetNamedObjectFromCatalog( const char* pszName ) const 
 {
     return this->GetCatalog()->GetIndirectKey( PdfName( pszName ) );
@@ -395,5 +426,49 @@ void PdfMemDocument::FreeObjectMemory( PdfObject* pObj, bool bForce )
     pParserObject->FreeObjectMemory( bForce );
 }
 
-};
+bool PdfMemDocument::IsPrintAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsPrintAllowed() : true;
+}
 
+bool PdfMemDocument::IsEditAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsEditAllowed() : true;
+}
+
+bool PdfMemDocument::IsCopyAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsCopyAllowed() : true;
+}
+
+bool PdfMemDocument::IsEditNotesAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsEditNotesAllowed() : true;
+}
+
+bool PdfMemDocument::IsFillAndSignAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsFillAndSignAllowed() : true;
+}
+
+bool PdfMemDocument::IsAccessibilityAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsAccessibilityAllowed() : true;
+}
+
+bool PdfMemDocument::IsDocAssemblyAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsDocAssemblyAllowed() : true;
+}
+
+bool PdfMemDocument::IsHighPrintAllowed() const
+{
+    return m_pEncrypt ? m_pEncrypt->IsHighPrintAllowed() : true;
+}
+
+const PdfEncrypt* PdfMemDocument::GetEncrypt() const 
+{ 
+    return m_pEncrypt; 
+}
+
+};

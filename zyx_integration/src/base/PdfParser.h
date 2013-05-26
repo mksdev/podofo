@@ -49,7 +49,7 @@ class PODOFO_API PdfParser : public PdfTokenizer {
 
  public:
     struct TXRefEntry {
-        inline TXRefEntry() : lOffset(0), lGeneration(0), cUsed('\x00'), bParsed(false) { }
+        TXRefEntry();
         pdf_long lOffset;
         long lGeneration;
         char cUsed;
@@ -253,17 +253,17 @@ class PODOFO_API PdfParser : public PdfTokenizer {
      *
      * \returns the number of incremental updates to the parsed PDF.
      */
-    inline int GetNumberOfIncrementalUpdates() const;
+    int GetNumberOfIncrementalUpdates() const;
 
     /** Get a reference to the sorted internal objects vector.
      *  \returns the internal objects vector.
      */
-    inline const PdfVecObjects* GetObjects() const;
+    const PdfVecObjects* GetObjects() const;
 
     /** Get the file format version of the pdf
      *  \returns the file format version as enum
      */
-    inline EPdfVersion GetPdfVersion() const;
+    EPdfVersion GetPdfVersion() const;
 
     /** Get the file format version of the pdf
      *  \returns the file format version as string
@@ -273,32 +273,32 @@ class PODOFO_API PdfParser : public PdfTokenizer {
     /** Get the trailer dictionary
      *  which can be written unmodified to a pdf file.
      */
-    inline const PdfObject* GetTrailer() const;
+    const PdfObject* GetTrailer() const;
 
     /** \returns true if this PdfParser loads all objects on demand at
      *                the time they are accessed for the first time.
      *                The default is to load all object immediately.
      *                In this case false is returned.
      */
-    inline bool GetLoadOnDemand() const;
+    bool GetLoadOnDemand() const;
 
     /** \returns whether the parsed document contains linearization tables
      */
-    bool IsLinearized() const { return m_pLinearization != NULL; }
+    bool IsLinearized() const;
 
     /** \returns the length of the file
      */
-    size_t GetFileSize() const { return m_nFileSize; }
+    size_t GetFileSize() const;
 
     /** 
      * \returns true if this PdfWriter creates an encrypted PDF file
      */
-    bool GetEncrypted() const { return (m_pEncrypt != NULL); }
+    bool GetEncrypted() const;
 
     /** 
      * \returns the parsers encryption object or NULL if the read PDF file was not encrypted
      */
-    const PdfEncrypt* GetEncrypt() const { return m_pEncrypt; }
+    const PdfEncrypt* GetEncrypt() const;
 
     /** 
      * Takes the encryption object fro mthe parser. The internal handle will be set
@@ -309,7 +309,7 @@ class PODOFO_API PdfParser : public PdfTokenizer {
      *
      * \returns the parsers encryption object or NULL if the read PDF file was not encrypted
      */
-    inline PdfEncrypt* TakeEncrypt();
+    PdfEncrypt* TakeEncrypt();
     
 
     /** If you try to open an encrypted PDF file, which requires
@@ -334,7 +334,7 @@ class PODOFO_API PdfParser : public PdfTokenizer {
      *
      * \see SetStringParsing
      */
-    inline bool IsStrictParsing() const;
+    bool IsStrictParsing() const;
 
     /**
      * Enable/disable strict parsing mode.
@@ -348,12 +348,12 @@ class PODOFO_API PdfParser : public PdfTokenizer {
      *
      * \param bStrict new setting for strict parsing mode.
      */
-    inline void SetStrictParsing( bool bStrict );
+    void SetStrictParsing( bool bStrict );
 
     /**
      * \return if broken objects are ignored while parsing
      */
-    inline bool GetIgnoreBrokenObjects();
+    bool GetIgnoreBrokenObjects();
 
     /**
      * Specify if the parser should ignore broken
@@ -365,13 +365,13 @@ class PODOFO_API PdfParser : public PdfTokenizer {
      *
      * \param bBroken if true broken objects will be ignored
      */
-    inline void SetIgnoreBrokenObjects( bool bBroken );
+    void SetIgnoreBrokenObjects( bool bBroken );
 
     /**
      * \return maximum object count to read (default is LONG_MAX
      * which means no limit)
      */
-    inline static long GetMaxObjectCount();
+    static long GetMaxObjectCount();
     
     /**
      * Specify the maximum number of objects the parser should
@@ -383,7 +383,7 @@ class PODOFO_API PdfParser : public PdfTokenizer {
      *
      * \param nMaxObjects set max number of objects
      */
-    inline static void SetMaxObjectCount( long nMaxObjects );
+    static void SetMaxObjectCount( long nMaxObjects );
     
  protected:
     /** Searches backwards from the end of the file
@@ -578,105 +578,6 @@ class PODOFO_API PdfParser : public PdfTokenizer {
     static long   s_nMaxObjects;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfParser::GetLoadOnDemand() const
-{
-    return m_bLoadOnDemand;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfVersion PdfParser::GetPdfVersion() const
-{
-    return m_ePdfVersion;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-int PdfParser::GetNumberOfIncrementalUpdates() const
-{
-    return m_nIncrementalUpdates;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfVecObjects* PdfParser::GetObjects() const
-{
-    return m_vecObjects;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfObject* PdfParser::GetTrailer() const
-{
-    return m_pTrailer;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfEncrypt* PdfParser::TakeEncrypt() 
-{ 
-    PdfEncrypt* pEncrypt = m_pEncrypt;
-    m_pEncrypt = NULL; 
-    return pEncrypt; 
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfParser::IsStrictParsing() const
-{
-    return m_bStrictParsing;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfParser::SetStrictParsing( bool bStrict )
-{
-    m_bStrictParsing = bStrict;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfParser::GetIgnoreBrokenObjects()
-{
-    return m_bIgnoreBrokenObjects;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfParser::SetIgnoreBrokenObjects( bool bBroken )
-{
-    m_bIgnoreBrokenObjects = bBroken;
-}
-
-// -----------------------------------------------------
-//
-// -----------------------------------------------------
-long PdfParser::GetMaxObjectCount()
-{
-    return PdfParser::s_nMaxObjects;
-}
-
-// -----------------------------------------------------
-//
-// -----------------------------------------------------
-void PdfParser::SetMaxObjectCount( long nMaxObjects )
-{
-    PdfParser::s_nMaxObjects = nMaxObjects;
-}
-
 };
 
 #endif // _PDF_PARSER_H_
-

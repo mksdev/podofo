@@ -212,13 +212,13 @@ class PODOFO_API PdfTTFWriter {
                 return *this;
             }
 
-        inline bool IsComposite() const { return m_bComposite; }
-        inline void SetComposite( bool b ) { m_bComposite = b; }
-        inline int  GetIndex()    const { return m_nIndex; }
-        inline int  GetPosition() const { return m_nPosition; }
-        inline void SetPosition( int nPos ) { m_nPosition = nPos; }
-        inline pdf_ttf_ushort GetInstrunctionLength() const { return m_nInstructionLength; };
-        inline const char*    GetInstrunctions() const { return m_pInstructions; }
+        bool IsComposite() const { return m_bComposite; }
+        void SetComposite( bool b ) { m_bComposite = b; }
+        int  GetIndex()    const { return m_nIndex; }
+        int  GetPosition() const { return m_nPosition; }
+        void SetPosition( int nPos ) { m_nPosition = nPos; }
+        pdf_ttf_ushort GetInstrunctionLength() const { return m_nInstructionLength; };
+        const char*    GetInstrunctions() const { return m_pInstructions; }
 
     public: // TODO: add accessors
         int  m_nPosition;
@@ -435,7 +435,7 @@ class PODOFO_API PdfTTFWriter {
      *
      *  \returns the tag as a pdf_ttf_ulong
      */
-    inline pdf_ttf_ulong CreateTag( char a, char b, char c, char d ) const;
+    pdf_ttf_ulong CreateTag( char a, char b, char c, char d ) const;
 
     /** Calculate the checksum of a table.
      *
@@ -453,25 +453,25 @@ class PODOFO_API PdfTTFWriter {
      *
      *  \param pShort a value to swap
      */
-    inline void SwapUShort( pdf_ttf_ushort* pShort ) const;
+    void SwapUShort( pdf_ttf_ushort* pShort ) const;
 
     /** Convert a pdf_ttf_short between big and little endian
      *
      *  \param pShort a value to swap
      */
-    inline void SwapShort( pdf_ttf_short* pShort ) const;
+    void SwapShort( pdf_ttf_short* pShort ) const;
 
     /** Convert a pdf_ttf_fword between big and little endian
      *
      *  \param pFword a value to swap
      */
-    inline void SwapFWord( pdf_ttf_fword* pFword ) const;
+    void SwapFWord( pdf_ttf_fword* pFword ) const;
 
     /** Convert a pdf_ttf_ulong between big and little endian
      *
      *  \param pShort a value to swap
      */
-    inline void SwapULong( pdf_ttf_ulong* pLong ) const;
+    void SwapULong( pdf_ttf_ulong* pLong ) const;
 
     /** Reads the table directory from the current position
      *  of the input device, handling any necessary
@@ -653,7 +653,7 @@ class PODOFO_API PdfTTFWriter {
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline PdfTTFWriter::pdf_ttf_ulong PdfTTFWriter::CreateTag( char a, char b, char c, char d ) const
+PdfTTFWriter::pdf_ttf_ulong PdfTTFWriter::CreateTag( char a, char b, char c, char d ) const
 {
     return ( ( a << 24 )| ( b << 16 ) | ( c << 8 ) | d );
 }
@@ -661,7 +661,7 @@ inline PdfTTFWriter::pdf_ttf_ulong PdfTTFWriter::CreateTag( char a, char b, char
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline void PdfTTFWriter::SwapUShort( pdf_ttf_ushort* pShort ) const
+void PdfTTFWriter::SwapUShort( pdf_ttf_ushort* pShort ) const
 {
     *pShort = ((*pShort << 8) & 0xFF00) | ((*pShort >> 8) & 0x00FF);
 }
@@ -669,7 +669,7 @@ inline void PdfTTFWriter::SwapUShort( pdf_ttf_ushort* pShort ) const
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline void PdfTTFWriter::SwapShort( pdf_ttf_short* pShort ) const
+void PdfTTFWriter::SwapShort( pdf_ttf_short* pShort ) const
 {
     *pShort = ((*pShort << 8) & 0xFF00) | ((*pShort >> 8) & 0x00FF);
 }
@@ -677,7 +677,7 @@ inline void PdfTTFWriter::SwapShort( pdf_ttf_short* pShort ) const
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline void PdfTTFWriter::SwapFWord( pdf_ttf_fword* pFword ) const
+void PdfTTFWriter::SwapFWord( pdf_ttf_fword* pFword ) const
 {
     *pFword = ((*pFword << 8) & 0xFF00) | ((*pFword >> 8) & 0x00FF);
 }
@@ -685,7 +685,7 @@ inline void PdfTTFWriter::SwapFWord( pdf_ttf_fword* pFword ) const
 // -----------------------------------------------------
 // 
 // -----------------------------------------------------
-inline void PdfTTFWriter::SwapULong( pdf_ttf_ulong* pLong ) const
+void PdfTTFWriter::SwapULong( pdf_ttf_ulong* pLong ) const
 {
     *pLong = ((*pLong << 24) & 0xFF000000) | ((*pLong << 8) & 0x00FF0000) | 
              ((*pLong >> 8) & 0x0000FF00) | ((*pLong >> 24) & 0x000000FF) ;

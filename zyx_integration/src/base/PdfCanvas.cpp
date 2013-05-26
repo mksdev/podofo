@@ -30,6 +30,8 @@ namespace PoDoFo {
 
 PdfArray PdfCanvas::s_procset;
 
+PdfCanvas::~PdfCanvas() {}
+
 const PdfArray & PdfCanvas::GetProcSet()
 {
     if( s_procset.empty() ) 

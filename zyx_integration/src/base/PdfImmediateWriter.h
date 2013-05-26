@@ -62,7 +62,7 @@ class PODOFO_API PdfImmediateWriter : private PdfWriter,
     /** Get the write mode used for wirting the PDF
      *  \returns the write mode
      */
-    inline EPdfWriteMode GetWriteMode() const;
+    EPdfWriteMode GetWriteMode() const;
 
     /** Get the PDF version of the document
      *  The PDF version can only be set in the constructor
@@ -70,7 +70,7 @@ class PODOFO_API PdfImmediateWriter : private PdfWriter,
      *
      *  \returns EPdfVersion version of the pdf document
      */
-    inline EPdfVersion GetPdfVersion() const;
+    EPdfVersion GetPdfVersion() const;
 
  private:
     void WriteObject( const PdfObject* pObject );
@@ -119,22 +119,6 @@ class PODOFO_API PdfImmediateWriter : private PdfWriter,
 
     bool             m_bOpenStream;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline EPdfWriteMode PdfImmediateWriter::GetWriteMode() const
-{
-    return PdfWriter::GetWriteMode();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline EPdfVersion PdfImmediateWriter::GetPdfVersion() const
-{
-    return PdfWriter::GetPdfVersion();
-}
 
 };
 

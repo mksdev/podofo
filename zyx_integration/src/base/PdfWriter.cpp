@@ -621,5 +621,56 @@ void PdfWriter::SetEncrypted( const PdfEncrypt & rEncrypt )
 	m_pEncrypt = PdfEncrypt::CreatePdfEncrypt( rEncrypt );
 }
 
-};
+void PdfWriter::SetWriteMode( EPdfWriteMode eWriteMode )
+{
+	m_eWriteMode = eWriteMode;
+}
 
+EPdfWriteMode PdfWriter::GetWriteMode() const
+{
+	return m_eWriteMode;
+}
+
+void PdfWriter::SetPdfVersion( EPdfVersion eVersion )
+{
+	m_eVersion = eVersion;
+}
+
+EPdfVersion PdfWriter::GetPdfVersion() const
+{
+	return m_eVersion;
+}
+
+const char* PdfWriter::GetPdfVersionString() const
+{
+	return s_szPdfVersionNums[static_cast<int>(m_eVersion)];
+}
+
+bool PdfWriter::GetEncrypted() const
+{
+	return (m_pEncrypt != NULL);
+}
+
+void PdfWriter::SetLinearized( bool bLinearize )
+{
+    m_bLinearized = bLinearize;
+}
+
+bool PdfWriter::GetLinearized() const
+{
+    return m_bLinearized;
+}
+
+void PdfWriter::SetUseXRefStream( bool bStream )
+{
+    if( bStream && this->GetPdfVersion() < ePdfVersion_1_5 )
+        this->SetPdfVersion( ePdfVersion_1_5 );
+    m_bXRefStream = bStream;
+}
+
+bool PdfWriter::GetUseXRefStream() const
+{
+    return m_bXRefStream;
+}
+
+};

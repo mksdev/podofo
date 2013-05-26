@@ -77,42 +77,42 @@ class PODOFO_API PdfRect {
 	/** Get the bottom coordinate of the rectangle
      *  \returns bottom
      */
-    inline double GetBottom() const;
+    double GetBottom() const;
 
     /** Set the bottom coordinate of the rectangle
      *  \param dBottom
      */
-    inline void SetBottom( double dBottom );
+    void SetBottom( double dBottom );
 
     /** Get the left coordinate of the rectangle
      *  \returns left in PDF units
      */
-    inline double GetLeft() const;
+    double GetLeft() const;
 
     /** Set the left coordinate of the rectangle
      *  \param lLeft in PDF units
      */
-    inline void SetLeft( double lLeft );
+    void SetLeft( double lLeft );
 
     /** Get the width of the rectangle
      *  \returns width in PDF units
      */
-    inline double GetWidth() const;
+    double GetWidth() const;
 
     /** Set the width of the rectangle
      *  \param lWidth in PDF units
      */
-    inline void SetWidth( double lWidth );
+    void SetWidth( double lWidth );
 
     /** Get the height of the rectangle
      *  \returns height in PDF units
      */
-    inline double GetHeight() const;
+    double GetHeight() const;
 
     /** Set the height of the rectangle
      *  \param lHeight in PDF units
      */
-    inline void SetHeight( double lHeight );
+    void SetHeight( double lHeight );
 
     PdfRect & operator=( const PdfRect & rhs );
 
@@ -122,70 +122,6 @@ class PODOFO_API PdfRect {
     double m_dWidth;
     double m_dHeight;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-double PdfRect::GetBottom() const
-{
-    return m_dBottom;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfRect::SetBottom( double dBottom )
-{
-    m_dBottom = dBottom;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-double PdfRect::GetLeft() const
-{
-    return m_dLeft;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfRect::SetLeft( double dLeft )
-{
-    m_dLeft = dLeft;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-double PdfRect::GetWidth() const
-{
-    return m_dWidth;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfRect::SetWidth( double dWidth )
-{
-    m_dWidth = dWidth;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-double PdfRect::GetHeight() const
-{
-    return m_dHeight;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfRect::SetHeight( double dHeight )
-{
-    m_dHeight = dHeight;
-}
 
 };
 

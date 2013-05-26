@@ -336,4 +336,93 @@ pdf_long PdfObject::GetByteOffset( const char* pszKey, EPdfWriteMode eWriteMode 
     return device.GetLength();
 }
 
+#if defined(PODOFO_EXTRA_CHECKS)
+PODOFO_NOTHROW bool PdfObject::DelayedStreamLoadInProgress() const
+{
+	return m_bDelayedStreamLoadInProgress; 
+}
+#endif
+
+bool PdfObject::DelayedStreamLoadDone() const
+{
+    return m_bDelayedStreamLoadDone;
+}
+
+void PdfObject::EnableDelayedStreamLoading()
+{
+    m_bDelayedStreamLoadDone = false;
+}
+
+const PdfReference & PdfObject::Reference() const
+{
+    return m_reference;
+}
+
+void PdfObject::SetOwner( PdfVecObjects* pVecObjects )
+{
+    m_pOwner = pVecObjects;
+}
+
+PdfVecObjects* PdfObject::GetOwner() const
+{
+    return m_pOwner;
+}
+
+bool PdfObject::operator<( const PdfObject & rhs ) const
+{
+    return m_reference < rhs.m_reference;
+}
+
+bool PdfObject::operator==( const PdfObject & rhs ) const
+{
+    return (m_reference == rhs.m_reference);
+}
+
+bool PdfObject::HasStream() const
+{
+    DelayedStreamLoad();
+
+    return ( m_pStream != NULL );
+}
+
+PdfObject* PdfObject::MustGetIndirectKey( const PdfName & key ) const
+{
+    PdfObject* obj = GetIndirectKey(key);
+    if (!obj)
+        PODOFO_RAISE_ERROR( ePdfError_NoObject );
+    return obj;
+}
+
+// Default implementation of virtual void DelayedStreamLoadImpl()
+// throws, since delayed loading of steams should not be enabled
+// except by types that support it.
+void PdfObject::DelayedStreamLoadImpl()
+{
+   PODOFO_RAISE_ERROR( ePdfError_InternalLogic );
+}
+
+void PdfObject::DelayedStreamLoad() const
+{
+    DelayedLoad();
+
+#if defined(PODOFO_EXTRA_CHECKS)
+    if( m_bDelayedStreamLoadInProgress )
+        PODOFO_RAISE_ERROR_INFO( ePdfError_InternalLogic, "Recursive DelayedStreamLoad() detected" );
+#endif
+
+    if( !m_bDelayedStreamLoadDone )
+    {
+#if defined(PODOFO_EXTRA_CHECKS)
+        m_bDelayedStreamLoadInProgress = true;
+#endif
+        const_cast<PdfObject*>(this)->DelayedStreamLoadImpl();
+        // Nothing was thrown, so if the implementer of DelayedstreamLoadImpl() is
+        // following the rules we're done.
+        m_bDelayedStreamLoadDone = true;
+#if defined(PODOFO_EXTRA_CHECKS)
+        m_bDelayedStreamLoadInProgress = false;
+#endif
+    }
+}
+
 };

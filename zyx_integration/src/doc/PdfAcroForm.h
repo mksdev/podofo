@@ -50,14 +50,14 @@ class PODOFO_DOC_API PdfAcroForm : public PdfElement {
     PdfAcroForm( PdfDocument* pDoc, PdfObject* pObject,
                  EPdfAcroFormDefaulAppearance eDefaultAppearance = ePdfAcroFormDefaultAppearance_BlackText12pt );
 
-    virtual ~PdfAcroForm() { }
+    virtual ~PdfAcroForm();
 
     /** Get the document that is associated with this 
      *  acro forms dictionary.
      *
      *  \returns a valid pointer to the parent document
      */
-    inline PdfDocument* GetDocument(); 
+    PdfDocument* GetDocument(); 
 
     /** Set the value of the NeedAppearances key in the interactive forms
      *  dictionary.
@@ -87,14 +87,6 @@ class PODOFO_DOC_API PdfAcroForm : public PdfElement {
  private:
     PdfDocument* m_pDocument;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfDocument* PdfAcroForm::GetDocument()
-{
-    return m_pDocument;
-}
 
 };
 

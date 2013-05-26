@@ -2664,4 +2664,34 @@ const PdfEncoding* PdfDifferenceEncoding::GetBaseEncoding() const
     return pEncoding;
 }
 
+bool PdfEncodingDifference::DifferenceComparatorPredicate::operator()(const TDifference & rDif1, const TDifference & rDif2 ) const
+{
+	return rDif1.nCode < rDif2.nCode;
+}
+
+size_t PdfEncodingDifference::GetCount() const
+{
+    return m_vecDifferences.size();
+}
+
+const PdfName & PdfDifferenceEncoding::GetID() const
+{
+    return m_id;
+}
+
+bool PdfDifferenceEncoding::IsAutoDelete() const
+{
+    return m_bAutoDelete;
+}
+
+bool PdfDifferenceEncoding::IsSingleByteEncoding() const
+{
+    return true;
+}
+
+const PdfEncodingDifference & PdfDifferenceEncoding::GetDifferences() const
+{
+    return m_differences;
+}
+
 }; /* PoDoFo */

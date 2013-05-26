@@ -122,5 +122,9 @@ const PdfRefCountedInputDevice & PdfRefCountedInputDevice::operator=( const PdfR
     return *this;
 }
 
+PdfInputDevice* PdfRefCountedInputDevice::Device() const
+{
+    return m_pDevice ? m_pDevice->m_pDevice : NULL;
+}
 
 };

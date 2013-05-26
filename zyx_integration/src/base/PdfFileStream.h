@@ -99,18 +99,18 @@ class PODOFO_API PdfFileStream : public PdfStream {
      *
      *  \returns the length of the stream with all filters applied
      */
-    inline virtual pdf_long GetLength() const;
+    virtual pdf_long GetLength() const;
 
  protected:
     /** Required for the GetFilteredCopy implementation
      *  \returns a handle to the internal buffer
      */
-    inline virtual const char* GetInternalBuffer() const;
+    virtual const char* GetInternalBuffer() const;
 
     /** Required for the GetFilteredCopy implementation
      *  \returns the size of the internal buffer
      */
-    inline virtual pdf_long GetInternalBufferSize() const;
+    virtual pdf_long GetInternalBufferSize() const;
 
     /** Begin appending data to this stream.
      *  Clears the current stream contents.
@@ -148,30 +148,6 @@ class PODOFO_API PdfFileStream : public PdfStream {
 
     PdfEncrypt*      m_pCurEncrypt;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-pdf_long PdfFileStream::GetLength() const
-{
-    return m_lLength;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const char* PdfFileStream::GetInternalBuffer() const
-{
-    return NULL;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-pdf_long PdfFileStream::GetInternalBufferSize() const
-{
-    return 0;
-}
 
 };
 

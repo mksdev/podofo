@@ -87,28 +87,28 @@ class PODOFO_DOC_API PdfOutlineItem : public PdfElement {
     /** 
      * \returns the previous item or NULL if this is the first on the current level
      */
-    inline PdfOutlineItem* Prev() const;
+    PdfOutlineItem* Prev() const;
 
     /** 
      * \returns the next item or NULL if this is the last on the current level
      */
-    inline PdfOutlineItem* Next() const;
+    PdfOutlineItem* Next() const;
 
     /** 
      * \returns the first outline item that is a child of this item
      */
-    inline PdfOutlineItem* First() const;
+    PdfOutlineItem* First() const;
 
     /** 
      * \returns the last outline item that is a child of this item
      */
-    inline PdfOutlineItem* Last() const;
+    PdfOutlineItem* Last() const;
 
     /**
      * \returns the parent item of this item or NULL if it is
      *          the top level outlines dictionary
      */
-    inline PdfOutlineItem* GetParentOutline() const;
+    PdfOutlineItem* GetParentOutline() const;
 
     /** Deletes this outline item and all its children from 
      *  the outline hierarchy and removes all objects from
@@ -250,47 +250,6 @@ class PODOFO_DOC_API PdfOutlineItem : public PdfElement {
     PdfAction*		   m_pAction;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfOutlineItem* PdfOutlineItem::GetParentOutline() const
-{
-    return m_pParentOutline;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfOutlineItem* PdfOutlineItem::First() const
-{
-    return m_pFirst;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfOutlineItem* PdfOutlineItem::Last() const
-{
-    return m_pLast;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfOutlineItem* PdfOutlineItem::Prev() const
-{
-    return m_pPrev;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfOutlineItem* PdfOutlineItem::Next() const
-{
-    return m_pNext;
-}
-
-
 /** The main PDF outlines dictionary.
  *  
  *  Do not create it by yourself but 
@@ -311,7 +270,7 @@ class PODOFO_DOC_API PdfOutlines : public PdfOutlineItem {
      */
     PdfOutlines( PdfObject* pObject );
 
-    virtual ~PdfOutlines() { }
+    virtual ~PdfOutlines();
 
     /** Create the root node of the 
      *  outline item tree.

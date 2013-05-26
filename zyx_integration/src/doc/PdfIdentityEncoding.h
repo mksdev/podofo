@@ -105,7 +105,7 @@ class PODOFO_DOC_API PdfIdentityEncoding : public PdfEncoding {
      *
      *  \returns a unique id for this encoding!
      */
-    inline virtual const PdfName & GetID() const;
+    virtual const PdfName & GetID() const;
     
  private:
 
@@ -121,30 +121,6 @@ class PODOFO_DOC_API PdfIdentityEncoding : public PdfEncoding {
     bool    m_bAutoDelete;      ///< If true this encoding is deleted by its font.
     PdfName m_id;               ///< Unique ID of this encoding 
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfName & PdfIdentityEncoding::GetID() const
-{
-    return m_id;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfIdentityEncoding::IsAutoDelete() const
-{
-    return m_bAutoDelete;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfIdentityEncoding::IsSingleByteEncoding() const
-{
-    return false;
-}
 
 };  /* namespace PoDoFo */
 

@@ -161,7 +161,7 @@ class PODOFO_DOC_API PdfPagesTree : public PdfElement
      * of the pagestree manually.
      *
      */
-    inline void ClearCache();
+    void ClearCache();
 
  private:
     PdfPagesTree();	// don't allow construction from nothing!
@@ -271,23 +271,13 @@ class PODOFO_DOC_API PdfPagesTree : public PdfElement
     */
     /** Private method to access the Root of the tree using a logical name
      */
-    PdfObject* GetRoot()	{ return this->GetObject(); }
-    const PdfObject* GetRoot() const	{ return this->GetObject(); }
+    PdfObject* GetRoot();
+    const PdfObject* GetRoot() const;
 
 private:
     PdfPagesTreeCache m_cache;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPagesTree::ClearCache() 
-{
-    m_cache.ClearCache();
-}
-
 };
 
 #endif // _PDF_PAGES_TREE_H_
-
-

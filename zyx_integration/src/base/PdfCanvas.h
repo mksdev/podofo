@@ -39,7 +39,7 @@ class PODOFO_API PdfCanvas {
     /** Virtual destructor
      *  to avoid compiler warnings
      */
-    virtual ~PdfCanvas() {};
+    virtual ~PdfCanvas();
 
     /** Get access to the contents object of this page.
      *  If you want to draw onto the page, you have to add 

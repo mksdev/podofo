@@ -86,19 +86,19 @@ class PODOFO_API PdfDate {
      *
      *  \returns true if the PdfDate object is valid
      */
-    inline bool IsValid() const;
+    bool IsValid() const;
 
     /** \returns the date and time of this PdfDate in 
      *  seconds since epoch.
      */
-    inline const time_t & GetTime() const;
+    const time_t & GetTime() const;
 
     /** The value returned by this function can be used in any PdfObject
      *  where a date is needed.
      * 
      *  \param rsString write the date to a PdfString
      */         
-    inline void ToString( PdfString & rsString ) const;
+    void ToString( PdfString & rsString ) const;
 
  private:
     /** Creates the internal string representation from
@@ -121,21 +121,6 @@ class PODOFO_API PdfDate {
 
     bool   m_bValid;
 };
-
-const time_t & PdfDate::GetTime() const
-{
-    return m_time;
-}
-
-void PdfDate::ToString( PdfString & rsString ) const
-{
-    rsString = PdfString(  m_szDate );
-}
-
-bool PdfDate::IsValid() const
-{
-    return m_bValid;
-}
 
 };
 

@@ -147,7 +147,7 @@ class PODOFO_DOC_API PdfDestination {
      *
      *  \returns the fit type
      */
-    inline EPdfDestinationType GetType() const;
+    EPdfDestinationType GetType() const;
     
     /** Get the destination zoom 
      *  Destination must be of type XYZ
@@ -155,7 +155,7 @@ class PODOFO_DOC_API PdfDestination {
      *
      *  \returns the zoom
      */
-    inline double GetZoom() const;
+    double GetZoom() const;
     
     /** Get the destination rect 
      *  Destination must be of type FirR
@@ -163,7 +163,7 @@ class PODOFO_DOC_API PdfDestination {
      *
      *  \returns the destination rect
      */
-    inline PdfRect GetRect() const;
+    PdfRect GetRect() const;
      
     /** Get the destination Top position
      *  Destination must be of type XYZ, FitH, FitR, FitBH
@@ -171,7 +171,7 @@ class PODOFO_DOC_API PdfDestination {
      * 
      * \returns the Top position
      */
-    inline double GetTop() const; 
+    double GetTop() const; 
     
     /** Get the destination Left position 
      *  Destination must be of type XYZ, FitV or FitR
@@ -179,7 +179,7 @@ class PODOFO_DOC_API PdfDestination {
      * 
      * \returns the Left position
      */
-    inline double GetLeft() const;
+    double GetLeft() const;
     
     /** Get the destination Value 
      *  Destination must be of type FitH, FitV
@@ -187,32 +187,32 @@ class PODOFO_DOC_API PdfDestination {
      * 
      *  \returns the destination Value
      */
-    inline double GetDValue() const;
+    double GetDValue() const;
     
     /** Get access to the internal object
      *
      *  \returns the internal PdfObject
      */
-    inline PdfObject* GetObject();
+    PdfObject* GetObject();
     
     /** Get access to the internal object
      *  This is an overloaded member function.
      *
      *  \returns the internal PdfObject
      */
-    inline const PdfObject* GetObject() const;
+    const PdfObject* GetObject() const;
 
     /** Get access to the internal array
      *  \returns the internal PdfArray
      */
-    inline PdfArray &GetArray();
+    PdfArray &GetArray();
     
     /** Get access to the internal array
      *  This is an overloaded member function.
      *
      *  \returns the internal PdfArray
      */
-    inline const PdfArray &GetArray() const;
+    const PdfArray &GetArray() const;
 
     
     /** Adds this destination to an dictionary.
@@ -246,153 +246,6 @@ class PODOFO_DOC_API PdfDestination {
     
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfDestination::GetObject()
-{
-    return m_pObject;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfObject* PdfDestination::GetObject() const
-{
-    return m_pObject;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfArray &PdfDestination::GetArray()
-{
-    return m_array;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfArray &PdfDestination::GetArray() const
-{
-    return m_array;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline EPdfDestinationType PdfDestination::GetType() const 
-{
-    if ( !m_array.size() ) 
-        return ePdfDestinationType_Unknown;  
-    
-    PdfName tp = m_array[1].GetName();
-    
-    if ( tp == PdfName("XYZ") ) return ePdfDestinationType_XYZ;
-    if ( tp == PdfName("Fit") ) return ePdfDestinationType_Fit;
-    if ( tp == PdfName("FitH") ) return ePdfDestinationType_FitH;
-    if ( tp == PdfName("FitV") ) return ePdfDestinationType_FitV;   
-    if ( tp == PdfName("FitR") ) return ePdfDestinationType_FitR; 
-    if ( tp == PdfName("FitB") ) return ePdfDestinationType_FitB; 
-    if ( tp == PdfName("FitBH") ) return ePdfDestinationType_FitBH; 
-    if ( tp == PdfName("FitBV") ) return ePdfDestinationType_FitBV; 
-    
-    return ePdfDestinationType_Unknown; 
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline double PdfDestination::GetDValue() const 
-{
-    EPdfDestinationType tp = GetType();
-    
-    if ( tp != ePdfDestinationType_FitH
-         && tp != ePdfDestinationType_FitV
-         && tp != ePdfDestinationType_FitBH )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_WrongDestinationType );
-    }
-    
-    return m_array[2].GetReal();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline double PdfDestination::GetLeft() const
-{
-    EPdfDestinationType tp = GetType();
-    
-    if ( tp != ePdfDestinationType_FitV
-         && tp != ePdfDestinationType_XYZ
-         && tp != ePdfDestinationType_FitR )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_WrongDestinationType );
-    }
-    
-    return m_array[2].GetReal();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfRect PdfDestination::GetRect() const
-{
-    if ( GetType() != ePdfDestinationType_FitR )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_WrongDestinationType );
-    }
-    
-    return PdfRect(m_array[2].GetReal(), m_array[3].GetReal(),
-                   m_array[4].GetReal(), m_array[5].GetReal());
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline double PdfDestination::GetTop() const
-{
-    EPdfDestinationType tp = GetType();
-    
-    switch (tp) 
-    { 
-        case ePdfDestinationType_XYZ:
-            return m_array[3].GetReal();
-        case ePdfDestinationType_FitH:
-        case ePdfDestinationType_FitBH:
-            return m_array[2].GetReal();
-        case ePdfDestinationType_FitR:
-            return m_array[5].GetReal();
-        case ePdfDestinationType_Fit:
-        case ePdfDestinationType_FitV:
-        case ePdfDestinationType_FitB:
-        case ePdfDestinationType_FitBV:
-        case ePdfDestinationType_Unknown:
-        default:
-        {
-            PODOFO_RAISE_ERROR( ePdfError_WrongDestinationType );
-        }
-    };
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline double PdfDestination::GetZoom() const
-{
-    if ( GetType() != ePdfDestinationType_XYZ )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_WrongDestinationType );
-    }
-  
-    return m_array[4].GetReal();
-}
-
 };
 
-
-
-
 #endif // _PDF_DESTINATION_H_
-

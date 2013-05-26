@@ -98,7 +98,7 @@ class PODOFO_API PdfMemStream : public PdfStream {
      *
      *  \returns a read-only handle to the streams data
      */
-    inline const char* Get() const;
+    const char* Get() const;
 
     /** Get the stream's length. The length is that of the internal
      *  stream buffer, so (eg) for a Flate-compressed stream it will be
@@ -135,12 +135,12 @@ class PODOFO_API PdfMemStream : public PdfStream {
     /** Required for the GetFilteredCopy implementation
      *  \returns a handle to the internal buffer
      */
-    inline virtual const char* GetInternalBuffer() const;
+    virtual const char* GetInternalBuffer() const;
 
     /** Required for the GetFilteredCopy implementation
      *  \returns the size of the internal buffer
      */
-    inline virtual pdf_long GetInternalBufferSize() const;
+    virtual pdf_long GetInternalBufferSize() const;
 
     /** Begin appending data to this stream.
      *  Clears the current stream contents.
@@ -179,30 +179,6 @@ class PODOFO_API PdfMemStream : public PdfStream {
 
     pdf_long               m_lLength;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const char* PdfMemStream::Get() const
-{
-    return m_buffer.GetBuffer();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const char* PdfMemStream::GetInternalBuffer() const
-{
-    return m_buffer.GetBuffer();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-pdf_long PdfMemStream::GetInternalBufferSize() const
-{
-    return m_lLength;
-}
 
 };
 

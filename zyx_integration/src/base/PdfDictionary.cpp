@@ -25,6 +25,17 @@
 
 namespace PoDoFo {
 
+#ifdef PODOFO_USE_UNORDERED_MAP
+
+size_t PdfNameHash::operator()( const PdfName& v ) const
+{
+	std::tr1::hash<std::string> hasher;
+        
+   return hasher( v.GetName() );
+}
+
+#endif // PODOFO_USE_UNORDERED_MAP
+
 PdfDictionary::PdfDictionary()
     : m_bDirty( false )
 {
@@ -337,6 +348,26 @@ void PdfDictionary::SetDirty( bool bDirty )
             ++it;
         }
     }
+}
+
+const TKeyMap & PdfDictionary::GetKeys() const 
+{ 
+    return m_mapKeys; 
+}
+
+TKeyMap & PdfDictionary::GetKeys() 
+{ 
+    return m_mapKeys; 
+}
+
+void PdfDictionary::Write( PdfOutputDevice* pDevice, EPdfWriteMode eWriteMode, const PdfEncrypt* pEncrypt ) const 
+{ 
+    this->Write( pDevice, eWriteMode, pEncrypt, PdfName::KeyNull ); 
+}
+
+bool PdfDictionary::operator!=( const PdfDictionary& rhs ) const
+{
+    return !(*this == rhs);
 }
 
 };

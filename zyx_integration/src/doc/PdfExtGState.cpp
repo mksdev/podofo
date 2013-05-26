@@ -123,5 +123,9 @@ void PdfExtGState::SetFrequency( double frequency )
     this->GetObject()->GetDictionary().AddKey( "HT", halftoneDict);
 }
 
+const PdfName & PdfExtGState::GetIdentifier() const
+{
+    return m_Identifier;
+}
 
 }	// end namespace

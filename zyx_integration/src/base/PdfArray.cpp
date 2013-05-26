@@ -170,4 +170,163 @@ void PdfArray::SetDirty( bool bDirty )
     }
 }
 
+void PdfArray::Clear() 
+{
+    AssertMutable();
+
+    this->clear();
+}
+
+size_t PdfArray::GetSize() const
+{
+    return this->size();
+}
+
+void PdfArray::push_back( const PdfObject & var )
+{
+    AssertMutable();
+
+    PdfArrayBaseClass::push_back( var );
+    m_bDirty = true;
+}
+
+size_t PdfArray::size() const
+{
+    return PdfArrayBaseClass::size();
+}
+
+bool PdfArray::empty() const
+{
+    return PdfArrayBaseClass::empty();
+}
+
+PdfObject& PdfArray::operator[](size_type __n)
+{
+    AssertMutable();
+
+    m_bDirty = true;
+    return PdfArrayBaseClass::operator[](__n);
+}
+
+const PdfObject& PdfArray::operator[](size_type __n) const
+{
+    return PdfArrayBaseClass::operator[](__n);
+}
+
+void PdfArray::resize(size_t __n, value_type __x)
+{
+    PdfArrayBaseClass::resize(__n, __x);
+}
+
+PdfArray::iterator PdfArray::begin()
+{
+    return PdfArrayBaseClass::begin();
+}
+
+PdfArray::const_iterator PdfArray::begin() const
+{
+    return PdfArrayBaseClass::begin();
+}
+
+PdfArray::iterator PdfArray::end()
+{
+    return PdfArrayBaseClass::end();
+}
+
+PdfArray::const_iterator PdfArray::end() const
+{
+    return PdfArrayBaseClass::end();
+}
+
+PdfArray::reverse_iterator PdfArray::rbegin()
+{
+    return PdfArrayBaseClass::rbegin();
+}
+
+PdfArray::const_reverse_iterator PdfArray::rbegin() const
+{
+    return PdfArrayBaseClass::rbegin();
+}
+
+PdfArray::reverse_iterator PdfArray::rend()
+{
+    return PdfArrayBaseClass::rend();
+}
+
+PdfArray::const_reverse_iterator PdfArray::rend() const
+{
+    return PdfArrayBaseClass::rend();
+}
+
+void PdfArray::insert(PdfArray::iterator __position, 
+                      PdfArray::iterator __first,
+                      PdfArray::iterator __last)
+{
+    AssertMutable();
+
+    PdfArrayBaseClass::insert( __position, __first, __last );
+    m_bDirty = true;
+}
+
+PdfArray::iterator PdfArray::insert(const iterator& __position, const PdfObject & val )
+{
+    AssertMutable();
+
+    m_bDirty = true;
+    return PdfArrayBaseClass::insert( __position, val );
+}
+
+void PdfArray::erase( const iterator& pos )
+{
+    AssertMutable();
+
+    PdfArrayBaseClass::erase( pos );
+    m_bDirty = true;
+}
+
+void PdfArray::erase( const iterator& first, const iterator& last )
+{
+    AssertMutable();
+
+    PdfArrayBaseClass::erase( first, last );
+    m_bDirty = true;
+}
+
+void PdfArray::reserve(size_type __n)
+{
+    PdfArrayBaseClass::reserve( __n );
+}
+
+PdfObject & PdfArray::front()
+{
+    return PdfArrayBaseClass::front();
+}
+
+const PdfObject & PdfArray::front() const
+{
+    return PdfArrayBaseClass::front();
+}
+
+PdfObject & PdfArray::back()
+{
+    return PdfArrayBaseClass::back();
+}
+      
+const PdfObject & PdfArray::back() const
+{
+    return PdfArrayBaseClass::back();
+}
+
+bool PdfArray::operator==( const PdfArray & rhs ) const
+{
+    //TODO: This operator does not check for m_bDirty. Add comparison or add explanation why it should not be there
+    return (static_cast< PdfArrayBaseClass >(*this) == static_cast< PdfArrayBaseClass >(rhs) );
+}
+
+bool PdfArray::operator!=( const PdfArray & rhs ) const
+{
+    //TODO: This operator does not check for m_bDirty. Add comparison or add explanation why it should not be there
+    return (static_cast< PdfArrayBaseClass >(*this) != static_cast< PdfArrayBaseClass >(rhs) );
+}
+
 };

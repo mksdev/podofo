@@ -25,9 +25,35 @@
 
 namespace PoDoFo {
 
+PdfData::PdfData( const char* pszData )
+	: PdfDataType(), m_sData( pszData ) 
+{
+}
+
+PdfData::PdfData( const char* pszData, size_t dataSize )
+  : PdfDataType(), m_sData( pszData, dataSize ) 
+{
+}
+
+PdfData::PdfData( const PdfData & rhs )
+  : PdfDataType()
+{
+   this->operator=( rhs );
+}
+
 void PdfData::Write( PdfOutputDevice* pDevice, EPdfWriteMode, const PdfEncrypt* ) const
 {
     pDevice->Write( m_sData.c_str(), m_sData.length() );
+}
+
+const PdfData & PdfData::operator=( const PdfData & rhs )
+{
+    m_sData = rhs.m_sData;
+    return (*this);
+}
+
+const std::string & PdfData::data() const {
+    return m_sData;
 }
 
 };

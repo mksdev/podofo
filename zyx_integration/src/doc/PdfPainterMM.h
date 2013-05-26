@@ -62,14 +62,14 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
  public:
     /** Create a new PdfPainterMM object.
      */
-    PdfPainterMM() {}
+    PdfPainterMM();
 
     virtual ~PdfPainterMM();
     
     /** Set the line width for all stroking operations.
      *  \param lWidth in 1/1000th mm
      */
-    inline void SetStrokeWidthMM( long lWidth );
+    void SetStrokeWidthMM( long lWidth );
 
     /** Draw a line with the current color and line settings.
      *  \param lStartX x coordinate of the starting point
@@ -77,7 +77,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *  \param lEndX x coordinate of the ending point
      *  \param lEndY y coordinate of the ending point
      */
-    inline void DrawLineMM( long lStartX, long lStartY, long lEndX, long lEndY );
+    void DrawLineMM( long lStartX, long lStartY, long lEndX, long lEndY );
 
     /** Add a rectangle into the current path
      *  \param lX x coordinate of the rectangle
@@ -85,7 +85,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *  \param lWidth width of the rectangle
      *  \param lHeight absolute height of the rectangle
      */
-    inline void RectangleMM( long lX, long lY, long lWidth, long lHeight );
+    void RectangleMM( long lX, long lY, long lWidth, long lHeight );
 
     /** Add an ellipse into the current path
      *  \param lX x coordinate of the ellipse (left coordinate)
@@ -93,7 +93,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *  \param lWidth width of the ellipse
      *  \param lHeight absolute height of the ellipse
      */
-    inline void EllipseMM( long lX, long lY, long lWidth, long lHeight ); 
+    void EllipseMM( long lX, long lY, long lWidth, long lHeight ); 
 
     /** Draw a text string on a page using a given font object.
      *  You have to call SetFont before calling this function.
@@ -103,7 +103,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *
      *  \see PdfPainter::SetFont()
      */
-    inline void DrawTextMM( long lX, long lY, const PdfString & sText);
+    void DrawTextMM( long lX, long lY, const PdfString & sText);
 
     /** Draw a text string on a page using a given font object.
      *  You have to call SetFont before calling this function.
@@ -114,7 +114,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *
      *  \see PdfPainter::SetFont()
      */
-    inline void DrawTextMM( long lX, long lY, const PdfString & sText, long lLen );
+    void DrawTextMM( long lX, long lY, const PdfString & sText, long lLen );
 
     /** Draw an image on the current page.
      *  \param lX the x coordinate (bottom left position of the image)
@@ -123,7 +123,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *  \param dScaleX option scaling factor in x direction
      *  \param dScaleY option scaling factor in y direction
      */
-    inline void DrawImageMM( long lX, long lY, PdfImage* pObject, double dScaleX = 1.0, double dScaleY = 1.0);
+    void DrawImageMM( long lX, long lY, PdfImage* pObject, double dScaleX = 1.0, double dScaleY = 1.0);
 
     /** Draw an XObject on the current page.
      *  \param lX the x coordinate (bottom left position of the XObject)
@@ -132,7 +132,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *  \param dScaleX option scaling factor in x direction
      *  \param dScaleY option scaling factor in y direction
      */
-    inline void DrawXObjectMM( long lX, long lY, PdfXObject* pObject, double dScaleX = 1.0, double dScaleY = 1.0);
+    void DrawXObjectMM( long lX, long lY, PdfXObject* pObject, double dScaleX = 1.0, double dScaleY = 1.0);
 
     /** Append a line segment to the current path. Matches the PDF 'l' operator.
      *  This function is useful to construct an own path
@@ -140,7 +140,7 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *  \param lX x position
      *  \param lY y position
      */
-    inline void LineToMM( long lX, long lY );
+    void LineToMM( long lX, long lY );
 
     /** Begin a new path. Matches the PDF 'm' operator. 
      *  This function is useful to construct an own path
@@ -148,108 +148,8 @@ class PODOFO_DOC_API PdfPainterMM : public PdfPainter {
      *  \param lX x position
      *  \param lY y position
      */
-    inline void MoveToMM( long lX, long lY );
+    void MoveToMM( long lX, long lY );
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::SetStrokeWidthMM( long lWidth )
-{
-    this->SetStrokeWidth( static_cast<double>(lWidth) * CONVERSION_CONSTANT );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::DrawLineMM( long lStartX, long lStartY, long lEndX, long lEndY )
-{
-    this->DrawLine( static_cast<double>(lStartX) * CONVERSION_CONSTANT,
-                    static_cast<double>(lStartY) * CONVERSION_CONSTANT,
-                    static_cast<double>(lEndX)   * CONVERSION_CONSTANT,
-                    static_cast<double>(lEndY)   * CONVERSION_CONSTANT );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::RectangleMM( long lX, long lY, long lWidth, long lHeight )
-{
-    this->Rectangle( static_cast<double>(lX)      * CONVERSION_CONSTANT,
-                     static_cast<double>(lY)      * CONVERSION_CONSTANT,
-                     static_cast<double>(lWidth)  * CONVERSION_CONSTANT,
-                     static_cast<double>(lHeight) * CONVERSION_CONSTANT );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::EllipseMM( long lX, long lY, long lWidth, long lHeight )
-{
-    this->Ellipse( static_cast<double>(lX)      * CONVERSION_CONSTANT,
-                   static_cast<double>(lY)      * CONVERSION_CONSTANT,
-                   static_cast<double>(lWidth)  * CONVERSION_CONSTANT,
-                   static_cast<double>(lHeight) * CONVERSION_CONSTANT );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::DrawTextMM( long lX, long lY, const PdfString & sText)
-{
-    this->DrawText( static_cast<double>(lX) * CONVERSION_CONSTANT,
-                    static_cast<double>(lY) * CONVERSION_CONSTANT,
-                    sText );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::DrawTextMM( long lX, long lY, const PdfString & sText, long lLen )
-{
-   this->DrawText( static_cast<double>(lX) * CONVERSION_CONSTANT,
-                   static_cast<double>(lY) * CONVERSION_CONSTANT,
-                   sText, lLen );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::DrawImageMM( long lX, long lY, PdfImage* pObject, double dScaleX, double dScaleY )
-{
-   this->DrawImage( static_cast<double>(lX) * CONVERSION_CONSTANT,
-                    static_cast<double>(lY) * CONVERSION_CONSTANT,
-                    pObject, dScaleX, dScaleY );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::DrawXObjectMM( long lX, long lY, PdfXObject* pObject, double dScaleX, double dScaleY )
-{
-   this->DrawXObject( static_cast<double>(lX) * CONVERSION_CONSTANT,
-                      static_cast<double>(lY) * CONVERSION_CONSTANT,
-                      pObject, dScaleX, dScaleY );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::LineToMM( long lX, long lY )
-{
-    this->LineTo( static_cast<double>(lX) * CONVERSION_CONSTANT,
-                  static_cast<double>(lY) * CONVERSION_CONSTANT );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfPainterMM::MoveToMM( long lX, long lY )
-{
-    this->MoveTo( static_cast<double>(lX) * CONVERSION_CONSTANT,
-                  static_cast<double>(lY) * CONVERSION_CONSTANT );
-}
-
 
 };
 

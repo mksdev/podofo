@@ -496,6 +496,11 @@ bool PdfString::operator==( const PdfString & rhs ) const
     return str1.m_buffer == str2.m_buffer;
 }
 
+bool PdfString::operator!=(const PdfString& rhs) const
+{
+	return !operator==(rhs);
+}
+
 void PdfString::Init( const char* pszString, pdf_long lLen )
 {
     if( !pszString )
@@ -1064,6 +1069,54 @@ pdf_long PdfString::ConvertUTF16toUTF8( const pdf_utf16be* pszUtf16, pdf_long lL
 PdfRefCountedBuffer &PdfString::GetBuffer(void)
 {
 	return m_buffer;
+}
+
+bool PdfString::IsValid() const
+{
+    return (m_buffer.GetBuffer() != NULL);
+}
+
+bool PdfString::IsHex () const
+{
+    return m_bHex;
+}
+
+bool PdfString::IsUnicode () const
+{
+    return m_bUnicode;
+}
+
+const char* PdfString::GetString() const
+{
+    return m_buffer.GetBuffer();
+}
+
+const pdf_utf16be* PdfString::GetUnicode() const
+{
+    return reinterpret_cast<pdf_utf16be*>(m_buffer.GetBuffer());
+}
+
+const std::string & PdfString::GetStringUtf8() const
+{
+    if( this->IsValid() && !m_sUtf8.length() && m_buffer.GetSize() - 2) 
+        const_cast<PdfString*>(this)->InitUtf8();
+
+    return m_sUtf8;
+}
+
+pdf_long PdfString::GetLength() const
+{
+    return m_buffer.GetSize() - 2;
+}
+
+pdf_long PdfString::GetCharacterLength() const 
+{
+    return this->IsUnicode() ? this->GetUnicodeLength() : this->GetLength();
+}
+
+pdf_long PdfString::GetUnicodeLength() const
+{
+    return (m_buffer.GetSize() / sizeof(pdf_utf16be)) - 1;
 }
 
 /* ---------------------------------------------------------------------

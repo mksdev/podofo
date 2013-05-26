@@ -88,15 +88,6 @@ class PODOFO_DOC_API PdfField {
 
     PdfField( EPdfField eField, PdfPage* pPage, const PdfRect & rRect, PdfStreamedDocument* pDoc );
 
-    /** Create a copy of a PdfField object.
-     *  Not the field on the page is copied - only the PdfField
-     *  object referring to the field on the page is copied!
-     *
-     *  \param rhs the field to copy
-     *  \returns this field
-     */
-    //inline virtual const PdfField & operator=( const PdfField & rhs );
-
     /** 
      *  Set a bit in the field flags value of the fields dictionary.
      *
@@ -141,13 +132,13 @@ class PODOFO_DOC_API PdfField {
      */
     PdfField( const PdfField & rhs );
 
-    virtual ~PdfField() { }
+    virtual ~PdfField();
 
     /** Get the page of this PdfField
      *
      *  \returns the page of this PdfField
      */
-    inline PdfPage* GetPage() const;
+    PdfPage* GetPage() const;
 
     /** Set the highlighting mode which should be used when the user
      *  presses the mouse button over this widget.
@@ -272,28 +263,28 @@ class PODOFO_DOC_API PdfField {
      *
      *  \param bReadOnly specifies if this field is read-only.
      */
-    inline void SetReadOnly( bool bReadOnly );
+    void SetReadOnly( bool bReadOnly );
 
     /** 
      * \returns true if this field is read-only
      *
      * \see SetReadOnly
      */
-    inline bool IsReadOnly() const;
+    bool IsReadOnly() const;
 
     /** Required fields must have a value
      *  at the time the value is exported by a submit action
      * 
      *  \param bRequired if true this field requires a value for submit actions
      */
-    inline void SetRequired( bool bRequired );
+    void SetRequired( bool bRequired );
 
     /** 
      * \returns true if this field is required for submit actions
      *
      * \see SetRequired
      */
-    inline bool IsRequired() const;
+    bool IsRequired() const;
 
     /** Sets if this field can be exported by a submit action
      *
@@ -301,37 +292,37 @@ class PODOFO_DOC_API PdfField {
      *
      *  \param bExport if false this field cannot be exported by submit actions
      */
-    inline void SetExport( bool bExport );
+    void SetExport( bool bExport );
 
     /** 
      * \returns true if this field can be exported by submit actions
      *
      * \see SetExport
      */
-    inline bool IsExport() const;
+    bool IsExport() const;
 
-    inline void SetMouseEnterAction( const PdfAction & rAction );
-    inline void SetMouseLeaveAction( const PdfAction & rAction );
-    inline void SetMouseDownAction( const PdfAction & rAction );
-    inline void SetMouseUpAction( const PdfAction & rAction );
+    void SetMouseEnterAction( const PdfAction & rAction );
+    void SetMouseLeaveAction( const PdfAction & rAction );
+    void SetMouseDownAction( const PdfAction & rAction );
+    void SetMouseUpAction( const PdfAction & rAction );
 
-    inline void SetFocusEnterAction( const PdfAction & rAction );
-    inline void SetFocusLeaveAction( const PdfAction & rAction );
+    void SetFocusEnterAction( const PdfAction & rAction );
+    void SetFocusLeaveAction( const PdfAction & rAction );
 
-    inline void SetPageOpenAction( const PdfAction & rAction );
-    inline void SetPageCloseAction( const PdfAction & rAction );
+    void SetPageOpenAction( const PdfAction & rAction );
+    void SetPageCloseAction( const PdfAction & rAction );
 
-    inline void SetPageVisibleAction( const PdfAction & rAction );
-    inline void SetPageInvisibleAction( const PdfAction & rAction );
+    void SetPageVisibleAction( const PdfAction & rAction );
+    void SetPageInvisibleAction( const PdfAction & rAction );
 
     /* Peter Petrov 15 October 2008 */
-    inline void SetKeystrokeAction( const PdfAction & rAction );
-    inline void SetValidateAction( const PdfAction & rAction );
+    void SetKeystrokeAction( const PdfAction & rAction );
+    void SetValidateAction( const PdfAction & rAction );
     
     /** 
      * \returns the type of this field
      */
-    inline EPdfField GetType() const;
+    EPdfField GetType() const;
 
  private:
 
@@ -353,207 +344,9 @@ class PODOFO_DOC_API PdfField {
 
     // Peter Petrov 27 April 2008
  public:
-     inline PdfAnnotation* GetWidgetAnnotation() const;
-     inline PdfObject* GetFieldObject() const;
+     PdfAnnotation* GetWidgetAnnotation() const;
+     PdfObject* GetFieldObject() const;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-/*
-inline const PdfField & PdfField::operator=( const PdfField & rhs )
-{
-    // DominikS: Reference counted vectors could be nice here. In case
-    //           the PdfField handling makes sense the way it is now,
-    //           we could discuss using reference counted vectors
-    //           and implement PdfAction, PdfAnnotation ... similar to PdfField
-    m_pObject = rhs.m_pObject;
-    m_pWidget = rhs.m_pWidget;
-    m_eField  = rhs.m_eField;
-
-    return *this;
-}*/
-
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetReadOnly( bool bReadOnly )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfField_ReadOnly), bReadOnly );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfField::IsReadOnly() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfField_ReadOnly), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetRequired( bool bRequired )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfField_Required), bRequired );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfField::IsRequired() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfField_Required), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetExport( bool bExport )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfField_NoExport), bExport );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfField::IsExport() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfField_NoExport), true );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfPage* PdfField::GetPage() const
-{
-    return m_pWidget->GetPage();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetMouseEnterAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("E"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetMouseLeaveAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("X"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetMouseDownAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("D"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetMouseUpAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("U"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetFocusEnterAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("Fo"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetFocusLeaveAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("BI"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetPageOpenAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("PO"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetPageCloseAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("PC"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetPageVisibleAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("PV"), rAction );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetPageInvisibleAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("PI"), rAction );
-}
-
-/* Peter Petrov 15 October 2008 */
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetKeystrokeAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("K"), rAction);
-}
-
-/* Peter Petrov 15 October 2008 */
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfField::SetValidateAction( const PdfAction & rAction )
-{
-    this->AddAlternativeAction( PdfName("V"), rAction);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline EPdfField PdfField::GetType() const
-{
-    return m_eField;
-}
-
-// Peter Petrov 27 April 2008
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfAnnotation* PdfField::GetWidgetAnnotation() const
-{
-    return m_pWidget;
-}
-
-// Peter Petrov 27 April 2008
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfField::GetFieldObject() const
-{
-    return m_pObject;
-}
 
 class PODOFO_DOC_API PdfButton : public PdfField {
  protected:
@@ -591,17 +384,17 @@ class PODOFO_DOC_API PdfButton : public PdfField {
     /**
      * \returns true if this is a pushbutton
      */
-    inline bool IsPushButton() const;
+    bool IsPushButton() const;
 
     /**
      * \returns true if this is a checkbox
      */
-    inline bool IsCheckBox() const;
+    bool IsCheckBox() const;
 
     /**
      * \returns true if this is a radiobutton
      */
-    inline bool IsRadioButton() const;
+    bool IsRadioButton() const;
 
     /** Set the normal caption of this button
      *
@@ -615,32 +408,6 @@ class PODOFO_DOC_API PdfButton : public PdfField {
     const PdfString GetCaption() const;
 
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfButton::IsPushButton() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfButton_PushButton), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfButton::IsCheckBox() const
-{
-    return (!this->GetFieldFlag( static_cast<int>(ePdfButton_Radio), false ) &&
-            !this->GetFieldFlag( static_cast<int>(ePdfButton_PushButton), false ) );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfButton::IsRadioButton() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfButton_Radio), false );
-}
-
 
 /** A push button is a button which has no state and value
  *  but can toggle actions.
@@ -836,12 +603,12 @@ class PODOFO_DOC_API PdfTextField : public PdfField {
      *
      *  The default is to create a single line text field.
      */
-    inline void SetMultiLine( bool bMultiLine );
+    void SetMultiLine( bool bMultiLine );
 
     /** 
      * \returns true if this text field can contain multiple lines of text
      */
-    inline bool IsMultiLine() const;
+    bool IsMultiLine() const;
 
     /** 
      *  Create a password text field that should not echo entered
@@ -851,13 +618,13 @@ class PODOFO_DOC_API PdfTextField : public PdfField {
      *
      *  The default is to create no password field
      */
-    inline void SetPasswordField( bool bPassword );
+    void SetPasswordField( bool bPassword );
 
     /**
      * \returns true if this field is a password field that does
      *               not echo entered characters on the screen
      */
-    inline bool IsPasswordField() const;
+    bool IsPasswordField() const;
 
     /** 
      *  Create a file selection field.
@@ -867,12 +634,12 @@ class PODOFO_DOC_API PdfTextField : public PdfField {
      *  \param bFile if true the contents are treated as a pathname
      *               to a file to submit
      */
-    inline void SetFileField( bool bFile );
+    void SetFileField( bool bFile );
 
     /**
      * \returns true if the contents are treated as filename
      */
-    inline bool IsFileField() const;
+    bool IsFileField() const;
 
     /** 
      *  Enable/disable spellchecking for this text field
@@ -881,12 +648,12 @@ class PODOFO_DOC_API PdfTextField : public PdfField {
      *
      *  Text fields are spellchecked by default
      */
-    inline void SetSpellcheckingEnabled( bool bSpellcheck );
+    void SetSpellcheckingEnabled( bool bSpellcheck );
 
     /** 
      *  \returns true if spellchecking is enabled for this text field
      */
-    inline bool IsSpellcheckingEnabled() const;
+    bool IsSpellcheckingEnabled() const;
 
     /** 
      *  Enable/disable scrollbars for this text field
@@ -895,12 +662,12 @@ class PODOFO_DOC_API PdfTextField : public PdfField {
      *
      *  Text fields have scrollbars by default
      */
-    inline void SetScrollBarsEnabled( bool bScroll );
+    void SetScrollBarsEnabled( bool bScroll );
 
     /** 
      *  \returns true if scrollbars are enabled for this text field
      */
-    inline bool IsScrollBarsEnabled() const;
+    bool IsScrollBarsEnabled() const;
 
     /** 
      *  Divide the text field into max-len equal
@@ -913,12 +680,12 @@ class PODOFO_DOC_API PdfTextField : public PdfField {
      *
      *  \see SetMaxLen
      */
-    inline void SetCombs( bool bCombs );
+    void SetCombs( bool bCombs );
 
     /**
      * \returns true if the text field is divided in to equal combs
      */
-    inline bool IsCombs() const;
+    bool IsCombs() const;
 
     /**
      * Creates a richtext field.
@@ -927,128 +694,16 @@ class PODOFO_DOC_API PdfTextField : public PdfField {
      *
      * By default richtext is disabled.
      */
-    inline void SetRichText( bool bRichText );
+    void SetRichText( bool bRichText );
 
     /** 
      * \returns true if this is a richtext text field
      */
-    inline bool IsRichText() const;
+    bool IsRichText() const;
 
  private:
     void Init();
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfTextField::SetMultiLine( bool bMultiLine )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfTextField_MultiLine), bMultiLine );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfTextField::IsMultiLine() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfTextField_MultiLine), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfTextField::SetPasswordField( bool bPassword )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfTextField_Password), bPassword );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfTextField::IsPasswordField() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfTextField_Password), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfTextField::SetFileField( bool bFile )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfTextField_FileSelect), bFile );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfTextField::IsFileField() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfTextField_FileSelect), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfTextField::SetSpellcheckingEnabled( bool bSpellcheck )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfTextField_NoSpellcheck), !bSpellcheck );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfTextField::IsSpellcheckingEnabled() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfTextField_NoSpellcheck), true );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfTextField::SetScrollBarsEnabled( bool bScroll )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfTextField_NoScroll), !bScroll );    
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfTextField::IsScrollBarsEnabled() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfTextField_NoScroll), true );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfTextField::SetCombs( bool bCombs )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfTextField_Comb), bCombs );        
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfTextField::IsCombs() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfTextField_Comb), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfTextField::SetRichText( bool bRichText )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfTextField_RichText), bRichText);        
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfTextField::IsRichText() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfTextField_RichText), false );
-}
 
 /** A list of items in a PDF file.
  *  You cannot create this object directly, use
@@ -1155,7 +810,7 @@ class PODOFO_DOC_API PdfListField : public PdfField {
      * \returns true if this PdfListField is a PdfComboBox and false
      *               if it is a PdfListBox
      */
-    inline bool IsComboBox() const;
+    bool IsComboBox() const;
 
     /** 
      *  Enable/disable spellchecking for this combobox
@@ -1164,12 +819,12 @@ class PODOFO_DOC_API PdfListField : public PdfField {
      *
      *  combobox are spellchecked by default
      */
-    inline void SetSpellcheckingEnabled( bool bSpellcheck );
+    void SetSpellcheckingEnabled( bool bSpellcheck );
     
     /** 
      *  \returns true if spellchecking is enabled for this combobox
      */
-    inline bool IsSpellcheckingEnabled() const;
+    bool IsSpellcheckingEnabled() const;
 
     /**
      * Enable or disable sorting of items.
@@ -1179,12 +834,12 @@ class PODOFO_DOC_API PdfListField : public PdfField {
      *
      * \param bSorted enable/disable sorting
      */
-    inline void SetSorted( bool bSorted );
+    void SetSorted( bool bSorted );
 
     /**
      * \returns true if sorting is enabled
      */
-    inline bool IsSorted() const;
+    bool IsSorted() const;
 
     /**
      * Sets wether multiple items can be selected by the
@@ -1194,89 +849,17 @@ class PODOFO_DOC_API PdfListField : public PdfField {
      *
      * By default multiselection is turned off.
      */
-    inline void SetMultiSelect( bool bMulti );
+    void SetMultiSelect( bool bMulti );
 
     /** 
      * \returns true if multi selection is enabled
      *               for this list
      */
-    inline bool IsMultiSelect() const;
+    bool IsMultiSelect() const;
 
-    inline void SetCommitOnSelectionChange( bool bCommit );
-    inline bool IsCommitOnSelectionChange() const;
+    void SetCommitOnSelectionChange( bool bCommit );
+    bool IsCommitOnSelectionChange() const;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfListField::IsComboBox() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfListField_Combo), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfListField::SetSpellcheckingEnabled( bool bSpellcheck )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfListField_NoSpellcheck), !bSpellcheck );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfListField::IsSpellcheckingEnabled() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfListField_NoSpellcheck), true );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfListField::SetSorted( bool bSorted )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfListField_Sort), bSorted );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfListField::IsSorted() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfListField_Sort), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfListField::SetMultiSelect( bool bMulti )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfListField_MultiSelect), bMulti );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfListField::IsMultiSelect() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfListField_MultiSelect), false );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfListField::SetCommitOnSelectionChange( bool bCommit )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfListField_CommitOnSelChange), bCommit );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfListField::IsCommitOnSelectionChange() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfListField_CommitOnSelChange), false );
-}
 
 /** A combo box with a drop down list of items.
  */
@@ -1313,30 +896,14 @@ class PODOFO_DOC_API PdfComboBox : public PdfListField {
      *
      * By default a combobox is not editable
      */
-    inline void SetEditable( bool bEdit );
+    void SetEditable( bool bEdit );
 
     /** 
      *  \returns true if this is an editable combobox
      */
-    inline bool IsEditable() const;
+    bool IsEditable() const;
 
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfComboBox::SetEditable( bool bEdit )
-{
-    this->SetFieldFlag( static_cast<int>(ePdfListField_Edit), bEdit);        
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfComboBox::IsEditable() const
-{
-    return this->GetFieldFlag( static_cast<int>(ePdfListField_Edit), false );
-}
 
 /** A list box
  */

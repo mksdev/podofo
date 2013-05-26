@@ -146,4 +146,44 @@ PdfRect & PdfRect::operator=( const PdfRect & rhs )
     return *this;
 }
 
+double PdfRect::GetBottom() const
+{
+    return m_dBottom;
+}
+
+void PdfRect::SetBottom( double dBottom )
+{
+    m_dBottom = dBottom;
+}
+
+double PdfRect::GetLeft() const
+{
+    return m_dLeft;
+}
+
+void PdfRect::SetLeft( double dLeft )
+{
+    m_dLeft = dLeft;
+}
+
+double PdfRect::GetWidth() const
+{
+    return m_dWidth;
+}
+
+void PdfRect::SetWidth( double dWidth )
+{
+    m_dWidth = dWidth;
+}
+
+double PdfRect::GetHeight() const
+{
+    return m_dHeight;
+}
+
+void PdfRect::SetHeight( double dHeight )
+{
+    m_dHeight = dHeight;
+}
+
 };

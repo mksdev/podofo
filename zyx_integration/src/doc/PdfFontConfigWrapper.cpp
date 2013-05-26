@@ -106,4 +106,24 @@ void PdfFontConfigWrapper::InitializeFontConfig()
 #endif
 }
 
+void* PdfFontConfigWrapper::GetFontConfig() 
+{
+    if( m_pFontConfig != NULL ) 
+    {
+        InitializeFontConfig();
+        return m_pFontConfig->m_pFcConfig;
+    } 
+    else 
+    {
+        return NULL;
+    }
+}
+
+#if defined(PODOFO_HAVE_FONTCONFIG)
+Util::PdfMutex & PdfFontConfigWrapper::GetFontConfigMutex()
+{
+    return m_FcMutex;
+}
+#endif
+
 };

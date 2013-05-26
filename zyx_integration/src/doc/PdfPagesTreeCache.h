@@ -105,7 +105,7 @@ private:
     /**
      * Avoid construction of empty objects
      */
-    PdfPagesTreeCache() { }
+    PdfPagesTreeCache();
 
 private:
     PdfPageList    m_deqPageObjs;
@@ -114,5 +114,3 @@ private:
 };
 
 #endif // _PDF_PAGES_TREE_CACHE_H_
-
-

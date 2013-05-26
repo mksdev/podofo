@@ -241,7 +241,7 @@ public:
     /** Get the encryption algorithm of this object.
      * \returns the EPdfEncryptAlgorithm of this object
      */
-    inline EPdfEncryptAlgorithm GetEncryptAlgorithm() const;
+    EPdfEncryptAlgorithm GetEncryptAlgorithm() const;
 
     /** Checks if printing this document is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -250,7 +250,7 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsPrintAllowed() const; 
+    bool IsPrintAllowed() const; 
 
     /** Checks if modifiying this document (besides annotations, form fields or changing pages) is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -259,7 +259,7 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsEditAllowed() const;
+    bool IsEditAllowed() const;
 
     /** Checks if text and graphics extraction is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -268,7 +268,7 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsCopyAllowed() const;
+    bool IsCopyAllowed() const;
 
     /** Checks if it is allowed to add or modify annotations or form fields
      *  Every PDF consuming applications has to adhere this value!
@@ -277,7 +277,7 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsEditNotesAllowed() const;
+    bool IsEditNotesAllowed() const;
 
     /** Checks if it is allowed to fill in existing form or signature fields
      *  Every PDF consuming applications has to adhere this value!
@@ -286,7 +286,7 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsFillAndSignAllowed() const;
+    bool IsFillAndSignAllowed() const;
 
     /** Checks if it is allowed to extract text and graphics to support users with disabillities
      *  Every PDF consuming applications has to adhere this value!
@@ -295,7 +295,7 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsAccessibilityAllowed() const;
+    bool IsAccessibilityAllowed() const;
 
     /** Checks if it is allowed to insert, create, rotate, delete pages or add bookmarks
      *  Every PDF consuming applications has to adhere this value!
@@ -304,7 +304,7 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsDocAssemblyAllowed() const;
+    bool IsDocAssemblyAllowed() const;
 
     /** Checks if it is allowed to print a high quality version of this document 
      *  Every PDF consuming applications has to adhere this value!
@@ -313,25 +313,25 @@ public:
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline bool IsHighPrintAllowed() const;
+    bool IsHighPrintAllowed() const;
 
     /// Get the U object value (user)
-    const unsigned char* GetUValue() const { return m_uValue; }
+    const unsigned char* GetUValue() const;
     
     /// Get the O object value (owner)
-    const unsigned char* GetOValue() const { return m_oValue; }
+    const unsigned char* GetOValue() const;
     
     /// Get the encryption key value (owner)
-    const unsigned char* GetEncryptionKey() const { return m_encryptionKey; }
+    const unsigned char* GetEncryptionKey() const;
     
     /// Get the P object value (protection)
-    pdf_int32 GetPValue() const { return m_pValue; }
+    pdf_int32 GetPValue() const;
     
     /// Get the revision number of the encryption method
-    int GetRevision() const { return m_rValue; }
+    int GetRevision() const;
 
     /// Get the key length of the encryption key in bits
-    int GetKeyLength() const { return m_keyLength*8; }
+    int GetKeyLength() const;
     
     /// Encrypt a wxString
     //void Encrypt( std::string & str, pdf_long inputLen ) const;
@@ -366,10 +366,10 @@ public:
      *
      *  \see Encrypt 
      */
-    inline void SetCurrentReference( const PdfReference & rRef );
+    void SetCurrentReference( const PdfReference & rRef );
 
 protected:
-    PdfEncrypt() {};
+    PdfEncrypt();
     PdfEncrypt( const PdfEncrypt & rhs );
     
     /// Check two keys for equality
@@ -404,14 +404,14 @@ private:
 class PdfEncryptSHABase : public PdfEncrypt {
 public:
     
-    PdfEncryptSHABase() {};
+    PdfEncryptSHABase();
     // copy constructor
     PdfEncryptSHABase(const PdfEncrypt &rhs);
     
     /*
      *	Destruct PdfEncryptAESV2 object
      */ 
-    virtual ~PdfEncryptSHABase() {};
+    virtual ~PdfEncryptSHABase();
     
     virtual PdfInputStream* CreateEncryptionInputStream( PdfInputStream* pInputStream ) = 0;
     virtual PdfOutputStream* CreateEncryptionOutputStream( PdfOutputStream* pOutputStream ) = 0;
@@ -427,13 +427,13 @@ public:
     virtual void GenerateEncryptionKey(const PdfString & documentId) = 0;
     
     /// Get the UE object value (user)
-    const unsigned char* GetUEValue() const { return m_ueValue; }
+    const unsigned char* GetUEValue() const;
     
     /// Get the OE object value (owner)
-    const unsigned char* GetOEValue() const { return m_oeValue; }
+    const unsigned char* GetOEValue() const;
     
     /// Get the Perms object value (encrypted protection)
-    const unsigned char* GetPermsValue() const { return m_permsValue; }
+    const unsigned char* GetPermsValue() const;
     
     virtual pdf_long CalculateStreamOffset() const = 0;
     
@@ -526,14 +526,14 @@ protected:
 class PdfEncryptMD5Base : public PdfEncrypt, public PdfEncryptRC4Base {
 public:
     
-    PdfEncryptMD5Base() {};
+    PdfEncryptMD5Base();
     // copy constructor
     PdfEncryptMD5Base(const PdfEncrypt &rhs);
     
     /*
      *	Destruct PdfEncryptAESV2 object
      */ 
-    virtual ~PdfEncryptMD5Base() {};
+    virtual ~PdfEncryptMD5Base();
     
     virtual PdfInputStream* CreateEncryptionInputStream( PdfInputStream* pInputStream ) = 0;
     virtual PdfOutputStream* CreateEncryptionOutputStream( PdfOutputStream* pOutputStream ) = 0;
@@ -611,7 +611,7 @@ public:
 	*	Constructors of PdfEncryptAESV2
 	*/
 	PdfEncryptAESV2(PdfString oValue, PdfString uValue, int pValue);
-    PdfEncryptAESV2( const PdfEncrypt & rhs ) : PdfEncryptMD5Base(rhs) {}
+    PdfEncryptAESV2( const PdfEncrypt & rhs );
 	PdfEncryptAESV2( const std::string & userPassword,
                    const std::string & ownerPassword, 
                    int protection = ePdfPermissions_Print | 
@@ -627,7 +627,7 @@ public:
 	/*
 	*	Destruct PdfEncryptAESV2 object
 	*/ 
-	virtual ~PdfEncryptAESV2() {};
+	virtual ~PdfEncryptAESV2();
     
 	virtual PdfInputStream* CreateEncryptionInputStream( PdfInputStream* pInputStream );
 	virtual PdfOutputStream* CreateEncryptionOutputStream( PdfOutputStream* pOutputStream );
@@ -661,7 +661,7 @@ public:
      *	Constructors of PdfEncryptAESV3
      */
     PdfEncryptAESV3(PdfString oValue, PdfString oeValue, PdfString uValue, PdfString ueValue, int pValue, PdfString permsValue);
-    PdfEncryptAESV3( const PdfEncrypt & rhs ) : PdfEncryptSHABase(rhs) {}
+    PdfEncryptAESV3( const PdfEncrypt & rhs );
     PdfEncryptAESV3( const std::string & userPassword,
                   const std::string & ownerPassword, 
                   int protection = ePdfPermissions_Print | 
@@ -677,7 +677,7 @@ public:
     /*
      *	Destruct PdfEncryptAESV3 object
      */ 
-    virtual ~PdfEncryptAESV3() {};
+    virtual ~PdfEncryptAESV3();
     
     virtual PdfInputStream* CreateEncryptionInputStream( PdfInputStream* pInputStream );
     virtual PdfOutputStream* CreateEncryptionOutputStream( PdfOutputStream* pOutputStream );
@@ -713,7 +713,7 @@ public:
 	*/
 	PdfEncryptRC4(PdfString oValue, PdfString uValue, 
 		int pValue, int rValue, EPdfEncryptAlgorithm eAlgorithm, long length);
-    PdfEncryptRC4( const PdfEncrypt & rhs ) : PdfEncryptMD5Base(rhs) {}
+    PdfEncryptRC4( const PdfEncrypt & rhs );
 	PdfEncryptRC4( const std::string & userPassword,
                    const std::string & ownerPassword, 
                    int protection = ePdfPermissions_Print | 
@@ -730,7 +730,7 @@ public:
     /*
      *	Destruct PdfEncryptRC4 object
      */ 
-    virtual ~PdfEncryptRC4() {}
+    virtual ~PdfEncryptRC4();
     
     virtual bool Authenticate( const std::string & password, const PdfString & documentId );
     
@@ -749,86 +749,6 @@ public:
     
     virtual pdf_long CalculateStreamLength(pdf_long length) const;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfEncrypt::EPdfEncryptAlgorithm PdfEncrypt::GetEncryptAlgorithm() const
-{
-    return m_eAlgorithm;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfEncrypt::SetCurrentReference( const PdfReference & rRef )
-{
-    m_curReference = rRef;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsPrintAllowed() const
-{
-    return (m_pValue & ePdfPermissions_Print) == ePdfPermissions_Print;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsEditAllowed() const
-{
-    return (m_pValue & ePdfPermissions_Edit) == ePdfPermissions_Edit;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsCopyAllowed() const
-{
-    return (m_pValue & ePdfPermissions_Copy) == ePdfPermissions_Copy;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsEditNotesAllowed() const
-{
-    return (m_pValue & ePdfPermissions_EditNotes) == ePdfPermissions_EditNotes;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsFillAndSignAllowed() const
-{
-    return (m_pValue & ePdfPermissions_FillAndSign) == ePdfPermissions_FillAndSign;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsAccessibilityAllowed() const
-{
-    return (m_pValue & ePdfPermissions_Accessible) == ePdfPermissions_Accessible;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsDocAssemblyAllowed() const
-{
-    return (m_pValue & ePdfPermissions_DocAssembly) == ePdfPermissions_DocAssembly;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfEncrypt::IsHighPrintAllowed() const
-{
-    return (m_pValue & ePdfPermissions_HighPrint) == ePdfPermissions_HighPrint;
-}
 
 } //end namespace PoDoFo
 

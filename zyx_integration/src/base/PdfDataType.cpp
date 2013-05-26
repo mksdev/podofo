@@ -42,6 +42,22 @@ void PdfDataType::SetDirty( bool )
     // Ignore
 }
 
+void PdfDataType::SetImmutable(bool bImmutable)
+{
+    m_bImmutable = bImmutable;
+}
+
+bool PdfDataType::GetImmutable() const 
+{
+    return m_bImmutable;
+}
+
+void PdfDataType::AssertMutable() const
+{
+    if(m_bImmutable) 
+    {
+        throw new PdfError( ePdfError_ChangeOnImmutable );
+    }
+}
+
 };
-
-

@@ -795,5 +795,62 @@ void PdfDocument::SetTrailer( PdfObject* pObject )
     m_pTrailer->SetOwner( &m_vecObjects );
 }
 
-};
+PdfInfo* PdfDocument::GetInfo() const
+{
+	return m_pInfo;
+}
 
+PdfPagesTree* PdfDocument::GetPagesTree() const
+{
+    return m_pPagesTree;
+}
+
+PdfObject* PdfDocument::GetCatalog()
+{
+    return m_pCatalog;
+}
+
+const PdfObject* PdfDocument::GetCatalog() const
+{
+    return m_pCatalog;
+}
+
+void PdfDocument::SetCatalog( PdfObject* pObject ) 
+{
+    m_pCatalog = pObject; // m_pCatalog does not need to 
+                          // be reowned as it should
+                          // alread by part of m_vecObjects
+}
+
+PdfObject* PdfDocument::GetTrailer()
+{
+    return m_pTrailer;
+}
+
+const PdfObject* PdfDocument::GetTrailer() const
+{
+    return m_pTrailer;
+}
+
+PdfVecObjects* PdfDocument::GetObjects()
+{
+    return &m_vecObjects;
+}
+
+const PdfVecObjects* PdfDocument::GetObjects() const
+{
+    return &m_vecObjects;
+}
+
+// Peter Petrov 26 April 2008
+FT_Library PdfDocument::GetFontLibrary() const
+{
+    return this->m_fontCache.GetFontLibrary();
+}
+
+void PdfDocument::SetFontConfigWrapper(const PdfFontConfigWrapper & rFontConfig)
+{
+    m_fontCache.SetFontConfigWrapper(rFontConfig);
+}
+
+};

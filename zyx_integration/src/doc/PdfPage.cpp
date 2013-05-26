@@ -588,4 +588,25 @@ PdfObject* PdfPage::GetFromResources( const PdfName & rType, const PdfName & rKe
     return NULL;
 }
 
+const PdfRect PdfPage::GetMediaBox() const { return GetPageBox( "MediaBox" ); }
+const PdfRect PdfPage::GetCropBox() const { return GetPageBox( "CropBox" ); }
+const PdfRect PdfPage::GetTrimBox() const { return GetPageBox( "TrimBox" ); }
+const PdfRect PdfPage::GetBleedBox() const { return GetPageBox( "BleedBox" ); }
+const PdfRect PdfPage::GetArtBox() const { return GetPageBox( "ArtBox" ); }
+
+PdfObject* PdfPage::GetResources() const
+{
+    return m_pResources;
+}
+
+const PdfRect PdfPage::GetPageSize() const
+{
+    return this->GetMediaBox();
+}
+
+const PdfObject* PdfPage::GetInheritedKey( const PdfName & rName ) const
+{
+    return this->GetInheritedKeyFromObject( rName.GetName().c_str(), this->GetObject() );
+}
+
 };

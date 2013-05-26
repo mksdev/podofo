@@ -29,6 +29,13 @@
 
 namespace PoDoFo {
 
+PdfOutputStream::~PdfOutputStream() { }
+
+pdf_long PdfOutputStream::Write( const std::string & s )
+{
+    return this->Write( s.data(), s.size() );
+}
+
 PdfFileOutputStream::PdfFileOutputStream( const char* pszFilename )
 {
     m_hFile = fopen( pszFilename, "wb" );
@@ -106,6 +113,22 @@ pdf_long PdfMemoryOutputStream::Write( const char* pBuffer, pdf_long lLen )
     return lLen;
 }
 
+void PdfMemoryOutputStream::Close()
+{
+}
+
+pdf_long PdfMemoryOutputStream::GetLength() const
+{
+    return m_lLen;
+}
+
+char* PdfMemoryOutputStream::TakeBuffer()
+{
+    char* pBuffer = m_pBuffer;
+    m_pBuffer = NULL;
+    return pBuffer;
+}
+
 PdfDeviceOutputStream::PdfDeviceOutputStream( PdfOutputDevice* pDevice )
     : m_pDevice( pDevice )
 {
@@ -118,6 +141,14 @@ pdf_long PdfDeviceOutputStream::Write( const char* pBuffer, pdf_long lLen )
     return m_pDevice->Tell() - lTell;
 }
 
+void PdfDeviceOutputStream::Close()
+{
+}
+
+PdfBufferOutputStream::PdfBufferOutputStream( PdfRefCountedBuffer* pBuffer )
+  : m_pBuffer( pBuffer ), m_lLength( pBuffer->GetSize() )
+{
+}
 
 pdf_long PdfBufferOutputStream::Write( const char* pBuffer, pdf_long lLen )
 {
@@ -128,6 +159,15 @@ pdf_long PdfBufferOutputStream::Write( const char* pBuffer, pdf_long lLen )
     m_lLength += lLen;
     
     return lLen;
+}
+
+void PdfBufferOutputStream::Close()
+{
+}
+
+pdf_long PdfBufferOutputStream::GetLength() const 
+{
+	return m_lLength;
 }
 
 };

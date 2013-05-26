@@ -162,6 +162,10 @@ PdfXObject::PdfXObject( PdfObject* pObject )
     m_Reference  = this->GetObject()->Reference();
 }
 
+PdfXObject::~PdfXObject()
+{
+}
+
 void PdfXObject::InitXObject( const PdfRect & rRect, const char* pszPrefix )
 {
     PdfVariant    var;
@@ -255,6 +259,36 @@ PdfXObject::PdfXObject( const char* pszSubType, PdfObject* pObject )
 
     m_Identifier = PdfName( out.str().c_str() );
     m_Reference  = this->GetObject()->Reference();
+}
+
+PdfObject* PdfXObject::GetContentsForAppending() const
+{
+	return GetContents();
+}
+
+PdfObject* PdfXObject::GetContents() const
+{
+    return this->GetNonConstObject();
+}
+
+PdfObject* PdfXObject::GetResources() const
+{
+    return m_pResources;
+}
+
+const PdfRect PdfXObject::GetPageSize() const
+{
+    return m_rRect;
+}
+
+const PdfName & PdfXObject::GetIdentifier() const
+{
+    return m_Identifier;
+}
+
+const PdfReference & PdfXObject::GetObjectReference() const
+{
+    return m_Reference;
 }
 
 };

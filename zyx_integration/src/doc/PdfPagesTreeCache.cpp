@@ -27,6 +27,10 @@
 
 namespace PoDoFo {
 
+PdfPagesTreeCache::PdfPagesTreeCache()
+{
+}
+
 PdfPagesTreeCache::PdfPagesTreeCache( int nInitialSize )
 {
     m_deqPageObjs.resize( nInitialSize );

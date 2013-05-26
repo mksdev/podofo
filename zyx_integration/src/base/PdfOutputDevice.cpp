@@ -378,4 +378,14 @@ void PdfOutputDevice::Flush()
     }
 }
 
+size_t PdfOutputDevice::GetLength() const
+{
+    return m_ulLength;
+}
+
+size_t PdfOutputDevice::Tell() const
+{
+    return m_ulPosition;
+}
+
 };

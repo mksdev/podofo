@@ -75,6 +75,10 @@ PdfField::PdfField( const PdfField & rhs )
     this->operator=( rhs );
 }
 
+PdfField::~PdfField()
+{
+}
+
 void PdfField::Init( PdfAcroForm* pParent )
 {
     // Insert into the parents kids array
@@ -374,6 +378,120 @@ void PdfField::AddAlternativeAction( const PdfName & rsName, const PdfAction & r
     pAA->GetDictionary().AddKey( rsName, rAction.GetObject()->Reference() );
 }
 
+void PdfField::SetReadOnly( bool bReadOnly )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfField_ReadOnly), bReadOnly );
+}
+
+bool PdfField::IsReadOnly() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfField_ReadOnly), false );
+}
+
+void PdfField::SetRequired( bool bRequired )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfField_Required), bRequired );
+}
+
+bool PdfField::IsRequired() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfField_Required), false );
+}
+
+void PdfField::SetExport( bool bExport )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfField_NoExport), bExport );
+}
+
+bool PdfField::IsExport() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfField_NoExport), true );
+}
+
+PdfPage* PdfField::GetPage() const
+{
+    return m_pWidget->GetPage();
+}
+
+void PdfField::SetMouseEnterAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("E"), rAction );
+}
+
+void PdfField::SetMouseLeaveAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("X"), rAction );
+}
+
+void PdfField::SetMouseDownAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("D"), rAction );
+}
+
+void PdfField::SetMouseUpAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("U"), rAction );
+}
+
+void PdfField::SetFocusEnterAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("Fo"), rAction );
+}
+
+void PdfField::SetFocusLeaveAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("BI"), rAction );
+}
+
+void PdfField::SetPageOpenAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("PO"), rAction );
+}
+
+void PdfField::SetPageCloseAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("PC"), rAction );
+}
+
+void PdfField::SetPageVisibleAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("PV"), rAction );
+}
+
+void PdfField::SetPageInvisibleAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("PI"), rAction );
+}
+
+/* Peter Petrov 15 October 2008 */
+void PdfField::SetKeystrokeAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("K"), rAction);
+}
+
+/* Peter Petrov 15 October 2008 */
+void PdfField::SetValidateAction( const PdfAction & rAction )
+{
+    this->AddAlternativeAction( PdfName("V"), rAction);
+}
+
+EPdfField PdfField::GetType() const
+{
+    return m_eField;
+}
+
+// Peter Petrov 27 April 2008
+PdfAnnotation* PdfField::GetWidgetAnnotation() const
+{
+    return m_pWidget;
+}
+
+// Peter Petrov 27 April 2008
+PdfObject* PdfField::GetFieldObject() const
+{
+    return m_pObject;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 PdfButton::PdfButton( EPdfField eField, PdfAnnotation* pWidget, PdfAcroForm* pParent )
@@ -415,6 +533,22 @@ const PdfString PdfButton::GetCaption() const
         return pMK->GetDictionary().GetKey( PdfName("CA") )->GetString();
 
     return PdfString::StringNull;
+}
+
+bool PdfButton::IsPushButton() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfButton_PushButton), false );
+}
+
+bool PdfButton::IsCheckBox() const
+{
+    return (!this->GetFieldFlag( static_cast<int>(ePdfButton_Radio), false ) &&
+            !this->GetFieldFlag( static_cast<int>(ePdfButton_PushButton), false ) );
+}
+
+bool PdfButton::IsRadioButton() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfButton_Radio), false );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -715,6 +849,76 @@ pdf_long  PdfTextField::GetMaxLen() const
                                  m_pObject->GetDictionary().GetKey( PdfName("MaxLen") )->GetNumber() : -1);
 }
 
+void PdfTextField::SetMultiLine( bool bMultiLine )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfTextField_MultiLine), bMultiLine );
+}
+
+bool PdfTextField::IsMultiLine() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfTextField_MultiLine), false );
+}
+
+void PdfTextField::SetPasswordField( bool bPassword )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfTextField_Password), bPassword );
+}
+
+bool PdfTextField::IsPasswordField() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfTextField_Password), false );
+}
+
+void PdfTextField::SetFileField( bool bFile )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfTextField_FileSelect), bFile );
+}
+
+bool PdfTextField::IsFileField() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfTextField_FileSelect), false );
+}
+
+void PdfTextField::SetSpellcheckingEnabled( bool bSpellcheck )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfTextField_NoSpellcheck), !bSpellcheck );
+}
+
+bool PdfTextField::IsSpellcheckingEnabled() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfTextField_NoSpellcheck), true );
+}
+
+void PdfTextField::SetScrollBarsEnabled( bool bScroll )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfTextField_NoScroll), !bScroll );    
+}
+
+bool PdfTextField::IsScrollBarsEnabled() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfTextField_NoScroll), true );
+}
+
+void PdfTextField::SetCombs( bool bCombs )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfTextField_Comb), bCombs );        
+}
+
+bool PdfTextField::IsCombs() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfTextField_Comb), false );
+}
+
+void PdfTextField::SetRichText( bool bRichText )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfTextField_RichText), bRichText);        
+}
+
+bool PdfTextField::IsRichText() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfTextField_RichText), false );
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 PdfListField::PdfListField( EPdfField eField, PdfAnnotation* pWidget, PdfAcroForm* pParent )
@@ -882,6 +1086,50 @@ int PdfListField::GetSelectedItem() const
     return -1;
 }
 
+bool PdfListField::IsComboBox() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfListField_Combo), false );
+}
+
+void PdfListField::SetSpellcheckingEnabled( bool bSpellcheck )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfListField_NoSpellcheck), !bSpellcheck );
+}
+
+bool PdfListField::IsSpellcheckingEnabled() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfListField_NoSpellcheck), true );
+}
+
+void PdfListField::SetSorted( bool bSorted )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfListField_Sort), bSorted );
+}
+
+bool PdfListField::IsSorted() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfListField_Sort), false );
+}
+
+void PdfListField::SetMultiSelect( bool bMulti )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfListField_MultiSelect), bMulti );
+}
+
+bool PdfListField::IsMultiSelect() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfListField_MultiSelect), false );
+}
+
+void PdfListField::SetCommitOnSelectionChange( bool bCommit )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfListField_CommitOnSelChange), bCommit );
+}
+
+bool PdfListField::IsCommitOnSelectionChange() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfListField_CommitOnSelChange), false );
+}
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -920,6 +1168,16 @@ PdfComboBox::PdfComboBox( const PdfField & rhs )
     {
         PODOFO_RAISE_ERROR_INFO( ePdfError_InvalidDataType, "Field cannot be converted into a PdfTextField" );
     }
+}
+
+void PdfComboBox::SetEditable( bool bEdit )
+{
+    this->SetFieldFlag( static_cast<int>(ePdfListField_Edit), bEdit);        
+}
+
+bool PdfComboBox::IsEditable() const
+{
+    return this->GetFieldFlag( static_cast<int>(ePdfListField_Edit), false );
 }
 
 /////////////////////////////////////////////////////////////////////////////

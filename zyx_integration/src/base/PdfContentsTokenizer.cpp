@@ -32,6 +32,11 @@
 
 namespace PoDoFo {
 
+PdfContentsTokenizer::PdfContentsTokenizer( const char* pBuffer, long lLen )
+     : PoDoFo::PdfTokenizer( pBuffer, lLen ), m_readingInlineImgData(false)
+{
+}
+
 PdfContentsTokenizer::PdfContentsTokenizer( PdfCanvas* pCanvas )
     : PdfTokenizer(), m_readingInlineImgData(false)
 {
@@ -88,6 +93,8 @@ PdfContentsTokenizer::PdfContentsTokenizer( PdfCanvas* pCanvas )
         m_lstContents.pop_front();
     }
 }
+
+PdfContentsTokenizer::~PdfContentsTokenizer() { }
 
 void PdfContentsTokenizer::SetCurrentContentsStream( PdfObject* pObject )
 {

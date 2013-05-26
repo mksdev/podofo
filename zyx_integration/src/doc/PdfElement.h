@@ -53,14 +53,14 @@ class PODOFO_DOC_API PdfElement {
     /** Get access to the internal object
      *  \returns the internal PdfObject
      */
-    inline PdfObject* GetObject();
+    PdfObject* GetObject();
 
     /** Get access to the internal object
      *  This is an overloaded member function.
      *
      *  \returns the internal PdfObject
      */
-    inline const PdfObject* GetObject() const;
+    const PdfObject* GetObject() const;
 
  protected:
     /** Creates a new PdfElement 
@@ -153,35 +153,11 @@ class PODOFO_DOC_API PdfElement {
      *
      *  \returns the internal PdfObject
      */
-    inline PdfObject* GetNonConstObject() const;
+    PdfObject* GetNonConstObject() const;
 
  private:
     PdfObject* m_pObject;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfElement::GetObject()
-{
-    return m_pObject;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfObject* PdfElement::GetObject() const
-{
-    return m_pObject;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfElement::GetNonConstObject() const
-{
-    return const_cast<PdfElement*>(this)->m_pObject;
-}
 
 };
 

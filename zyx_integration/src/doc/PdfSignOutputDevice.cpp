@@ -203,5 +203,54 @@ void PdfSignOutputDevice::Write( const char* pBuffer, size_t lLen )
     m_pRealDevice->Write(pBuffer, lLen);
 }
 
+const PdfData *PdfSignOutputDevice::GetSignatureBeacon()const
+{
+	return m_pSignatureBeacon;
 }
 
+bool PdfSignOutputDevice::HasSignaturePosition()const
+{
+	return m_bBeaconFound;
+}
+
+size_t PdfSignOutputDevice::GetLength() const
+{
+  return m_pRealDevice->GetLength();
+}
+
+void PdfSignOutputDevice::Print( const char* pszFormat, ... )
+{
+  va_list args;
+  long lBytes;
+  
+  va_start( args, pszFormat );
+  lBytes = m_pRealDevice->PrintVLen(pszFormat, args);
+  va_end( args );
+  
+  va_start( args, pszFormat );
+  m_pRealDevice->PrintV(pszFormat, lBytes, args);
+  va_end( args );
+}
+
+size_t PdfSignOutputDevice::Read( char* pBuffer, size_t lLen )
+{
+  return m_pRealDevice->Read(pBuffer, lLen);
+}
+
+void PdfSignOutputDevice::Seek( size_t offset )
+{
+  m_pRealDevice->Seek(offset);
+}
+
+
+size_t PdfSignOutputDevice::Tell() const
+{
+  return m_pRealDevice->Tell();
+}
+
+void PdfSignOutputDevice::Flush()
+{
+  m_pRealDevice->Flush();
+}
+
+}

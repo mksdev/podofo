@@ -52,7 +52,7 @@ class PODOFO_DOC_API PdfNamesTree : public PdfElement {
      */
     PdfNamesTree( PdfObject* pObject, PdfObject* pCatalog );
 
-    virtual ~PdfNamesTree() { }
+    virtual ~PdfNamesTree();
 
     /** Insert a key and value in one of the dictionaries of the name tree.
      *  \param tree name of the tree to search for the key.
@@ -104,13 +104,13 @@ class PODOFO_DOC_API PdfNamesTree : public PdfElement {
      * I have made it for access to "JavaScript" dictonary. This is "document-level javascript storage"
      *  \param bCreate if true the javascript node is created if it does not exists.
      */
-    inline PdfObject* GetJavaScriptNode(bool bCreate = false) const;
+    PdfObject* GetJavaScriptNode(bool bCreate = false) const;
 
     /** Peter Petrov: 6 June 2008
      * I have made it for access to "Dest" dictionary. This is "document-level named destination storage"
      *  \param bCreate if true the dests node is created if it does not exists.
      */
-    inline PdfObject* GetDestsNode(bool bCreate = false) const;
+    PdfObject* GetDestsNode(bool bCreate = false) const;
 
  private:
     /** Get a PdfNameTrees root node for a certain name.
@@ -149,22 +149,6 @@ class PODOFO_DOC_API PdfNamesTree : public PdfElement {
  private:
     PdfObject*	m_pCatalog;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfObject* PdfNamesTree::GetJavaScriptNode(bool bCreate) const
-{
-    return this->GetRootNode( PdfName("JavaScript"), bCreate );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfObject* PdfNamesTree::GetDestsNode(bool bCreate) const
-{
-    return this->GetRootNode( PdfName("Dests"), bCreate );
-}
 
 };
 

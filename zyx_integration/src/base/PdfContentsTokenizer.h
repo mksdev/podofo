@@ -56,10 +56,7 @@ public:
      *  \param pBuffer pointer to a buffer
      *  \param lLen length of the buffer
      */
-    PdfContentsTokenizer( const char* pBuffer, long lLen )
-        : PoDoFo::PdfTokenizer( pBuffer, lLen ), m_readingInlineImgData(false)
-    {
-    }
+    PdfContentsTokenizer( const char* pBuffer, long lLen );
 
     /** Construct a PdfContentsTokenizer from a PdfCanvas
      *  (i.e. PdfPage or a PdfXObject).
@@ -71,7 +68,7 @@ public:
      */
     PdfContentsTokenizer( PdfCanvas* pCanvas );
 
-    virtual ~PdfContentsTokenizer() { }
+    virtual ~PdfContentsTokenizer();
 
     /** Read the next keyword or variant, returning true and setting reType if something was read.
      *  Either rpszKeyword or rVariant, but never both, have defined and usable values on

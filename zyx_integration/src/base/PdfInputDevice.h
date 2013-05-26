@@ -122,30 +122,30 @@ class PODOFO_API PdfInputDevice {
     /**
      * \return True if the stream is at EOF
      */
-    PODOFO_NOTHROW inline virtual bool Eof() const;
+    PODOFO_NOTHROW virtual bool Eof() const;
 
     /**
      * \return True if there was an error in an I/O operation
      */
-    PODOFO_NOTHROW inline virtual bool Bad() const;
+    PODOFO_NOTHROW virtual bool Bad() const;
 
     /**
      * Set the stream error state. By default, clears badbit, eofbit
      * and failbit.
      */
-    PODOFO_NOTHROW inline virtual void Clear( std::ios_base::iostate state = std::ios_base::goodbit) const;
+    PODOFO_NOTHROW virtual void Clear( std::ios_base::iostate state = std::ios_base::goodbit) const;
 
     /**
      * \return True if the stream is seekable. Subclasses can control
      * this value with SetIsSeekable(bool) .
      */
-    PODOFO_NOTHROW inline bool IsSeekable() const;
+    PODOFO_NOTHROW bool IsSeekable() const;
  protected:
     /**
      * Control whether or or not this stream is flagged
      * seekable.
      */
-    PODOFO_NOTHROW inline void SetSeekable(bool bIsSeekable);
+    PODOFO_NOTHROW void SetSeekable(bool bIsSeekable);
 
     /** CAN NOT Construct a new PdfInputDevice without an input source. 
      *  However subclasses may well need to do just that.
@@ -163,31 +163,6 @@ class PODOFO_API PdfInputDevice {
     bool          m_StreamOwned;
     bool          m_bIsSeekable;
 };
-
-bool PdfInputDevice::IsSeekable() const
-{
-    return m_bIsSeekable;
-}
-
-void PdfInputDevice::SetSeekable(bool bIsSeekable)
-{
-    m_bIsSeekable = bIsSeekable;
-}
-
-bool PdfInputDevice::Bad() const
-{
-    return m_pStream->bad();
-}
-
-bool PdfInputDevice::Eof() const
-{
-    return m_pStream->eof();
-}
-
-void PdfInputDevice::Clear(std::ios_base::iostate state) const
-{
-    m_pStream->clear(state);
-}
 
 };
 

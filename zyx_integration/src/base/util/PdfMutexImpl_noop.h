@@ -38,14 +38,14 @@ class PdfMutexImpl {
   public:
     /** Construct a new mutex
      */
-    inline PdfMutexImpl() { }
+    PdfMutexImpl();
 
-    inline ~PdfMutexImpl() { }
+    ~PdfMutexImpl();
 
     /**
      * Lock the mutex
      */
-    inline void Lock() { }
+    void Lock();
 
     /**
      * Try locking the mutex. 
@@ -54,12 +54,12 @@ class PdfMutexImpl {
      * \returns false if the mutex is already locked
      *                by some other thread
      */
-    inline bool TryLock() { return true; }
+    bool TryLock();
 
     /**
      * Unlock the mutex
      */
-    inline void UnLock() { }
+    void UnLock();
 };
 
 }; // Util

@@ -108,10 +108,25 @@ int PdfElement::TypeNameToIndex( const char* pszType, const char** ppTypes, long
     
     return nUnknownValue;
 }
+
 PdfObject* PdfElement::CreateObject( const char* pszType )
 {
     return m_pObject->GetOwner()->CreateObject( pszType );
 }
 
+PdfObject* PdfElement::GetObject()
+{
+    return m_pObject;
+}
+
+const PdfObject* PdfElement::GetObject() const
+{
+    return m_pObject;
+}
+
+PdfObject* PdfElement::GetNonConstObject() const
+{
+    return const_cast<PdfElement*>(this)->m_pObject;
+}
 
 };

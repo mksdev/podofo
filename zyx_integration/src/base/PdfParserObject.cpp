@@ -396,4 +396,24 @@ void PdfParserObject::FreeObjectMemory( bool bForce )
     }
 }
 
+void PdfParserObject::SetObjectNumber( unsigned int nObjNo )
+{
+    m_reference.SetObjectNumber( nObjNo );
+}
+
+bool PdfParserObject::IsLoadOnDemand() const
+{
+    return m_bLoadOnDemand;
+}
+
+void PdfParserObject::SetLoadOnDemand( bool bDelayed )
+{
+    m_bLoadOnDemand = bDelayed;
+}
+
+bool PdfParserObject::HasStreamToParse() const
+{
+    return m_bStream;
+}
+
 };

@@ -128,4 +128,19 @@ pdf_utf16be PdfIdentityEncoding::GetUnicodeValue( long ) const
     return 0;
 }
 
+const PdfName & PdfIdentityEncoding::GetID() const
+{
+    return m_id;
+}
+
+bool PdfIdentityEncoding::IsAutoDelete() const
+{
+    return m_bAutoDelete;
+}
+
+bool PdfIdentityEncoding::IsSingleByteEncoding() const
+{
+    return false;
+}
+
 }; /* namespace PoDoFo */

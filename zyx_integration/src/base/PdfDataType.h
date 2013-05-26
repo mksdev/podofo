@@ -85,7 +85,7 @@ class PODOFO_API PdfDataType {
      * that no keys can be added to an object after setting stream data on it.
      *
      */
-    inline void SetImmutable(bool bImmutable);
+    void SetImmutable(bool bImmutable);
 
     /**
      * Retrieve if an object is immutable.
@@ -95,7 +95,7 @@ class PODOFO_API PdfDataType {
      *
      * @returns true if the object is immutable
      */
-    inline bool GetImmutable() const;
+    bool GetImmutable() const;
 
 protected:
     /**
@@ -103,38 +103,11 @@ protected:
      *  so this should be called before actually changing a value!
      * 
      */
-    inline void AssertMutable() const;
+    void AssertMutable() const;
 
 private:
     bool m_bImmutable;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfDataType::SetImmutable(bool bImmutable)
-{
-    m_bImmutable = bImmutable;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfDataType::GetImmutable() const 
-{
-    return m_bImmutable;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfDataType::AssertMutable() const
-{
-    if(m_bImmutable) 
-    {
-        throw PdfError( ePdfError_ChangeOnImmutable );
-    }
-}
 
 }; // namespace PoDoFo
 

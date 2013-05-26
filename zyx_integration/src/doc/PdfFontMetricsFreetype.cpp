@@ -469,4 +469,9 @@ bool PdfFontMetricsFreetype::IsSymbol() const
     return m_bSymbol;
 }
 
+FT_Face PdfFontMetricsFreetype::GetFace() 
+{ 
+    return m_pFace; 
+} 
+
 };

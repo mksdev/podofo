@@ -220,7 +220,7 @@ public:
      */
     virtual pdf_long GetFontDataLen() const;
 
-    inline double GetCapHeight() const;
+    double GetCapHeight() const;
 
 private:
     long GetGlyphIdUnicode( long lUnicode ) const;
@@ -260,14 +260,6 @@ private :
 
 PdfFontMetricsBase14*
 PODOFO_Base14FontDef_FindBuiltinData  (const char  *font_name);
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline double PdfFontMetricsBase14::GetCapHeight() const 
-{
-    return cap_height;
-}
 
 };
 

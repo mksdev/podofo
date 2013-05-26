@@ -56,7 +56,7 @@ class PODOFO_API PdfFilter {
 
     /** All classes with virtual functions need a virtual destructor
      */
-    inline virtual ~PdfFilter();
+    virtual ~PdfFilter();
 
     /** Check wether encoding is implemented for this filter.
      * 
@@ -92,7 +92,7 @@ class PODOFO_API PdfFilter {
      *  \see EncodeBlock
      *  \see EndEncode
      */
-    inline void BeginEncode( PdfOutputStream* pOutput );
+    void BeginEncode( PdfOutputStream* pOutput );
 
     /** Encode a block of data and write it to the PdfOutputStream
      *  specified by BeginEncode. Ownership of the block is not taken
@@ -115,7 +115,7 @@ class PODOFO_API PdfFilter {
      *  \see BeginEncode
      *  \see EndEncode
      */
-    inline void EncodeBlock( const char* pBuffer, pdf_long lLen );
+    void EncodeBlock( const char* pBuffer, pdf_long lLen );
 
     /**
      *  Finish encoding of data and reset the stream's state.
@@ -123,7 +123,7 @@ class PODOFO_API PdfFilter {
      *  \see BeginEncode
      *  \see EncodeBlock
      */
-    inline void EndEncode();
+    void EndEncode();
 
     /** Check wether the decoding is implemented for this filter.
      * 
@@ -160,7 +160,7 @@ class PODOFO_API PdfFilter {
      *  \see DecodeBlock
      *  \see EndDecode
      */
-    inline void BeginDecode( PdfOutputStream* pOutput, const PdfDictionary* pDecodeParms = NULL );
+    void BeginDecode( PdfOutputStream* pOutput, const PdfDictionary* pDecodeParms = NULL );
 
     /** Decode a block of data and write it to the PdfOutputStream
      *  specified by BeginDecode. Ownership of the block is not taken
@@ -183,7 +183,7 @@ class PODOFO_API PdfFilter {
      *  \see BeginDecode
      *  \see EndDecode
      */
-    inline void DecodeBlock( const char* pBuffer, pdf_long lLen );
+    void DecodeBlock( const char* pBuffer, pdf_long lLen );
 
     /**
      *  Finish decoding of data and reset the stream's state.
@@ -191,14 +191,14 @@ class PODOFO_API PdfFilter {
      *  \see BeginDecode
      *  \see DecodeBlock
      */
-    inline void EndDecode();
+    void EndDecode();
 
     /** Type of this filter.
      *  \returns the type of this filter
      */
     virtual EPdfFilter GetType() const = 0;
 
-    PODOFO_NOTHROW inline PdfOutputStream* GetStream() const { return m_pOutputStream; }
+    PODOFO_NOTHROW PdfOutputStream* GetStream() const;
 
  protected:
     /**
@@ -210,7 +210,7 @@ class PODOFO_API PdfFilter {
      * EndEncode() before the next BeginEncode() or BeginDecode() are guaranteed to throw
      * without calling their virtual implementations.
      */
-    PODOFO_NOTHROW inline void FailEncodeDecode();
+    PODOFO_NOTHROW void FailEncodeDecode();
 
     /** Real implementation of `BeginEncode()'. NEVER call this method directly.
      *
@@ -221,7 +221,7 @@ class PODOFO_API PdfFilter {
      *  that EndEncode() was called since the last BeginEncode()/EncodeBlock().
      *
      * \see BeginEncode */
-    virtual void BeginEncodeImpl( ) { }
+    virtual void BeginEncodeImpl( );
 
     /** Real implementation of `EncodeBlock()'. NEVER call this method directly.
      *
@@ -249,7 +249,7 @@ class PODOFO_API PdfFilter {
      *  called, and ensures that BeginEncodeImpl() has been called.
      *
      * \see EndEncode */
-    virtual void EndEncodeImpl() { }
+    virtual void EndEncodeImpl();
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -260,7 +260,7 @@ class PODOFO_API PdfFilter {
      *  that EndDecode() was called since the last BeginDecode()/DecodeBlock().
      *
      * \see BeginDecode */
-    virtual void BeginDecodeImpl( const PdfDictionary* ) { }
+    virtual void BeginDecodeImpl( const PdfDictionary* );
 
     /** Real implementation of `DecodeBlock()'. NEVER call this method directly.
      *
@@ -288,141 +288,11 @@ class PODOFO_API PdfFilter {
      *  called, and ensures that BeginDecodeImpl() has been called.
      *
      * \see EndDecode */
-    virtual void EndDecodeImpl() { }
+    virtual void EndDecodeImpl();
 
  private:
     PdfOutputStream* m_pOutputStream;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfFilter::BeginEncode( PdfOutputStream* pOutput )
-{
-    PODOFO_RAISE_LOGIC_IF( m_pOutputStream, "BeginEncode() on failed filter or without EndEncode()" );
-    m_pOutputStream = pOutput;
-
-	try {
-		BeginEncodeImpl();
-	} catch( const PdfError & e ) {
-		// Clean up and close stream
-		this->FailEncodeDecode();
-		throw e;
-	}
-}
- 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfFilter::EncodeBlock( const char* pBuffer, pdf_long lLen )
-{
-    PODOFO_RAISE_LOGIC_IF( !m_pOutputStream, "EncodeBlock() without BeginEncode() or on failed filter" );
-
-	try {
-		EncodeBlockImpl(pBuffer, lLen);
-	} catch( const PdfError & e ) {
-		// Clean up and close stream
-		this->FailEncodeDecode();
-		throw e;
-	}
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfFilter::EndEncode()
-{
-    PODOFO_RAISE_LOGIC_IF( !m_pOutputStream, "EndEncode() without BeginEncode() or on failed filter" );
-
-	try {
-		EndEncodeImpl();
-	} catch( const PdfError & e ) {
-		// Clean up and close stream
-		this->FailEncodeDecode();
-		throw e;
-	}    
-
-    m_pOutputStream->Close();
-    m_pOutputStream = NULL;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfFilter::BeginDecode( PdfOutputStream* pOutput, const PdfDictionary* pDecodeParms )
-{
-    PODOFO_RAISE_LOGIC_IF( m_pOutputStream, "BeginDecode() on failed filter or without EndDecode()" );
-    m_pOutputStream = pOutput;
-
-	try {
-		BeginDecodeImpl( pDecodeParms );
-	} catch( const PdfError & e ) {
-		// Clean up and close stream
-		this->FailEncodeDecode();
-		throw e;
-	}    
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfFilter::DecodeBlock( const char* pBuffer, pdf_long lLen )
-{
-    PODOFO_RAISE_LOGIC_IF( !m_pOutputStream, "DecodeBlock() without BeginDecode() or on failed filter" )
-
-	try {
-		DecodeBlockImpl(pBuffer, lLen);
-	} catch( const PdfError & e ) {
-		// Clean up and close stream
-		this->FailEncodeDecode();
-		throw e;
-	}    
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfFilter::EndDecode()
-{
-    PODOFO_RAISE_LOGIC_IF( !m_pOutputStream, "EndDecode() without BeginDecode() or on failed filter" )
-
-	try {
-	    EndDecodeImpl();
-	} catch( const PdfError & e ) {
-		// Clean up and close stream
-		this->FailEncodeDecode();
-		throw e;
-	}    
-
-    if( m_pOutputStream ) 
-    {
-        m_pOutputStream->Close();
-        m_pOutputStream = NULL;
-    }
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfFilter::FailEncodeDecode()
-{
-    if ( m_pOutputStream != NULL ) // OC 19.08.2010 BugFix: Sometimes FailEncodeDecode() is called twice
-        m_pOutputStream->Close();
-    m_pOutputStream = NULL;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfFilter::~PdfFilter()
-{
-    // Whoops! Didn't call EndEncode() before destroying the filter!
-    // Note that we can't do this for the user, since EndEncode() might
-    // throw and we can't safely have that in a dtor. That also means
-    // we can't throw here, but must abort.
-    assert(!m_pOutputStream);
-}
-
 
 /** A factory to create a filter object for a filter GetType from the EPdfFilter enum.
  * 

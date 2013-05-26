@@ -243,4 +243,14 @@ void PdfXRefStreamParserObject::ReadXRefStreamEntry( char* pBuffer, pdf_long, co
     //printf("m_offsets = [ %i %i %c ]\n", (*m_pOffsets)[nObjNo].lOffset, (*m_pOffsets)[nObjNo].lGeneration, (*m_pOffsets)[nObjNo].cUsed );
 }
 
+bool PdfXRefStreamParserObject::HasPrevious()
+{
+    return (m_lNextOffset != -1);
+}
+
+pdf_long PdfXRefStreamParserObject::GetPreviousOffset()
+{
+    return m_lNextOffset;
+}
+
 };

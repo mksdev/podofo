@@ -39,18 +39,12 @@ class PdfOutputDevice;
 class PdfXRef {
  protected:
     struct TXRefItem{
-        TXRefItem( const PdfReference & rRef, const pdf_uint64 & off ) 
-            : reference( rRef ), offset( off )
-            {
-            }
+        TXRefItem( const PdfReference & rRef, const pdf_uint64 & off );
 
         PdfReference reference;
         pdf_uint64   offset;
 
-        bool operator<( const TXRefItem & rhs ) const
-        {
-            return this->reference < rhs.reference;
-        }
+        bool operator<( const TXRefItem & rhs ) const;
     };
 
     typedef std::vector<TXRefItem>         TVecXRefItems;
@@ -63,34 +57,11 @@ class PdfXRef {
 
     class PdfXRefBlock {
     public:
-        PdfXRefBlock() 
-            : m_nFirst( 0 ), m_nCount( 0 )
-        {
-        }
-
-        PdfXRefBlock( const PdfXRefBlock & rhs )
-            : m_nFirst( 0 ), m_nCount( 0 )
-        {
-            this->operator=( rhs );
-        }
-        
+        PdfXRefBlock();
+        PdfXRefBlock( const PdfXRefBlock & rhs );
         bool InsertItem( const TXRefItem & rItem, bool bUsed );
-
-        bool operator<( const PdfXRefBlock & rhs ) const
-        {
-            return m_nFirst < rhs.m_nFirst;
-        }
-
-        const PdfXRefBlock & operator=( const PdfXRefBlock & rhs )
-        {
-            m_nFirst  = rhs.m_nFirst;
-            m_nCount  = rhs.m_nCount;
-            
-            items     = rhs.items;
-            freeItems = rhs.freeItems;
-
-            return *this;
-        }
+        bool operator<( const PdfXRefBlock & rhs ) const;
+        const PdfXRefBlock & operator=( const PdfXRefBlock & rhs );
 
         pdf_objnum   m_nFirst;
         pdf_uint32   m_nCount;
@@ -141,7 +112,7 @@ class PdfXRef {
      * \returns the offset in the file at which the XRef table
      *          starts after it was written
      */
-    inline virtual pdf_uint64 GetOffset() const;
+    virtual pdf_uint64 GetOffset() const;
 
  protected:
     /** Called at the start of writing the XRef table.
@@ -202,14 +173,6 @@ class PdfXRef {
  protected:
     TVecXRefBlock  m_vecBlocks;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline pdf_uint64 PdfXRef::GetOffset() const
-{
-    return m_offset;
-}
 
 };
 

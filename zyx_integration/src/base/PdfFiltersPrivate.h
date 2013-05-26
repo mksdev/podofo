@@ -70,13 +70,13 @@ class PdfOutputDevice;
  */
 class PdfHexFilter : public PdfFilter {
  public:
-    virtual ~PdfHexFilter() { }
+    virtual ~PdfHexFilter();
 
     /** Check wether the encoding is implemented for this filter.
      * 
      *  \returns true if the filter is able to encode data
      */
-    inline virtual bool CanEncode() const; 
+    virtual bool CanEncode() const; 
 
     /** Encode a block of data and write it to the PdfOutputStream
      *  specified by BeginEncodeImpl.
@@ -98,7 +98,7 @@ class PdfHexFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to decode data
      */
-    inline virtual bool CanDecode() const; 
+    virtual bool CanDecode() const; 
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -142,48 +142,24 @@ class PdfHexFilter : public PdfFilter {
     /** GetType of this filter.
      *  \returns the GetType of this filter
      */
-    inline virtual EPdfFilter GetType() const;
+    virtual EPdfFilter GetType() const;
 
  private:
     char m_cDecodedByte;
     bool m_bLow;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfHexFilter::CanEncode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfHexFilter::CanDecode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfFilter PdfHexFilter::GetType() const
-{
-    return ePdfFilter_ASCIIHexDecode;
-}
-
 /** The Ascii85 filter.
  */
 class PdfAscii85Filter : public PdfFilter {
  public:
-    virtual ~PdfAscii85Filter() { }
+    virtual ~PdfAscii85Filter();
 
     /** Check wether the encoding is implemented for this filter.
      * 
      *  \returns true if the filter is able to encode data
      */
-    inline virtual bool CanEncode() const; 
+    virtual bool CanEncode() const; 
 
     /** Begin encoding data using this filter. Called by PdfFilter::BeginEncode.
      *
@@ -221,7 +197,7 @@ class PdfAscii85Filter : public PdfFilter {
      * 
      *  \returns true if the filter is able to decode data
      */
-    inline virtual bool CanDecode() const; 
+    virtual bool CanDecode() const; 
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -265,7 +241,7 @@ class PdfAscii85Filter : public PdfFilter {
     /** GetType of this filter.
      *  \returns the GetType of this filter
      */
-    inline virtual EPdfFilter GetType() const;
+    virtual EPdfFilter GetType() const;
 
  private:
     void EncodeTuple ( unsigned long tuple, int bytes );
@@ -275,30 +251,6 @@ class PdfAscii85Filter : public PdfFilter {
     int           m_count;
     unsigned long m_tuple;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfAscii85Filter::CanEncode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfAscii85Filter::CanDecode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfFilter PdfAscii85Filter::GetType() const
-{
-    return ePdfFilter_ASCII85Decode;
-}
 
 /** The flate filter.
  */
@@ -311,7 +263,7 @@ class PdfFlateFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to encode data
      */
-    inline virtual bool CanEncode() const; 
+    virtual bool CanEncode() const; 
 
     /** Begin encoding data using this filter. Called by PdfFilter::BeginEncode.
      *
@@ -349,7 +301,7 @@ class PdfFlateFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to decode data
      */
-    inline virtual bool CanDecode() const; 
+    virtual bool CanDecode() const; 
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -396,7 +348,7 @@ class PdfFlateFilter : public PdfFilter {
     /** GetType of this filter.
      *  \returns the GetType of this filter
      */
-    inline virtual EPdfFilter GetType() const;
+    virtual EPdfFilter GetType() const;
 
  private:
     void EncodeBlockInternal( const char* pBuffer, pdf_long lLen, int nMode );
@@ -408,42 +360,17 @@ class PdfFlateFilter : public PdfFilter {
     PdfPredictorDecoder* m_pPredictor;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfFlateFilter::CanEncode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfFlateFilter::CanDecode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfFilter PdfFlateFilter::GetType() const
-{
-    return ePdfFilter_FlateDecode;
-}
-
-
 /** The RLE filter.
  */
 class PdfRLEFilter : public PdfFilter {
  public:
-    virtual ~PdfRLEFilter() {}
+    virtual ~PdfRLEFilter();
 
     /** Check wether the encoding is implemented for this filter.
      * 
      *  \returns true if the filter is able to encode data
      */
-    inline virtual bool CanEncode() const; 
+    virtual bool CanEncode() const; 
 
     virtual void BeginEncodeImpl();
 
@@ -475,7 +402,7 @@ class PdfRLEFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to decode data
      */
-    inline virtual bool CanDecode() const; 
+    virtual bool CanDecode() const; 
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -508,35 +435,11 @@ class PdfRLEFilter : public PdfFilter {
     /** GetType of this filter.
      *  \returns the GetType of this filter
      */
-    inline virtual EPdfFilter GetType() const;
+    virtual EPdfFilter GetType() const;
 
  private:
     int m_nCodeLen;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfRLEFilter::CanEncode() const
-{
-    return false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfRLEFilter::CanDecode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfFilter PdfRLEFilter::GetType() const
-{
-    return ePdfFilter_RunLengthDecode;
-}
 
 /** The LZW filter.
  */
@@ -558,7 +461,7 @@ class PdfLZWFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to encode data
      */
-    inline virtual bool CanEncode() const; 
+    virtual bool CanEncode() const; 
 
     /** Begin encoding data using this filter. Called by PdfFilter::BeginEncode.
      *
@@ -596,7 +499,7 @@ class PdfLZWFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to decode data
      */
-    inline virtual bool CanDecode() const; 
+    virtual bool CanDecode() const; 
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -640,7 +543,7 @@ class PdfLZWFilter : public PdfFilter {
     /** GetType of this filter.
      *  \returns the GetType of this filter
      */
-    inline virtual EPdfFilter GetType() const;
+    virtual EPdfFilter GetType() const;
 
  private:
     /** Initialize an lzw table.
@@ -663,31 +566,6 @@ class PdfLZWFilter : public PdfFilter {
     PdfPredictorDecoder* m_pPredictor;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfLZWFilter::CanEncode() const
-{
-    return false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfLZWFilter::CanDecode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfFilter PdfLZWFilter::GetType() const
-{
-    return ePdfFilter_LZWDecode;
-}
-
-
 #ifdef PODOFO_HAVE_JPEG_LIB
 
 void PODOFO_API jpeg_memory_src (j_decompress_ptr cinfo, const JOCTET * buffer, size_t bufsize);
@@ -706,7 +584,7 @@ class PdfDCTFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to encode data
      */
-    inline virtual bool CanEncode() const; 
+    virtual bool CanEncode() const; 
 
     /** Begin encoding data using this filter. Called by PdfFilter::BeginEncode.
      *
@@ -744,7 +622,7 @@ class PdfDCTFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to decode data
      */
-    inline virtual bool CanDecode() const; 
+    virtual bool CanDecode() const; 
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -788,7 +666,7 @@ class PdfDCTFilter : public PdfFilter {
     /** GetType of this filter.
      *  \returns the GetType of this filter
      */
-    inline virtual EPdfFilter GetType() const;
+    virtual EPdfFilter GetType() const;
 
  private:
     struct jpeg_decompress_struct m_cinfo;
@@ -798,29 +676,6 @@ class PdfDCTFilter : public PdfFilter {
     PdfOutputDevice*              m_pDevice;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfDCTFilter::CanEncode() const
-{
-    return false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfDCTFilter::CanDecode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfFilter PdfDCTFilter::GetType() const
-{
-    return ePdfFilter_DCTDecode;
-}
 #endif // PODOFO_HAVE_JPEG_LIB
 
 #ifdef PODOFO_HAVE_TIFF_LIB
@@ -839,7 +694,7 @@ class PdfCCITTFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to encode data
      */
-    inline virtual bool CanEncode() const; 
+    virtual bool CanEncode() const; 
 
     /** Begin encoding data using this filter. Called by PdfFilter::BeginEncode.
      *
@@ -877,7 +732,7 @@ class PdfCCITTFilter : public PdfFilter {
      * 
      *  \returns true if the filter is able to decode data
      */
-    inline virtual bool CanDecode() const; 
+    virtual bool CanDecode() const; 
 
     /** Real implementation of `BeginDecode()'. NEVER call this method directly.
      *
@@ -921,38 +776,14 @@ class PdfCCITTFilter : public PdfFilter {
     /** GetType of this filter.
      *  \returns the GetType of this filter
      */
-    inline virtual EPdfFilter GetType() const;
+    virtual EPdfFilter GetType() const;
 
  private:
     TIFF* m_tiff;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfCCITTFilter::CanEncode() const
-{
-    return false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfCCITTFilter::CanDecode() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfFilter PdfCCITTFilter::GetType() const
-{
-    return ePdfFilter_CCITTFaxDecode;
-}
 #endif // PODOFO_HAVE_TIFF_LIB
 
 };
-
 
 #endif /* _PDF_FILTERS_PRIVATE_H_ */

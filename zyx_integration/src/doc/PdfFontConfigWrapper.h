@@ -61,13 +61,13 @@ public:
      *
      * \returns a FcConfig handle (you can cast to FcConfig)
      */
-    inline void * GetFontConfig();
+    void * GetFontConfig();
 
 #if defined(PODOFO_HAVE_FONTCONFIG)
     /**
      * Mutex which has to be used to synchronize uses of FontConfig
      */
-    inline Util::PdfMutex & GetFontConfigMutex();
+    Util::PdfMutex & GetFontConfigMutex();
 #endif
 
     const PdfFontConfigWrapper & operator=(const PdfFontConfigWrapper & rhs);
@@ -97,32 +97,6 @@ private:
 
     TRefCountedFontConfig* m_pFontConfig;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void* PdfFontConfigWrapper::GetFontConfig() 
-{
-    if( m_pFontConfig != NULL ) 
-    {
-        InitializeFontConfig();
-        return m_pFontConfig->m_pFcConfig;
-    } 
-    else 
-    {
-        return NULL;
-    }
-}
-
-#if defined(PODOFO_HAVE_FONTCONFIG)
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-Util::PdfMutex & PdfFontConfigWrapper::GetFontConfigMutex()
-{
-    return m_FcMutex;
-}
-#endif
 
 }; // PoDoFo
 

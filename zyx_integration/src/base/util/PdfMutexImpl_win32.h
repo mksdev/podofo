@@ -39,14 +39,14 @@ class PdfMutexImpl {
   public:
     /** Construct a new mutex
      */
-    inline PdfMutexImpl();
+    PdfMutexImpl();
 
-    inline ~PdfMutexImpl();
+    ~PdfMutexImpl();
 
     /**
      * Lock the mutex
      */
-    inline void Lock();
+    void Lock();
 
     /**
      * Try locking the mutex. 
@@ -55,42 +55,16 @@ class PdfMutexImpl {
      * \returns false if the mutex is already locked
      *                by some other thread
      */
-    inline bool TryLock();
+    bool TryLock();
 
     /**
      * Unlock the mutex
      */
-    inline void UnLock();
+    void UnLock();
 
   private:
     CRITICAL_SECTION m_cs;
 };
-
-PdfMutexImpl::PdfMutexImpl()
-{
-    InitializeCriticalSection( &m_cs );
-}
-
-PdfMutexImpl::~PdfMutexImpl()
-{
-    DeleteCriticalSection( &m_cs );
-}
-
-void PdfMutexImpl::Lock()
-{
-    EnterCriticalSection( &m_cs );
-}
-
-bool PdfMutexImpl::TryLock()
-{
-    return (TryEnterCriticalSection( &m_cs ) ? true : false);
-}
-
-void PdfMutexImpl::UnLock()
-{
-    LeaveCriticalSection( &m_cs );
-}
-
 
 }; // Util
 }; // PoDoFo

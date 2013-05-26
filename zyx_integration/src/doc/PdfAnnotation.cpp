@@ -323,4 +323,14 @@ void PdfAnnotation::SetColor()
     this->GetObject()->GetDictionary().AddKey( "C", c );
 }
 
+EPdfAnnotation PdfAnnotation::GetType() const
+{
+    return m_eAnnotation;
+}
+
+PdfPage* PdfAnnotation::GetPage() const
+{
+    return m_pPage;
+}
+
 };

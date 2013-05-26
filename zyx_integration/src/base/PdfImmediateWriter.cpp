@@ -178,5 +178,14 @@ void PdfImmediateWriter::EndAppendStream( const PdfStream* pStream )
     }
 }
 
-};
+EPdfWriteMode PdfImmediateWriter::GetWriteMode() const
+{
+    return PdfWriter::GetWriteMode();
+}
 
+EPdfVersion PdfImmediateWriter::GetPdfVersion() const
+{
+    return PdfWriter::GetPdfVersion();
+}
+
+};

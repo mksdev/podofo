@@ -29,6 +29,8 @@
 
 namespace PoDoFo {
 
+PdfInputStream::~PdfInputStream() { }
+
 PdfFileInputStream::PdfFileInputStream( const char* pszFilename )
 {
     m_hFile = fopen( pszFilename, "rb" );

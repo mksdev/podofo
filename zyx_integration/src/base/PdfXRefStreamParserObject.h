@@ -58,12 +58,12 @@ public:
     /**
      * \returns true if there is a previous XRefStream
      */
-    inline bool HasPrevious();
+    bool HasPrevious();
 
     /**
      * \returns the offset of the previous XRef table
      */
-    inline pdf_long GetPreviousOffset();
+    pdf_long GetPreviousOffset();
 
 private:
     /**
@@ -91,22 +91,6 @@ private:
 
     PdfParser::TVecOffsets* m_pOffsets;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfXRefStreamParserObject::HasPrevious()
-{
-    return (m_lNextOffset != -1);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline pdf_long PdfXRefStreamParserObject::GetPreviousOffset()
-{
-    return m_lNextOffset;
-}
 
 };
 

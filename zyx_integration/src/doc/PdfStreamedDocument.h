@@ -127,18 +127,18 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
     /** Get the write mode used for wirting the PDF
      *  \returns the write mode
      */
-    inline virtual EPdfWriteMode GetWriteMode() const;
+    virtual EPdfWriteMode GetWriteMode() const;
 
     /** Get the PDF version of the document
      *  \returns EPdfVersion version of the pdf document
      */
-    inline virtual EPdfVersion GetPdfVersion() const;
+    virtual EPdfVersion GetPdfVersion() const;
 
     /** Returns wether this PDF document is linearized, aka
      *  weboptimized
      *  \returns true if the PDF document is linearized
      */
-    inline virtual bool IsLinearized() const;
+    virtual bool IsLinearized() const;
 
     /** Checks if printing this document is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -147,7 +147,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsPrintAllowed() const; 
+    virtual bool IsPrintAllowed() const; 
 
     /** Checks if modifiying this document (besides annotations, form fields or changing pages) is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -156,7 +156,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsEditAllowed() const;
+    virtual bool IsEditAllowed() const;
 
     /** Checks if text and graphics extraction is allowed.
      *  Every PDF consuming applications has to adhere this value!
@@ -165,7 +165,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsCopyAllowed() const;
+    virtual bool IsCopyAllowed() const;
 
     /** Checks if it is allowed to add or modify annotations or form fields
      *  Every PDF consuming applications has to adhere this value!
@@ -174,7 +174,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsEditNotesAllowed() const;
+    virtual bool IsEditNotesAllowed() const;
 
     /** Checks if it is allowed to fill in existing form or signature fields
      *  Every PDF consuming applications has to adhere this value!
@@ -183,7 +183,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsFillAndSignAllowed() const;
+    virtual bool IsFillAndSignAllowed() const;
 
     /** Checks if it is allowed to extract text and graphics to support users with disabillities
      *  Every PDF consuming applications has to adhere this value!
@@ -192,7 +192,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsAccessibilityAllowed() const;
+    virtual bool IsAccessibilityAllowed() const;
 
     /** Checks if it is allowed to insert, create, rotate, delete pages or add bookmarks
      *  Every PDF consuming applications has to adhere this value!
@@ -201,7 +201,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsDocAssemblyAllowed() const;
+    virtual bool IsDocAssemblyAllowed() const;
 
     /** Checks if it is allowed to print a high quality version of this document 
      *  Every PDF consuming applications has to adhere this value!
@@ -210,7 +210,7 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
      *
      *  \see PdfEncrypt to set own document permissions.
      */
-    inline virtual bool IsHighPrintAllowed() const;
+    virtual bool IsHighPrintAllowed() const;
 
  private:
     /** Initialize the PdfStreamedDocument with an output device
@@ -233,95 +233,6 @@ class PODOFO_DOC_API PdfStreamedDocument : public PdfDocument {
 
     bool                m_bOwnDevice; ///< If true m_pDevice is owned by this object and has to be deleted
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfWriteMode PdfStreamedDocument::GetWriteMode() const
-{
-    return m_pWriter->GetWriteMode();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfVersion PdfStreamedDocument::GetPdfVersion() const
-{
-    return m_pWriter->GetPdfVersion();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsLinearized() const
-{
-    // Linearization is currently not supported by PdfStreamedDocument
-    return false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsPrintAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsPrintAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsEditAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsEditAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsCopyAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsCopyAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsEditNotesAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsEditNotesAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsFillAndSignAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsFillAndSignAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsAccessibilityAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsAccessibilityAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsDocAssemblyAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsDocAssemblyAllowed() : true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStreamedDocument::IsHighPrintAllowed() const
-{
-    return m_pEncrypt ? m_pEncrypt->IsHighPrintAllowed() : true;
-}
 
 };
 

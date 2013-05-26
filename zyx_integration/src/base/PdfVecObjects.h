@@ -91,9 +91,7 @@ class PODOFO_API PdfVecObjects {
         friend class PdfVecObjects;
 
     public:
-        virtual ~Observer()
-            {
-            }
+        virtual ~Observer();
 
         virtual void WriteObject( const PdfObject* pObject ) = 0;
             
@@ -122,9 +120,7 @@ class PODOFO_API PdfVecObjects {
      */
     class PODOFO_API StreamFactory {
     public:
-        virtual ~StreamFactory()
-            {
-            }
+        virtual ~StreamFactory();
         
         /** Creates a stream object
          *
@@ -151,12 +147,12 @@ class PODOFO_API PdfVecObjects {
      *           parent of this vector.
      *           Might be NULL if the vector has no parent.
      */
-    inline PdfDocument* GetParentDocument() const;
+    PdfDocument* GetParentDocument() const;
 
     /** Sets a parent document of this vector
      *  \param pDocument the parent of this vector
      */
-    inline void SetParentDocument( PdfDocument* pDocument );
+    void SetParentDocument( PdfDocument* pDocument );
 
     /** Enable/disable auto deletion.
      *  By default auto deletion is disabled.
@@ -164,13 +160,13 @@ class PODOFO_API PdfVecObjects {
      *  \param bAutoDelete if true all objects will be deleted when the PdfVecObjects is 
      *         deleted.
      */
-    inline void SetAutoDelete( bool bAutoDelete );
+    void SetAutoDelete( bool bAutoDelete );
 
     /** 
      *  \returns if autodeletion is enabled and all objects will be deleted when the PdfVecObjects is 
      *           deleted.
      */
-    inline bool AutoDelete() const;
+    bool AutoDelete() const;
 
     /** Removes all objects from the vector
      *  and resets it to the default state.
@@ -186,12 +182,12 @@ class PODOFO_API PdfVecObjects {
     /** 
      *  \returns the size of the internal vector
      */
-    inline size_t GetSize() const;
+    size_t GetSize() const;
 
     /**
      *  \returns the highest object number in the vector 
      */
-    size_t GetObjectCount() const { return m_nObjectCount; }
+    size_t GetObjectCount() const;
 
     /** Finds the object with the given reference in m_vecOffsets 
      *  and returns a pointer to it if it is found.
@@ -249,7 +245,7 @@ class PODOFO_API PdfVecObjects {
 
     /** \returns a list of free references in this vector
      */
-    inline const TPdfReferenceList & GetFreeObjects() const;
+    const TPdfReferenceList & GetFreeObjects() const;
 
     /** 
      *  Renumbers all objects according to there current position in the vector.
@@ -291,7 +287,7 @@ class PODOFO_API PdfVecObjects {
      * Causes the internal vector to reserve space for size elements.
      * \param size reserve space for that much elements in the internal vector
      */
-    inline void Reserve( size_t size );
+    void Reserve( size_t size );
 
     /** Get a set with all references of objects that the passed object
      *  depends on.
@@ -305,7 +301,7 @@ class PODOFO_API PdfVecObjects {
     /** Attach a new observer
      *  \param pObserver to attach
      */
-    inline void Attach( Observer* pObserver );
+    void Attach( Observer* pObserver );
     
     /** Detach an observer.
      *
@@ -317,7 +313,7 @@ class PODOFO_API PdfVecObjects {
      *  
      *  \param pFactory a stream factory or NULL to reset to the default factory
      */
-    inline void SetStreamFactory( StreamFactory* pFactory );
+    void SetStreamFactory( StreamFactory* pFactory );
 
     /** Creates a stream object
      *  This method is a factory for PdfStream objects.
@@ -359,30 +355,30 @@ class PODOFO_API PdfVecObjects {
     /** Iterator pointing at the begining of the vector
      *  \returns beginning iterator
      */
-    inline TIVecObjects begin();
+    TIVecObjects begin();
 
     /** Iterator pointing at the begining of the vector
      *  \returns beginning iterator
      */
-    inline TCIVecObjects begin() const;
+    TCIVecObjects begin() const;
 
     /** Iterator pointing at the end of the vector
      *  \returns ending iterator
      */
-    inline TIVecObjects end();
+    TIVecObjects end();
 
     /** Iterator pointing at the end of the vector
      *  \returns ending iterator
      */
-    inline TCIVecObjects end() const;
+    TCIVecObjects end() const;
 
-    inline PdfObject*& operator[](size_t index);
+    PdfObject*& operator[](size_t index);
 
     /** Get the last object in the vector
      *  \returns the last object in the vector or NULL 
      *           if the vector is emtpy.
      */
-    inline PdfObject* GetBack();
+    PdfObject* GetBack();
 
     /**
      * Deletes all objects that are not references by other objects
@@ -452,146 +448,6 @@ class PODOFO_API PdfVecObjects {
 
 	std::string			m_sSubsetPrefix;		 ///< Prefix for BaseFont and FontName of subsetted font
 };
-
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline size_t PdfVecObjects::GetSize() const
-{
-    return m_vector.size();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVecObjects::Reserve( size_t size )
-{
-    m_vector.reserve( size );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfDocument* PdfVecObjects::GetParentDocument() const
-{
-    return m_pDocument;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVecObjects::SetParentDocument( PdfDocument* pDocument )
-{
-    m_pDocument = pDocument;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVecObjects::SetAutoDelete( bool bAutoDelete ) 
-{
-    m_bAutoDelete = bAutoDelete;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfVecObjects::AutoDelete() const
-{
-    return m_bAutoDelete;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const TPdfReferenceList & PdfVecObjects::GetFreeObjects() const
-{
-    return m_lstFreeObjects;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVecObjects::Attach( Observer* pObserver )
-{
-    m_vecObservers.push_back( pObserver );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVecObjects::SetStreamFactory( StreamFactory* pFactory )
-{
-    m_pStreamFactory = pFactory;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline TIVecObjects PdfVecObjects::begin()
-{
-    return m_vector.begin();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline TCIVecObjects PdfVecObjects::begin() const
-{
-    return m_vector.begin();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline TIVecObjects PdfVecObjects::end()
-{
-    return m_vector.end();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline TCIVecObjects PdfVecObjects::end() const
-{
-    return m_vector.end();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfVecObjects::GetBack() 
-{ 
-    return m_vector.back(); 
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVecObjects::SetObjectCount( const PdfReference & rRef ) 
-{
-    if( rRef.ObjectNumber() >= m_nObjectCount )
-    // Peter Petrov 18 September 2008
-    {
-        // This was a bug.
-        //++m_nObjectCount;
-
-        // In fact "m_bObjectCount" is used for the next free object number.
-        // We need to use the greatest object number + 1 for the next free object number.
-        // Otherwise, object number overlap would have occurred.
-        m_nObjectCount = rRef.ObjectNumber() + 1;
-    }
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject*& PdfVecObjects::operator[](size_t index) { return m_vector[index]; }
-
-//inline PdfObject const * & PdfVecObjects::operator[](int index) const { return m_vector[index]; }
-
-
 
 };
 

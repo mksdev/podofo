@@ -240,4 +240,9 @@ void PdfTilingPattern::Init( EPdfTilingPatternType eTilingType,
 	this->GetObject()->GetStream()->Set(&stream, vecFlate);
 }
 
+const PdfName & PdfTilingPattern::GetIdentifier() const
+{
+    return m_Identifier;
+}
+
 }	// end namespace

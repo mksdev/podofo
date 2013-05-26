@@ -101,27 +101,16 @@ class PODOFO_DOC_API PdfEncodingDifference {
      *  
      *  \returns the number of differences in this object
      */
-    inline size_t GetCount() const;
+    size_t GetCount() const;
 
  private:
     struct DifferenceComparatorPredicate {
         public:
-          inline bool operator()( const TDifference & rDif1, 
-                                  const TDifference & rDif2 ) const { 
-              return rDif1.nCode < rDif2.nCode;
-          }
+          bool operator()( const TDifference & rDif1, const TDifference & rDif2 ) const;
     };
 
     TVecDifferences m_vecDifferences;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline size_t PdfEncodingDifference::GetCount() const
-{
-    return m_vecDifferences.size();
-}
 
 /** PdfDifferenceEncoding is an encoding, which is based
  *  on either the fonts encoding or a predefined encoding
@@ -252,7 +241,7 @@ class PODOFO_DOC_API PdfDifferenceEncoding : public PdfEncoding, private PdfElem
      *
      * \returns the container with the actual differences
      */
-    inline const PdfEncodingDifference & GetDifferences() const;
+    const PdfEncodingDifference & GetDifferences() const;
 
     /** Get the unicode character code for this encoding
      *  at the position nIndex. nIndex is a position between
@@ -300,40 +289,6 @@ class PODOFO_DOC_API PdfDifferenceEncoding : public PdfEncoding, private PdfElem
     EBaseEncoding m_baseEncoding; ///< The base encoding of this font 
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfName & PdfDifferenceEncoding::GetID() const
-{
-    return m_id;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfDifferenceEncoding::IsAutoDelete() const
-{
-    return m_bAutoDelete;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfDifferenceEncoding::IsSingleByteEncoding() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfEncodingDifference & PdfDifferenceEncoding::GetDifferences() const
-{
-    return m_differences;
-}
-
-
 }; /* PoDoFo */
 
 #endif // _PDF_DIFFERENCE_ENCODING_H_
-

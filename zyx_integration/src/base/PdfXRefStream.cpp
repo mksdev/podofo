@@ -100,5 +100,9 @@ void PdfXRefStream::EndWrite( PdfOutputDevice* pDevice )
     m_indeces.Clear();
 }
 
-};
+pdf_uint64 PdfXRefStream::GetOffset() const
+{
+    return m_offset;
+}
 
+};

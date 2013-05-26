@@ -73,45 +73,13 @@ class PODOFO_API PdfEncoding {
 						 const int *, const int &> {
 #endif
     public:
-	const_iterator( const PdfEncoding* pEncoding, int nCur )
-	    : m_pEncoding( pEncoding ), m_nCur( nCur )
-	{
-	}
-
-	const_iterator( const const_iterator & rhs ) 
-	{
-	    this->operator=(rhs);
-	}
-
-	const const_iterator & operator=( const const_iterator & rhs ) 
-	{
-	    m_nCur      = rhs.m_nCur;
-	    m_pEncoding = rhs.m_pEncoding;
-
-	    return *this;
-	}
-
-	inline bool operator==( const const_iterator & rhs ) const
-	{
-	    return (m_nCur == rhs.m_nCur);
-	}
-
-	inline bool operator!=( const const_iterator & rhs ) const
-	{
-	    return (m_nCur != rhs.m_nCur);
-	}
-
-	inline pdf_utf16be operator*() const 
-	{
-	    return m_pEncoding->GetCharCode( m_nCur );
-	}
-	
-	inline const_iterator & operator++()
-	{
-	    m_nCur++;
-
-	    return *this;
-	}
+	const_iterator( const PdfEncoding* pEncoding, int nCur );
+	const_iterator( const const_iterator & rhs ) ;
+	const const_iterator & operator=( const const_iterator & rhs );
+	bool operator==( const const_iterator & rhs ) const;
+	bool operator!=( const const_iterator & rhs ) const;
+	pdf_utf16be operator*() const;
+	const_iterator & operator++();
 
     private:
 	const PdfEncoding* m_pEncoding;
@@ -126,7 +94,7 @@ class PODOFO_API PdfEncoding {
      *
      *  \returns true if both encodings are the same.
      */
-    inline bool operator==( const PdfEncoding & rhs ) const;
+    bool operator==( const PdfEncoding & rhs ) const;
 
     /** Comparison operator.
      *
@@ -134,7 +102,7 @@ class PODOFO_API PdfEncoding {
      *
      *  \returns true if this encoding is less than the specified.
      */
-    inline bool operator<( const PdfEncoding & rhs ) const;
+    bool operator<( const PdfEncoding & rhs ) const;
 
     /** Add this encoding object to a dictionary
      *  usually be adding an /Encoding key in font dictionaries.
@@ -178,26 +146,26 @@ class PODOFO_API PdfEncoding {
     /** 
      * \returns the first character code that is defined for this encoding
      */
-    inline int GetFirstChar() const;
+    int GetFirstChar() const;
 
     /** 
      * \returns the last character code that is defined for this encoding
      */
-    inline int GetLastChar() const;
+    int GetLastChar() const;
 
     /** Iterate over all unicode character points in this
      *  encoding, beginning with the first.
      *
      *  \returns iterator pointing to the first defined unicode character
      */
-    inline const_iterator begin() const;
+    const_iterator begin() const;
 
     /** Iterate over all unicode character points in this
      *  encoding, beginning with the first.
      *
      *  \returns iterator pointing at the end
      */
-    inline const_iterator end() const;
+    const_iterator end() const;
 
     /** Get the unicode character code for this encoding
      *  at the position nIndex. nIndex is a position between
@@ -217,54 +185,6 @@ class PODOFO_API PdfEncoding {
     int     m_nFirstChar;   ///< The first defined character code
     int     m_nLastChar;    ///< The last defined character code
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfEncoding::operator<( const PdfEncoding & rhs ) const
-{
-    return (this->GetID() < rhs.GetID());
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfEncoding::operator==( const PdfEncoding & rhs ) const
-{
-    return (this->GetID() == rhs.GetID());
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline int PdfEncoding::GetFirstChar() const
-{
-    return m_nFirstChar;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline int PdfEncoding::GetLastChar() const
-{
-    return m_nLastChar;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfEncoding::const_iterator PdfEncoding::begin() const
-{
-    return PdfEncoding::const_iterator( this, this->GetFirstChar() );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfEncoding::const_iterator PdfEncoding::end() const
-{
-    return PdfEncoding::const_iterator( this, this->GetLastChar() + 1 );
-}
 
 /**
  * A common base class for standard PdfEncoding which are
@@ -363,13 +283,13 @@ class PODOFO_API PdfSimpleEncoding : public PdfEncoding {
     /** 
      *  \returns true if this is a single byte encoding with a maximum of 256 values.
      */
-    inline virtual bool IsSingleByteEncoding() const;
+    virtual bool IsSingleByteEncoding() const;
 
     /** Get the name of this encoding.
      *  
      *  \returns the name of this encoding.
      */
-    inline const PdfName & GetName() const;
+    const PdfName & GetName() const;
 
     /** Get the unicode character code for this encoding
      *  at the position nIndex. nIndex is a position between
@@ -400,7 +320,7 @@ class PODOFO_API PdfSimpleEncoding : public PdfEncoding {
      *
      *  \returns a unique id for this encoding!
      */
-    inline virtual const PdfName & GetID() const;
+    virtual const PdfName & GetID() const;
 
     /** Gets a table of 256 short values which are the 
      *  big endian unicode code points that are assigned
@@ -421,38 +341,6 @@ class PODOFO_API PdfSimpleEncoding : public PdfEncoding {
     char*   m_pEncodingTable; ///< The helper table for conversions into this encoding
 }; 
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfName & PdfSimpleEncoding::GetID() const
-{
-    return m_name;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfSimpleEncoding::IsAutoDelete() const
-{
-    return false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfSimpleEncoding::IsSingleByteEncoding() const
-{
-    return true;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfName & PdfSimpleEncoding::GetName() const
-{
-    return m_name;
-}
-
 /** 
  * The PdfDocEncoding is the default encoding for
  * all strings in PoDoFo which are data in the PDF
@@ -468,11 +356,7 @@ class PODOFO_API PdfDocEncoding : public PdfSimpleEncoding {
    
     /** Create a new PdfDocEncoding
      */
-    PdfDocEncoding()
-        : PdfSimpleEncoding( PdfName("PdfDocEncoding") )
-    {
-
-    }
+    PdfDocEncoding();
 
  protected:
 
@@ -508,11 +392,7 @@ class PODOFO_API PdfWinAnsiEncoding : public PdfSimpleEncoding {
    
     /** Create a new PdfWinAnsiEncoding
      */
-    PdfWinAnsiEncoding()
-        : PdfSimpleEncoding( PdfName("WinAnsiEncoding") )
-    {
-
-    }
+    PdfWinAnsiEncoding();
 
  protected:
 
@@ -543,11 +423,7 @@ class PODOFO_API PdfMacRomanEncoding : public PdfSimpleEncoding {
    
     /** Create a new PdfMacRomanEncoding
      */
-    PdfMacRomanEncoding()
-        : PdfSimpleEncoding( PdfName("MacRomanEncoding") )
-    {
-
-    }
+    PdfMacRomanEncoding();
 
  protected:
 
@@ -574,11 +450,7 @@ class PODOFO_API PdfMacExpertEncoding : public PdfSimpleEncoding {
    
     /** Create a new PdfMacExpertEncoding
      */
-    inline PdfMacExpertEncoding()
-        : PdfSimpleEncoding( PdfName("MacExpertEncoding") )
-    {
-
-    }
+    PdfMacExpertEncoding();
 
  protected:
 
@@ -610,11 +482,7 @@ class PODOFO_API PdfStandardEncoding : public PdfSimpleEncoding {
    
     /** Create a new PdfStandardEncoding
      */
-    PdfStandardEncoding()
-        : PdfSimpleEncoding( PdfName("StandardEncoding") )
-    {
-
-    }
+    PdfStandardEncoding();
 
  protected:
 
@@ -646,11 +514,7 @@ class PODOFO_API PdfSymbolEncoding : public PdfSimpleEncoding {
    
     /** Create a new PdfSymbolEncoding
      */
-    PdfSymbolEncoding()
-        : PdfSimpleEncoding( PdfName("SymbolEncoding") )
-    {
-
-    }
+    PdfSymbolEncoding();
 
  protected:
 
@@ -682,11 +546,7 @@ class PODOFO_API PdfZapfDingbatsEncoding : public PdfSimpleEncoding {
    
     /** Create a new PdfZapfDingbatsEncoding
      */
-    PdfZapfDingbatsEncoding()
-        : PdfSimpleEncoding( PdfName("ZapfDingbatsEncoding") )
-    {
-
-    }
+    PdfZapfDingbatsEncoding();
 
  protected:
 

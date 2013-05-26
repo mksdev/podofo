@@ -38,7 +38,7 @@ class PdfOutputDevice;
 class PODOFO_API PdfOutputStream {
  public:
 
-    virtual ~PdfOutputStream() { };
+    virtual ~PdfOutputStream();
 
     /** Write data to the output stream
      *  
@@ -52,7 +52,7 @@ class PODOFO_API PdfOutputStream {
     /**
      * Helper that writes a string via Write(const char*,long)
      */
-    inline pdf_long Write( const std::string & s );
+    pdf_long Write( const std::string & s );
 
     /** Close the PdfOutputStream.
      *  This method may throw exceptions and has to be called 
@@ -63,11 +63,6 @@ class PODOFO_API PdfOutputStream {
      */
     virtual void Close() = 0;
 };
-
-inline pdf_long PdfOutputStream::Write( const std::string & s )
-{
-    return this->Write( s.data(), s.size() );
-}
 
 /** An output stream that writes data to a file
  */
@@ -141,11 +136,11 @@ class PODOFO_API PdfMemoryOutputStream : public PdfOutputStream {
      *  No more data may be written to the output device
      *  after calling close.
      */
-    virtual void Close() { }
+    virtual void Close();
 
     /** \returns the length of the written data
      */
-    inline pdf_long GetLength() const;
+    pdf_long GetLength() const;
 
     /**
      *  \returns a handle to the internal buffer.
@@ -156,7 +151,7 @@ class PODOFO_API PdfMemoryOutputStream : public PdfOutputStream {
      *
      *  The caller has to free the returned malloc'ed buffer!
      */
-    inline char* TakeBuffer();
+    char* TakeBuffer();
 
  private:
     char* m_pBuffer;
@@ -167,24 +162,6 @@ class PODOFO_API PdfMemoryOutputStream : public PdfOutputStream {
 
     bool  m_bOwnBuffer;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline pdf_long PdfMemoryOutputStream::GetLength() const
-{
-    return m_lLen;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline char* PdfMemoryOutputStream::TakeBuffer()
-{
-    char* pBuffer = m_pBuffer;
-    m_pBuffer = NULL;
-    return pBuffer;
-}
 
 /** An output stream that writes to a PdfOutputDevice
  */
@@ -214,7 +191,7 @@ class PODOFO_API PdfDeviceOutputStream : public PdfOutputStream {
      *  No more data may be written to the output device
      *  after calling close.
      */
-    virtual void Close() {}
+    virtual void Close();
 
  private:
     PdfOutputDevice* m_pDevice;
@@ -232,10 +209,7 @@ class PODOFO_API PdfBufferOutputStream : public PdfOutputStream {
      * 
      *  \param pBuffer data is written to this buffer
      */
-    PdfBufferOutputStream( PdfRefCountedBuffer* pBuffer )
-        : m_pBuffer( pBuffer ), m_lLength( pBuffer->GetSize() )
-    {
-    }
+    PdfBufferOutputStream( PdfRefCountedBuffer* pBuffer );
     
     /** Write data to the output stream
      *  
@@ -246,17 +220,12 @@ class PODOFO_API PdfBufferOutputStream : public PdfOutputStream {
      */
     virtual pdf_long Write( const char* pBuffer, pdf_long lLen );
 
-    virtual void Close() 
-    {
-    }
+    virtual void Close();
 
     /** 
      * \returns the length of the buffers contents
      */
-    inline pdf_long GetLength() const 
-    {
-        return m_lLength;
-    }
+    pdf_long GetLength() const;
 
  private:
     PdfRefCountedBuffer* m_pBuffer;

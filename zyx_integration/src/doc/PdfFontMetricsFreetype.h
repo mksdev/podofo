@@ -234,7 +234,7 @@ class PODOFO_DOC_API PdfFontMetricsFreetype : public PdfFontMetrics {
      * 
      *  \returns the internal freetype handle
      */
-    inline FT_Face GetFace();
+    FT_Face GetFace();
  
  private:
     
@@ -276,16 +276,6 @@ class PODOFO_DOC_API PdfFontMetricsFreetype : public PdfFontMetrics {
     std::vector<double> m_vecWidth;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-FT_Face PdfFontMetricsFreetype::GetFace() 
-{ 
-    return m_pFace; 
-} 
-
- 
 };
 
 #endif // _PDF_FONT_METRICS_FREETYPE_H_
-

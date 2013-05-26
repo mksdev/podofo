@@ -51,10 +51,7 @@ class PODOFO_API PdfReference : public PdfDataType {
      * Create a PdfReference with object number and generation number
      * initialized to 0.
      */
-    PdfReference()
-        : m_nObjectNo( 0 ), m_nGenerationNo( 0 )
-    {
-    }
+    PdfReference();
 
     /**
      * Create a PdfReference to an object with a given object and generation number.
@@ -62,22 +59,16 @@ class PODOFO_API PdfReference : public PdfDataType {
      * \param nObjectNo the object number
      * \param nGenerationNo the generation number
      */
-    PdfReference( const pdf_objnum nObjectNo, const pdf_gennum nGenerationNo )
-        : m_nObjectNo( nObjectNo ), m_nGenerationNo( nGenerationNo ) 
-    {
-    }
+    PdfReference( const pdf_objnum nObjectNo, const pdf_gennum nGenerationNo );
 
     /**
      * Create a copy of an existing PdfReference.
      * 
      * \param rhs the object to copy
      */
-    PdfReference( const PdfReference & rhs ) : PdfDataType()
-    {
-        this->operator=( rhs );
-    }
+    PdfReference( const PdfReference & rhs );
 
-    PODOFO_NOTHROW virtual ~PdfReference() { }
+    PODOFO_NOTHROW virtual ~PdfReference();
 
     /** Convert the reference to a string.
      *  \returns a string representation of the object.
@@ -91,7 +82,7 @@ class PODOFO_API PdfReference : public PdfDataType {
      *
      * \param rhs the object to copy
      */
-    PODOFO_NOTHROW inline const PdfReference & operator=( const PdfReference & rhs );
+    PODOFO_NOTHROW const PdfReference & operator=( const PdfReference & rhs );
 
     /** Write the complete variant to an output device.
      *  This is an overloaded member function.
@@ -107,39 +98,39 @@ class PODOFO_API PdfReference : public PdfDataType {
      * Compare to PdfReference objects.
      * \returns true if both reference the same object
      */
-    PODOFO_NOTHROW inline bool operator==( const PdfReference & rhs ) const;
+    PODOFO_NOTHROW bool operator==( const PdfReference & rhs ) const;
 
     /** 
      * Compare to PdfReference objects.
      * \returns false if both reference the same object
      */
-    PODOFO_NOTHROW inline bool operator!=( const PdfReference & rhs ) const;
+    PODOFO_NOTHROW bool operator!=( const PdfReference & rhs ) const;
 
     /** 
      * Compare to PdfReference objects.
      * \returns true if this reference has a smaller object and generation number
      */
-    PODOFO_NOTHROW inline bool operator<( const PdfReference & rhs ) const;
+    PODOFO_NOTHROW bool operator<( const PdfReference & rhs ) const;
 
     /** Set the object number of this object
      *  \param o the new object number
      */
-    PODOFO_NOTHROW inline void SetObjectNumber( pdf_objnum o );
+    PODOFO_NOTHROW void SetObjectNumber( pdf_objnum o );
 
     /** Get the object number.
      *  \returns the object number of this PdfReference
      */
-    PODOFO_NOTHROW inline pdf_objnum ObjectNumber() const;
+    PODOFO_NOTHROW pdf_objnum ObjectNumber() const;
 
     /** Set the generation number of this object
      *  \param g the new generation number
      */
-    PODOFO_NOTHROW inline void SetGenerationNumber( const pdf_gennum g );
+    PODOFO_NOTHROW void SetGenerationNumber( const pdf_gennum g );
 
     /** Get the generation number.
      *  \returns the generation number of this PdfReference
      */
-    PODOFO_NOTHROW inline pdf_gennum GenerationNumber() const;
+    PODOFO_NOTHROW pdf_gennum GenerationNumber() const;
 
     /** Allows to check if a reference points to an indirect
      *  object.
@@ -150,86 +141,12 @@ class PODOFO_API PdfReference : public PdfDataType {
      *  \returns true if this reference is the reference of
      *           an indirect object.
      */
-    PODOFO_NOTHROW inline bool IsIndirect() const;
+    PODOFO_NOTHROW bool IsIndirect() const;
 
  private:
     pdf_objnum    m_nObjectNo;
     pdf_gennum    m_nGenerationNo;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfReference & PdfReference::operator=( const PdfReference & rhs )
-{
-    m_nObjectNo     = rhs.m_nObjectNo;
-    m_nGenerationNo = rhs.m_nGenerationNo;
-    return *this;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfReference::operator<( const PdfReference & rhs ) const
-{
-    return m_nObjectNo == rhs.m_nObjectNo ? m_nGenerationNo < rhs.m_nGenerationNo : m_nObjectNo < rhs.m_nObjectNo;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfReference::operator==( const PdfReference & rhs ) const
-{
-    return ( m_nObjectNo == rhs.m_nObjectNo && m_nGenerationNo == rhs.m_nGenerationNo);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfReference::operator!=( const PdfReference & rhs ) const
-{
-    return !this->operator==( rhs );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfReference::SetObjectNumber( pdf_objnum o )
-{
-    m_nObjectNo = o;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-pdf_objnum PdfReference::ObjectNumber() const
-{
-    return m_nObjectNo;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfReference::SetGenerationNumber( pdf_gennum g )
-{
-    m_nGenerationNo = g;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-pdf_gennum PdfReference::GenerationNumber() const
-{
-    return m_nGenerationNo;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfReference::IsIndirect() const
-{
-    return !( !m_nObjectNo && !m_nGenerationNo );
-}
 
 };
 

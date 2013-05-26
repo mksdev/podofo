@@ -52,6 +52,10 @@ namespace PoDoFo {
 
 long PdfParser::s_nMaxObjects = std::numeric_limits<long>::max();
 
+PdfParser::TXRefEntry::TXRefEntry() : lOffset(0), lGeneration(0), cUsed('\x00'), bParsed(false)
+{
+}
+
 PdfParser::PdfParser( PdfVecObjects* pVecObjects )
     : PdfTokenizer(), m_vecObjects( pVecObjects )
 {
@@ -1306,7 +1310,71 @@ void PdfParser::CheckEOFMarker()
     }
 }
 
+bool PdfParser::IsLinearized() const { return m_pLinearization != NULL; }
+size_t PdfParser::GetFileSize() const { return m_nFileSize; }
+bool PdfParser::GetEncrypted() const { return (m_pEncrypt != NULL); }
+const PdfEncrypt* PdfParser::GetEncrypt() const { return m_pEncrypt; }
+
+bool PdfParser::GetLoadOnDemand() const
+{
+    return m_bLoadOnDemand;
+}
+
+EPdfVersion PdfParser::GetPdfVersion() const
+{
+    return m_ePdfVersion;
+}
+
+int PdfParser::GetNumberOfIncrementalUpdates() const
+{
+    return m_nIncrementalUpdates;
+}
+
+const PdfVecObjects* PdfParser::GetObjects() const
+{
+    return m_vecObjects;
+}
+
+const PdfObject* PdfParser::GetTrailer() const
+{
+    return m_pTrailer;
+}
+
+PdfEncrypt* PdfParser::TakeEncrypt() 
+{ 
+    PdfEncrypt* pEncrypt = m_pEncrypt;
+    m_pEncrypt = NULL; 
+    return pEncrypt; 
+}
+
+bool PdfParser::IsStrictParsing() const
+{
+    return m_bStrictParsing;
+}
+
+void PdfParser::SetStrictParsing( bool bStrict )
+{
+    m_bStrictParsing = bStrict;
+}
+
+bool PdfParser::GetIgnoreBrokenObjects()
+{
+    return m_bIgnoreBrokenObjects;
+}
+
+void PdfParser::SetIgnoreBrokenObjects( bool bBroken )
+{
+    m_bIgnoreBrokenObjects = bBroken;
+}
+
+long PdfParser::GetMaxObjectCount()
+{
+    return PdfParser::s_nMaxObjects;
+}
+
+void PdfParser::SetMaxObjectCount( long nMaxObjects )
+{
+    PdfParser::s_nMaxObjects = nMaxObjects;
+}
+
 };
-
-
-

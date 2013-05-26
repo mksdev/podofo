@@ -152,6 +152,33 @@ const PdfName PdfName::KeySubtype   = PdfName( "Subtype" );
 const PdfName PdfName::KeyType      = PdfName( "Type" );
 const PdfName PdfName::KeyFilter    = PdfName( "Filter" );
 
+PdfName::PdfName()
+  : PdfDataType(), m_Data("")
+{
+}
+
+PdfName::PdfName( const std::string& sName )
+  : PdfDataType(), m_Data(sName)
+{
+}
+
+PdfName::PdfName( const char* pszName )
+  : PdfDataType()
+{
+  if (pszName) m_Data.assign( pszName );
+}
+
+PdfName::PdfName( const char* pszName, long lLen )
+  : PdfDataType()
+{
+  if( pszName ) m_Data.assign( pszName, lLen );
+}
+
+PdfName::PdfName( const PdfName & rhs )
+  : PdfDataType(), m_Data(rhs.m_Data)
+{
+}
+
 PdfName::~PdfName()
 {
 }
@@ -200,5 +227,45 @@ bool PdfName::operator==( const char* rhs ) const
         return ( m_Data == std::string( rhs ) );
 }
 
-};
+const std::string & PdfName::GetName() const
+{
+    return m_Data;
+}
 
+size_t PdfName::GetLength() const
+{
+    return m_Data.length();
+}
+
+bool PdfName::operator!=( const PdfName & rhs ) const
+{
+    return !this->operator==( rhs );
+}
+
+bool PdfName::operator!=( const char* rhs ) const
+{
+    return !this->operator==( rhs );
+}
+
+bool PdfName::operator<( const PdfName & rhs ) const
+{
+    return m_Data < rhs.m_Data;
+}
+
+bool PdfName::operator==( const PdfName & rhs ) const
+{
+    return ( m_Data == rhs.m_Data );
+}
+
+bool PdfName::operator==( const std::string & rhs ) const
+{
+    return ( m_Data == rhs );
+}
+
+const PdfName& PdfName::operator=( const PdfName & rhs )
+{
+    m_Data = rhs.m_Data;
+    return *this;
+}
+
+};

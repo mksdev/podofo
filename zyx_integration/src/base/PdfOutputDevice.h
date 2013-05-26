@@ -104,7 +104,7 @@ class PODOFO_API PdfOutputDevice {
      *  
      *  \see Init
      */
-    virtual inline size_t GetLength() const;
+    virtual size_t GetLength() const;
 
     /** Write to the PdfOutputDevice. Usage is as the usage of printf.
      * 
@@ -170,7 +170,7 @@ class PODOFO_API PdfOutputDevice {
     /** Get the current offset from the beginning of the file.
      *  \return the offset form the beginning of the file.
      */
-    virtual inline size_t Tell() const;
+    virtual size_t Tell() const;
 
     /** Flush the output files buffer to disk if this devices
      *  operates on a disk.
@@ -206,23 +206,6 @@ class PODOFO_API PdfOutputDevice {
     PdfRefCountedBuffer  m_printBuffer;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-size_t PdfOutputDevice::GetLength() const
-{
-    return m_ulLength;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-size_t PdfOutputDevice::Tell() const
-{
-    return m_ulPosition;
-}
-
 };
 
 #endif // _PDF_OUTPUT_DEVICE_H_
-

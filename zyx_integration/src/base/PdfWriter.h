@@ -92,51 +92,51 @@ class PODOFO_API PdfWriter {
     /** Set the write mode to use when writing the PDF.
      *  \param eWriteMode write mode
      */
-    void SetWriteMode( EPdfWriteMode eWriteMode ) { m_eWriteMode = eWriteMode; }
+    void SetWriteMode( EPdfWriteMode eWriteMode );
 
     /** Get the write mode used for wirting the PDF
      *  \returns the write mode
      */
-    EPdfWriteMode GetWriteMode() const { return m_eWriteMode; }
+    EPdfWriteMode GetWriteMode() const;
 
     /** Set the PDF Version of the document. Has to be called before Write() to
      *  have an effect.
      *  \param eVersion  version of the pdf document
      */
-    void SetPdfVersion( EPdfVersion eVersion ) { m_eVersion = eVersion; }
+    void SetPdfVersion( EPdfVersion eVersion );
 
     /** Get the PDF version of the document
      *  \returns EPdfVersion version of the pdf document
      */
-    EPdfVersion GetPdfVersion() const { return m_eVersion; }
+    EPdfVersion GetPdfVersion() const;
 
     /** Enabled linearization for this document.
      *  I.e. optimize it for web usage. Default is false.
      *  \param bLinearize if true create a web optimized PDF file
      */
-    inline void SetLinearized( bool bLinearize );
+    void SetLinearized( bool bLinearize );
 
     /**
      *  \returns true if this PDF file is web optimized.
      */
-    inline bool GetLinearized() const;
+    bool GetLinearized() const;
 
     /** Create a XRef stream which is in some case
      *  more compact but requires at least PDF 1.5
      *  Default is false.
      *  \param bStream if true a XRef stream object will be created
      */
-    inline void SetUseXRefStream( bool bStream );
+    void SetUseXRefStream( bool bStream );
 
     /** 
      *  \returns wether a XRef stream is used or not
      */
-    inline bool GetUseXRefStream() const;
+    bool GetUseXRefStream() const;
 
     /** Get the file format version of the pdf
      *  \returns the file format version as string
      */
-    const char* GetPdfVersionString() const { return s_szPdfVersionNums[static_cast<int>(m_eVersion)]; }
+    const char* GetPdfVersionString() const;
     
     /** Set the written document to be encrypted using a PdfEncrypt object
      *
@@ -147,7 +147,7 @@ class PODOFO_API PdfWriter {
     /** 
      * \returns true if this PdfWriter creates an encrypted PDF file
      */
-    bool GetEncrypted() const { return (m_pEncrypt != NULL); }
+    bool GetEncrypted() const;
 
     /** Calculate the byte offset of the object pObject in the PDF file
      *  if the file was written to disk at the moment of calling this function.
@@ -282,41 +282,6 @@ class PODOFO_API PdfWriter {
     size_t            m_lTrailerOffset;
     PdfVecObjects   m_vecLinearized;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfWriter::SetLinearized( bool bLinearize )
-{
-    m_bLinearized = bLinearize;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfWriter::GetLinearized() const
-{
-    return m_bLinearized;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfWriter::SetUseXRefStream( bool bStream )
-{
-    if( bStream && this->GetPdfVersion() < ePdfVersion_1_5 )
-        this->SetPdfVersion( ePdfVersion_1_5 );
-    m_bXRefStream = bStream;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfWriter::GetUseXRefStream() const
-{
-    return m_bXRefStream;
-}
-
 
 };
 

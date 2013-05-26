@@ -111,12 +111,12 @@ class PODOFO_DOC_API PdfImage : public PdfXObject {
 	/** Get the width of the image when drawn in PDF units
      *  \returns the width in PDF units
      */
-    inline double GetWidth() const;
+    double GetWidth() const;
 
     /** Get the height of the image when drawn in PDF units
      *  \returns the height in PDF units
      */
-    inline double GetHeight() const;
+    double GetHeight() const;
 
     /** Set the actual image data from an input stream
      *  
@@ -226,22 +226,6 @@ class PODOFO_DOC_API PdfImage : public PdfXObject {
 	void LoadFromJpegHandle( PdfFileInputStream* pInStream );
 #endif // PODOFO_HAVE_JPEG_LIB
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline double PdfImage::GetWidth() const
-{
-    return this->GetPageSize().GetWidth();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline double PdfImage::GetHeight() const
-{
-    return this->GetPageSize().GetHeight();
-}
 
 };
 

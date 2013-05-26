@@ -216,6 +216,7 @@ private:
 // -------------------------------------------------------
 // Hex
 // -------------------------------------------------------
+PdfHexFilter::~PdfHexFilter() { }
 
 void PdfHexFilter::EncodeBlockImpl( const char* pBuffer, pdf_long lLen )
 {
@@ -280,6 +281,20 @@ void PdfHexFilter::EndDecodeImpl()
     }
 }
 
+bool PdfHexFilter::CanEncode() const
+{
+    return true;
+}
+
+bool PdfHexFilter::CanDecode() const
+{
+    return true;
+}
+
+EPdfFilter PdfHexFilter::GetType() const
+{
+    return ePdfFilter_ASCIIHexDecode;
+}
 
 // -------------------------------------------------------
 // Ascii 85
@@ -287,6 +302,8 @@ void PdfHexFilter::EndDecodeImpl()
 // based on public domain software from:
 // Paul Haahr - http://www.webcom.com/~haahr/
 // -------------------------------------------------------
+
+PdfAscii85Filter::~PdfAscii85Filter() { }
 
 void PdfAscii85Filter::EncodeTuple( unsigned long tuple, int count )
 {
@@ -452,6 +469,21 @@ void PdfAscii85Filter::WidePut( unsigned long tuple, int bytes ) const
     GetStream()->Write( data, bytes );
 }
 
+bool PdfAscii85Filter::CanEncode() const
+{
+    return true;
+}
+
+bool PdfAscii85Filter::CanDecode() const
+{
+    return true;
+}
+
+EPdfFilter PdfAscii85Filter::GetType() const
+{
+    return ePdfFilter_ASCII85Decode;
+}
+
 // -------------------------------------------------------
 // Flate
 // -------------------------------------------------------
@@ -587,9 +619,26 @@ void PdfFlateFilter::EndDecodeImpl()
     (void)inflateEnd(&m_stream);
 }
 
+bool PdfFlateFilter::CanEncode() const
+{
+    return true;
+}
+
+bool PdfFlateFilter::CanDecode() const
+{
+    return true;
+}
+
+EPdfFilter PdfFlateFilter::GetType() const
+{
+    return ePdfFilter_FlateDecode;
+}
+
 // -------------------------------------------------------
 // RLE
 // -------------------------------------------------------
+
+PdfRLEFilter::~PdfRLEFilter() { }
 
 void PdfRLEFilter::BeginEncodeImpl()
 {
@@ -635,6 +684,21 @@ void PdfRLEFilter::DecodeBlockImpl( const char* pBuffer, pdf_long lLen )
 
         ++pBuffer;
     }
+}
+
+bool PdfRLEFilter::CanEncode() const
+{
+    return false;
+}
+
+bool PdfRLEFilter::CanDecode() const
+{
+    return true;
+}
+
+EPdfFilter PdfRLEFilter::GetType() const
+{
+    return ePdfFilter_RunLengthDecode;
 }
 
 // -------------------------------------------------------
@@ -808,7 +872,20 @@ void PdfLZWFilter::InitTable()
     m_table.push_back( item );
 }
 
+bool PdfLZWFilter::CanEncode() const
+{
+    return false;
+}
 
+bool PdfLZWFilter::CanDecode() const
+{
+    return true;
+}
+
+EPdfFilter PdfLZWFilter::GetType() const
+{
+    return ePdfFilter_LZWDecode;
+}
 
 // -------------------------------------------------------
 // DCTDecode
@@ -1078,6 +1155,20 @@ jpeg_memory_src (j_decompress_ptr cinfo, const JOCTET * buffer, size_t bufsize)
     src->pub.bytes_in_buffer = bufsize;
 }                                
 
+bool PdfDCTFilter::CanEncode() const
+{
+    return false;
+}
+
+bool PdfDCTFilter::CanDecode() const
+{
+    return true;
+}
+
+EPdfFilter PdfDCTFilter::GetType() const
+{
+    return ePdfFilter_DCTDecode;
+}
 
 #endif // PODOFO_HAVE_JPEG_LIB
 
@@ -1221,7 +1312,22 @@ void PdfCCITTFilter::EndDecodeImpl()
 {
 }
 
-#endif // PODOFO_HAVE_TIFF_LIB
 
+bool PdfCCITTFilter::CanEncode() const
+{
+    return false;
+}
+
+bool PdfCCITTFilter::CanDecode() const
+{
+    return true;
+}
+
+EPdfFilter PdfCCITTFilter::GetType() const
+{
+    return ePdfFilter_CCITTFaxDecode;
+}
+
+#endif // PODOFO_HAVE_TIFF_LIB
 
 };

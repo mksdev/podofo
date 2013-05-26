@@ -322,6 +322,30 @@ double PdfOutlineItem::GetTextColorBlue() const
     return 0.0;
 }
 
+PdfOutlineItem* PdfOutlineItem::GetParentOutline() const
+{
+    return m_pParentOutline;
+}
+
+PdfOutlineItem* PdfOutlineItem::First() const
+{
+    return m_pFirst;
+}
+
+PdfOutlineItem* PdfOutlineItem::Last() const
+{
+    return m_pLast;
+}
+
+PdfOutlineItem* PdfOutlineItem::Prev() const
+{
+    return m_pPrev;
+}
+
+PdfOutlineItem* PdfOutlineItem::Next() const
+{
+    return m_pNext;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 // PdfOutlines
@@ -334,6 +358,10 @@ PdfOutlines::PdfOutlines( PdfVecObjects* pParent )
 
 PdfOutlines::PdfOutlines( PdfObject* pObject )
     : PdfOutlineItem( pObject, NULL, NULL )
+{
+}
+
+PdfOutlines::~PdfOutlines()
 {
 }
 

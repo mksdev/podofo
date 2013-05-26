@@ -44,7 +44,7 @@ class PODOFO_DOC_API PdfTilingPattern : public PdfElement {
      *  in the pages resource dictionary.
      *  \returns PdfName containing the identifier (e.g. /PtrnXXXXX)
      */
-    inline const PdfName & GetIdentifier() const;
+    const PdfName & GetIdentifier() const;
 
     /** Create a new PdfTilingPattern object, which will introduce itself
      *  automatically to every page object it is used on.
@@ -115,14 +115,6 @@ class PODOFO_DOC_API PdfTilingPattern : public PdfElement {
  private: 
     PdfName m_Identifier;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfName & PdfTilingPattern::GetIdentifier() const
-{
-    return m_Identifier;
-}
 
 } // end namespace
 

@@ -80,7 +80,7 @@ class PODOFO_DOC_API PdfXObject : public PdfElement, public PdfCanvas {
      */
     PdfXObject( PdfObject* pObject );
 
-    virtual ~PdfXObject() { }
+    virtual ~PdfXObject();
 
     /** Get access to the contents object of this page.
      *  If you want to draw onto the page, you have to add 
@@ -90,7 +90,7 @@ class PODOFO_DOC_API PdfXObject : public PdfElement, public PdfCanvas {
      *
      *  \returns a contents object
      */
-    inline virtual PdfObject* GetContents() const;
+    virtual PdfObject* GetContents() const;
 
    /** Get access to the contents object of this page.
      *  If you want to draw onto the page, you have to add 
@@ -100,23 +100,23 @@ class PODOFO_DOC_API PdfXObject : public PdfElement, public PdfCanvas {
      *
      *  \returns a contents object
      */
-    inline virtual PdfObject* GetContentsForAppending() const { return GetContents(); }
+    virtual PdfObject* GetContentsForAppending() const;
 
     /** Get access to the resources object of this page.
      *  This is most likely an internal object.
      *  \returns a resources object
      */
-    inline virtual PdfObject* GetResources() const;
+    virtual PdfObject* GetResources() const;
 
     /** Get the current page size in PDF Units
      *  \returns a PdfRect containing the page size available for drawing
      */
-    inline virtual const PdfRect GetPageSize() const;
+    virtual const PdfRect GetPageSize() const;
 
     /** Get the identifier used for drawig this object
      *  \returns identifier
      */
-    inline const PdfName & GetIdentifier() const;
+    const PdfName & GetIdentifier() const;
 
     /** Get the reference to the XObject in the PDF file
      *  without having to access the PdfObject.
@@ -126,7 +126,7 @@ class PODOFO_DOC_API PdfXObject : public PdfElement, public PdfCanvas {
      *
      *  \returns the reference of the PdfObject for this XObject
      */
-    inline const PdfReference & GetObjectReference() const;
+    const PdfReference & GetObjectReference() const;
 
  protected:
     void InitXObject( const PdfRect & rRect, const char* pszPrefix = NULL );
@@ -147,48 +147,6 @@ class PODOFO_DOC_API PdfXObject : public PdfElement, public PdfCanvas {
     PdfReference     m_Reference;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfXObject::GetContents() const
-{
-    return this->GetNonConstObject();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfXObject::GetResources() const
-{
-    return m_pResources;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfRect PdfXObject::GetPageSize() const
-{
-    return m_rRect;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfName & PdfXObject::GetIdentifier() const
-{
-    return m_Identifier;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfReference & PdfXObject::GetObjectReference() const
-{
-    return m_Reference;
-}
-
 };
 
 #endif /* _PDF_XOBJECT_H_ */
-
-

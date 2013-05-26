@@ -189,6 +189,11 @@ PdfAxialShadingPattern::PdfAxialShadingPattern( double dX0, double dY0, double d
     Init( dX0, dY0, dX1, dY1, rStart, rEnd );
 }
 
+const PdfName & PdfShadingPattern::GetIdentifier() const
+{
+    return m_Identifier;
+}
+
 void PdfAxialShadingPattern::Init( double dX0, double dY0, double dX1, double dY1, const PdfColor & rStart, const PdfColor & rEnd )
 {
     PdfArray coords;

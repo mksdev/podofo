@@ -168,13 +168,13 @@ class PODOFO_API PdfErrorInfo {
 
     const PdfErrorInfo & operator=( const PdfErrorInfo & rhs );
 
-    inline int GetLine() const { return m_nLine; }
-    inline const std::string & GetFilename() const { return m_sFile; }
-    inline const std::string & GetInformation() const { return m_sInfo; }
-    inline const std::wstring & GetInformationW() const { return m_swInfo; }
+    int GetLine() const;
+    const std::string & GetFilename() const;
+    const std::string & GetInformation() const;
+    const std::wstring & GetInformationW() const;
 
-    inline void SetInformation( const char* pszInfo ) { m_sInfo = pszInfo ? pszInfo : ""; }
-    inline void SetInformation( const wchar_t* pszInfo ) { m_swInfo = pszInfo ? pszInfo : L""; }
+    void SetInformation( const char* pszInfo );
+    void SetInformation( const wchar_t* pszInfo );
 
  private:
     int          m_nLine;
@@ -210,7 +210,7 @@ class PODOFO_EXCEPTION_API_DOXYGEN PdfError : public std::exception {
     class LogMessageCallback
     {
     public:
-        virtual ~LogMessageCallback() {} // every class with virtual methods needs a virtual destructor
+        virtual ~LogMessageCallback(); // every class with virtual methods needs a virtual destructor
         virtual void LogMessage( ELogSeverity eLogSeverity, const char* pszPrefix, const char* pszMsg, va_list & args ) = 0;
         virtual void LogMessage( ELogSeverity eLogSeverity, const wchar_t* pszPrefix, const wchar_t* pszMsg, va_list & args ) = 0;
     };
@@ -283,12 +283,12 @@ class PODOFO_EXCEPTION_API_DOXYGEN PdfError : public std::exception {
     /** Return the error code of this object
      *  \returns the error code of this object
      */
-    inline EPdfError GetError() const;
+    EPdfError GetError() const;
 
     /** Get access to the internal callstack of this error
      *  \return the callstack
      */
-    inline const TDequeErrorInfo & GetCallstack() const;
+    const TDequeErrorInfo & GetCallstack() const;
 
     /** Set the error code of this object.
      *  \param eCode the error code of this object
@@ -302,21 +302,21 @@ class PODOFO_EXCEPTION_API_DOXYGEN PdfError : public std::exception {
      *         e.g. how to fix the error. This string is intended to 
      *         be shown to the user.
      */
-    inline void SetError( const EPdfError & eCode, const char* pszFile = NULL, int line = 0, const char* pszInformation = NULL );
+    void SetError( const EPdfError & eCode, const char* pszFile = NULL, int line = 0, const char* pszInformation = NULL );
 
     /** Set additional error informatiom
      *  \param pszInformation additional information on the error.
      *         e.g. how to fix the error. This string is intended to 
      *         be shown to the user.
      */
-    inline void SetErrorInformation( const char* pszInformation );
+    void SetErrorInformation( const char* pszInformation );
 
     /** Set additional error informatiom
      *  \param pszInformation additional information on the error.
      *         e.g. how to fix the error. This string is intended to 
      *         be shown to the user.
      */
-    inline void SetErrorInformation( const wchar_t* pszInformation );
+    void SetErrorInformation( const wchar_t* pszInformation );
 
 	/** Add callstack information to an error object. Always call this function
      *  if you get an error object but do not handle the error but throw it again.
@@ -331,12 +331,12 @@ class PODOFO_EXCEPTION_API_DOXYGEN PdfError : public std::exception {
      *         e.g. how to fix the error. This string is intended to 
      *         be shown to the user.
      */
-    inline void AddToCallstack( const char* pszFile = NULL, int line = 0, const char* pszInformation = NULL );
+    void AddToCallstack( const char* pszFile = NULL, int line = 0, const char* pszInformation = NULL );
 
     /** \returns true if an error code was set 
      *           and false if the error code is ePdfError_ErrOk
      */
-    inline bool IsError() const;
+    bool IsError() const;
 
     /** Print an error message to stderr
      */
@@ -376,11 +376,11 @@ class PODOFO_EXCEPTION_API_DOXYGEN PdfError : public std::exception {
      /** Enable or disable Logging
      *  \param bEnable       enable (true) or disable (false)
      */
-    static void EnableLogging( bool bEnable ) { PdfError::s_LogEnabled = bEnable; }
+    static void EnableLogging( bool bEnable );
 	
     /** Is the display of debugging messages enabled or not?
      */
-    static bool LoggingEnabled() { return PdfError::s_LogEnabled; }
+    static bool LoggingEnabled();
     
     /** Log a message to the logging system defined for PoDoFo for debugging
      *  \param pszMsg       the message to be logged
@@ -390,11 +390,11 @@ class PODOFO_EXCEPTION_API_DOXYGEN PdfError : public std::exception {
     /** Enable or disable the display of debugging messages
      *  \param bEnable       enable (true) or disable (false)
      */
-    static void EnableDebug( bool bEnable ) { PdfError::s_DgbEnabled = bEnable; }
+    static void EnableDebug( bool bEnable );
 	
     /** Is the display of debugging messages enabled or not?
      */
-    static bool DebugEnabled() { return PdfError::s_DgbEnabled; }
+    static bool DebugEnabled();
 
  private:
     /** Log a message to the logging system defined for PoDoFo.
@@ -432,68 +432,6 @@ class PODOFO_EXCEPTION_API_DOXYGEN PdfError : public std::exception {
     static LogMessageCallback* m_fLogMessageCallback;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfError PdfError::GetError() const
-{
-    return m_error;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const TDequeErrorInfo & PdfError::GetCallstack() const
-{
-    return m_callStack;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfError::SetError( const EPdfError & eCode, const char* pszFile, int line, const char* pszInformation )
-{
-    m_error = eCode;
-    this->AddToCallstack( pszFile, line, pszInformation );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfError::AddToCallstack( const char* pszFile, int line, const char* pszInformation )
-{
-    m_callStack.push_front( PdfErrorInfo( line, pszFile, pszInformation ) );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfError::SetErrorInformation( const char* pszInformation )
-{
-    if( m_callStack.size() )
-        m_callStack.front().SetInformation( pszInformation ? pszInformation : "" );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfError::SetErrorInformation( const wchar_t* pszInformation )
-{
-    if( m_callStack.size() )
-        m_callStack.front().SetInformation( pszInformation ? pszInformation : L"" );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfError::IsError() const
-{
-    return (m_error != ePdfError_ErrOk);
-}
-
 };
 
 #endif /* _PDF_ERROR_H_ */
-
-
-

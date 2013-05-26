@@ -52,12 +52,7 @@ namespace PoDoFo {
 class PdfNameHash : public std::unary_function<PdfName, size_t>
 {
 public:
-    size_t operator()( const PdfName& v ) const
-    {
-        std::tr1::hash<std::string> hasher;
-        
-        return hasher( v.GetName() );
-    }
+    size_t operator()( const PdfName& v ) const;
 };
 
 typedef std::tr1::unordered_map<PdfName,PdfObject*, PdfNameHash>      TKeyMap;
@@ -108,7 +103,7 @@ class PODOFO_API PdfDictionary : public PdfDataType {
     /**
      * \see operator==
      */
-    inline bool operator!=( const PdfDictionary& rhs ) const;
+    bool operator!=( const PdfDictionary& rhs ) const;
 
     /** Removes all keys from the dictionary
      */
@@ -200,7 +195,7 @@ class PODOFO_API PdfDictionary : public PdfDataType {
      *  \param pEncrypt an encryption object which is used to encrypt this object
      *                  or NULL to not encrypt this object
      */
-    inline void Write( PdfOutputDevice* pDevice, EPdfWriteMode eWriteMode, const PdfEncrypt* pEncrypt = NULL ) const;
+    void Write( PdfOutputDevice* pDevice, EPdfWriteMode eWriteMode, const PdfEncrypt* pEncrypt = NULL ) const;
 
     /** Write the complete dictionary to a file.  \param pDevice write the
      * object to this device \param keyStop if not KeyNull and a key == keyStop
@@ -221,12 +216,12 @@ class PODOFO_API PdfDictionary : public PdfDataType {
      *
      * \returns all keys of this dictionary
      */
-    inline const TKeyMap & GetKeys() const;
+    const TKeyMap & GetKeys() const;
 
     /** Get access to the internal map of keys.  \returns all keys of this
      *  dictionary
      */
-    inline TKeyMap & GetKeys();
+    TKeyMap & GetKeys();
 
     /** The dirty flag is set if this variant
      *  has been modified after construction.
@@ -259,38 +254,6 @@ class PODOFO_API PdfDictionary : public PdfDataType {
 typedef std::vector<PdfDictionary*>      TVecDictionaries; 
 typedef	TVecDictionaries::iterator       TIVecDictionaries; 
 typedef	TVecDictionaries::const_iterator TCIVecDictionaries;
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const TKeyMap & PdfDictionary::GetKeys() const 
-{ 
-    return m_mapKeys; 
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-TKeyMap & PdfDictionary::GetKeys() 
-{ 
-    return m_mapKeys; 
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfDictionary::Write( PdfOutputDevice* pDevice, EPdfWriteMode eWriteMode, const PdfEncrypt* pEncrypt ) const 
-{ 
-    this->Write( pDevice, eWriteMode, pEncrypt, PdfName::KeyNull ); 
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfDictionary::operator!=( const PdfDictionary& rhs ) const
-{
-    return !(*this == rhs);
-}
 
 };
 

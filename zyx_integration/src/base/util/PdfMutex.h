@@ -57,8 +57,8 @@ class PdfMutex : public PdfMutexImpl
   // This wrapper/extension class is provided so we can add platform-independent
   // functionality and helpers if desired.
   public:
-    PdfMutex() { }
-    ~PdfMutex() { }
+    PdfMutex();
+    ~PdfMutex();
 };
 
 };};

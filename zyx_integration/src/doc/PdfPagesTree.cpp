@@ -755,4 +755,19 @@ PdfObject* PdfPagesTree::GetPageNode( int nPageNum, PdfObject* pPagesObject,
 }
 */
 
+PdfObject* PdfPagesTree::GetRoot()
+{
+	return this->GetObject();
+}
+
+const PdfObject* PdfPagesTree::GetRoot() const
+{
+	return this->GetObject();
+}
+
+void PdfPagesTree::ClearCache() 
+{
+    m_cache.ClearCache();
+}
+
 };

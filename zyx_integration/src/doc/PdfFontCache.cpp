@@ -90,6 +90,74 @@ inline unsigned short ShortFromBigEndian(unsigned short i)
 
 namespace PoDoFo {
 
+TFontCacheElement::TFontCacheElement() 
+	: m_pFont( NULL ),
+	m_pEncoding( NULL ),
+	m_bBold( false ),
+	m_bItalic( false ),
+	m_bIsSymbolCharset (false)
+{
+}
+
+TFontCacheElement::TFontCacheElement( const char* pszFontName, bool bBold, bool bItalic, bool bIsSymbolCharset,
+		             const PdfEncoding * const pEncoding )
+	: m_pFont(NULL), m_pEncoding( pEncoding ), m_bBold( bBold ), m_bItalic( bItalic ),
+     m_sFontName( reinterpret_cast<const pdf_utf8*>(pszFontName) ), m_bIsSymbolCharset (bIsSymbolCharset)
+{
+}
+
+#ifdef _WIN32
+TFontCacheElement::TFontCacheElement( const wchar_t* pszFontName, bool bBold, bool bItalic, bool bIsSymbolCharset,
+		 const PdfEncoding * const pEncoding )
+   : m_pFont(NULL), m_pEncoding( pEncoding ), m_bBold( bBold ), 
+     m_bItalic( bItalic ), m_sFontName( pszFontName ), m_bIsSymbolCharset (bIsSymbolCharset)
+{
+}
+#endif // _WIN32
+
+TFontCacheElement::TFontCacheElement( const TFontCacheElement & rhs ) 
+{
+  this->operator=(rhs);
+}
+
+const TFontCacheElement & TFontCacheElement::operator=( const TFontCacheElement & rhs ) 
+{
+  m_pFont     = rhs.m_pFont;
+  m_pEncoding = rhs.m_pEncoding;
+  m_bBold     = rhs.m_bBold;
+  m_bItalic   = rhs.m_bItalic;
+  m_sFontName = rhs.m_sFontName;
+  m_bIsSymbolCharset = rhs.m_bIsSymbolCharset;
+  
+  return *this;
+}
+
+bool TFontCacheElement::operator<( const TFontCacheElement & rhs ) const
+{
+  if (m_bIsSymbolCharset != rhs.m_bIsSymbolCharset) {
+		return m_bIsSymbolCharset < rhs.m_bIsSymbolCharset;
+  }
+  if( m_sFontName == rhs.m_sFontName ) 
+  {
+      if( m_pEncoding == NULL  ||  rhs.m_pEncoding == NULL  ||  *m_pEncoding == *rhs.m_pEncoding ) 
+      {
+          if( m_bBold == rhs.m_bBold) 
+              return m_bItalic < rhs.m_bItalic;
+          else
+              return m_bBold < rhs.m_bBold;
+      }
+      else
+          return *m_pEncoding < *rhs.m_pEncoding;
+  }
+  else
+      return (m_sFontName < rhs.m_sFontName);
+}
+
+bool TFontCacheElement::operator()( const TFontCacheElement& r1, const TFontCacheElement& r2 ) const 
+{ 
+  return r1 < r2;
+}
+
 #ifdef _WIN32
 // The function receives a buffer containing a true type collection and replaces the buffer
 // by a new buffer with the extracted font.
@@ -958,6 +1026,17 @@ const char *PdfFontCache::genSubsetBasename(void)
 	}
 
 	return m_sSubsetBasename;
+}
+
+// Peter Petrov: 26 April 2008
+FT_Library PdfFontCache::GetFontLibrary() const
+{
+    return this->m_ftLibrary;
+}
+
+void PdfFontCache::SetFontConfigWrapper(const PdfFontConfigWrapper & rFontConfig)
+{
+    m_fontConfig = rFontConfig;
 }
 
 };

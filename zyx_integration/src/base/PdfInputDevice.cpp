@@ -214,7 +214,6 @@ void PdfInputDevice::Seek( std::streamoff off, std::ios_base::seekdir dir )
     }
 }
 
-
 std::streamoff PdfInputDevice::Read( char* pBuffer, std::streamsize lLen )
 {
 	if (m_pStream) {
@@ -225,6 +224,31 @@ std::streamoff PdfInputDevice::Read( char* pBuffer, std::streamsize lLen )
 	{
 		return fread(pBuffer, 1, lLen, m_pFile);
 	}
+}
+
+bool PdfInputDevice::IsSeekable() const
+{
+    return m_bIsSeekable;
+}
+
+void PdfInputDevice::SetSeekable(bool bIsSeekable)
+{
+    m_bIsSeekable = bIsSeekable;
+}
+
+bool PdfInputDevice::Bad() const
+{
+    return m_pStream->bad();
+}
+
+bool PdfInputDevice::Eof() const
+{
+    return m_pStream->eof();
+}
+
+void PdfInputDevice::Clear(std::ios_base::iostate state) const
+{
+    m_pStream->clear(state);
 }
 
 }; // namespace PoDoFo

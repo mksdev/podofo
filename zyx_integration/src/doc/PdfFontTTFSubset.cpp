@@ -63,6 +63,9 @@ inline short Big2Little(short big)
 //Get the number of bytes to pad the ul, because of 4-byte-alignment.
 unsigned int GetPadding(unsigned long ul);	
 
+PdfFontTTFSubset::PdfFontTTFSubset() : m_bOwnDevice( false )
+{
+}
 
 PdfFontTTFSubset::PdfFontTTFSubset( const char* pszFontFileName, PdfFontMetrics* pMetrics, unsigned short nFaceIndex )
     : m_pMetrics( pMetrics ), m_faceIndex( nFaceIndex ), m_bOwnDevice( true )
@@ -712,10 +715,6 @@ void PdfFontTTFSubset::GetData(unsigned long offset, void* address, unsigned lon
     m_pDevice->Read( static_cast<char*>(address), sz );
 }
 
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
 unsigned int GetPadding(unsigned long ul)
 {
     ul %= 4;
@@ -727,6 +726,18 @@ unsigned int GetPadding(unsigned long ul)
     return ul;
 }
 
+size_t PdfFontTTFSubset::GetSize() const 
+{
+    return m_vGlyphIndice.size();
+}
+
+void PdfFontTTFSubset::AddCharacter( pdf_utf16be nCharCode )
+{
+#ifdef PODOFO_IS_LITTLE_ENDIAN
+    this->AddGlyph( static_cast<unsigned short>(m_pMetrics->GetGlyphId( ((nCharCode & 0xff00) >> 8) | ((nCharCode & 0xff) << 8) )) );
+#else
+    this->AddGlyph( static_cast<unsigned short>(m_pMetrics->GetGlyphId( nCharCode )) );
+#endif // PODOFO_IS_LITTLE_ENDIAN
+}
 
 }; /* PoDoFo */
-

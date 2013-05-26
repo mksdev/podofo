@@ -189,6 +189,19 @@ bool PdfDate::ParseFixLenNumber(const char *&in, unsigned int length, int min, i
     return true;
 }
 
+const time_t & PdfDate::GetTime() const
+{
+    return m_time;
+}
+
+void PdfDate::ToString( PdfString & rsString ) const
+{
+    rsString = PdfString(  m_szDate );
+}
+
+bool PdfDate::IsValid() const
+{
+    return m_bValid;
+}
+
 };
-
-

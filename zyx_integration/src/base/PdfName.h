@@ -47,41 +47,27 @@ class PODOFO_API PdfName : public PdfDataType {
     /** Constructor to create NULL strings.
      *  use PdfName::KeyNull instead of this constructor
      */
-    PdfName()
-        : PdfDataType(), m_Data("")
-    {
-    }
+    PdfName();
 
     /** Create a new PdfName object.
      *  \param sName the unescaped value of this name. Please specify
      *                 the name without the leading '/'.
      */
-    PdfName( const std::string& sName )
-        : PdfDataType(), m_Data(sName)
-    {
-    }
+    PdfName( const std::string& sName );
 
     /** Create a new PdfName object.
      *  \param pszName the unescaped value of this name. Please specify
      *                 the name without the leading '/'.
      *                 Has to be a zero terminated string.
      */
-    PdfName( const char* pszName )
-        : PdfDataType()
-    {
-        if (pszName) m_Data.assign( pszName );
-    }
+    PdfName( const char* pszName );
 
     /** Create a new PdfName object.
      *  \param pszName the unescaped value of this name. Please specify
      *                 the name without the leading '/'.
      *  \param lLen    length of the name
      */
-    PdfName( const char* pszName, long lLen )
-        : PdfDataType()
-    {
-        if( pszName ) m_Data.assign( pszName, lLen );
-    }
+    PdfName( const char* pszName, long lLen );
 
     /** Create a new PdfName object from a string containing an escaped
      *  name string without the leading / .
@@ -112,10 +98,7 @@ class PODOFO_API PdfName : public PdfDataType {
     /** Create a copy of an existing PdfName object.
      *  \param rhs another PdfName object
      */
-    PdfName( const PdfName & rhs )
-        : PdfDataType(), m_Data(rhs.m_Data)
-    {
-    }
+    PdfName( const PdfName & rhs );
 
     virtual ~PdfName();
 
@@ -132,22 +115,22 @@ class PODOFO_API PdfName : public PdfDataType {
     /** \returns the unescaped value of this name object
      *           without the leading slash
      */
-    PODOFO_NOTHROW inline const std::string& GetName() const;
+    PODOFO_NOTHROW const std::string& GetName() const;
 
     /** \returns the unescaped length of this
      *           name object
      */
-    PODOFO_NOTHROW inline size_t GetLength() const;
+    PODOFO_NOTHROW size_t GetLength() const;
 
     /** Assign another name to this object
      *  \param rhs another PdfName object
      */
-    PODOFO_NOTHROW inline const PdfName& operator=( const PdfName & rhs );
+    PODOFO_NOTHROW const PdfName& operator=( const PdfName & rhs );
 
     /** compare to PdfName objects.
      *  \returns true if both PdfNames have the same value.
      */
-    PODOFO_NOTHROW inline bool operator==( const PdfName & rhs ) const;
+    PODOFO_NOTHROW bool operator==( const PdfName & rhs ) const;
 
     /** overloaded operator for convinience
      *
@@ -165,12 +148,12 @@ class PODOFO_API PdfName : public PdfDataType {
      *  \param rhs a name
      *  \returns true if this objects name is equal to pszName
      */
-    PODOFO_NOTHROW inline bool operator==( const std::string& rhs ) const;
+    PODOFO_NOTHROW bool operator==( const std::string& rhs ) const;
 
     /** compare two PdfName objects.
      *  \returns true if both PdfNames have different values.
      */
-    PODOFO_NOTHROW inline bool operator!=( const PdfName & rhs ) const;
+    PODOFO_NOTHROW bool operator!=( const PdfName & rhs ) const;
 
     /** overloaded operator for convinience
      *
@@ -179,13 +162,13 @@ class PODOFO_API PdfName : public PdfDataType {
      *  \param rhs a name
      *  \returns true if this objects name is not equal to pszName
      */
-    inline bool operator!=( const char* rhs ) const;
+    bool operator!=( const char* rhs ) const;
 
     /** compare two PdfName objects.
      *  Used for sorting in lists
      *  \returns true if this object is smaller than rhs
      */
-    PODOFO_NOTHROW inline bool operator<( const PdfName & rhs ) const;
+    PODOFO_NOTHROW bool operator<( const PdfName & rhs ) const;
 
     static const PdfName KeyContents;
     static const PdfName KeyFlags;
@@ -202,61 +185,6 @@ class PODOFO_API PdfName : public PdfDataType {
     std::string	m_Data;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const std::string & PdfName::GetName() const
-{
-    return m_Data;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-size_t PdfName::GetLength() const
-{
-    return m_Data.length();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfName::operator!=( const PdfName & rhs ) const
-{
-    return !this->operator==( rhs );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfName::operator!=( const char* rhs ) const
-{
-    return !this->operator==( rhs );
-}
-
-bool PdfName::operator<( const PdfName & rhs ) const
-{
-    return m_Data < rhs.m_Data;
-}
-
-bool PdfName::operator==( const PdfName & rhs ) const
-{
-    return ( m_Data == rhs.m_Data );
-}
-
-bool PdfName::operator==( const std::string & rhs ) const
-{
-    return ( m_Data == rhs );
-}
-
-const PdfName& PdfName::operator=( const PdfName & rhs )
-{
-    m_Data = rhs.m_Data;
-    return *this;
-}
-
-
 };
 
 #endif /* _PDF_NAME_H_ */
-

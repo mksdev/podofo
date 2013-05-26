@@ -28,6 +28,21 @@
 
 namespace PoDoFo {
 
+int PdfErrorInfo::GetLine() const { return m_nLine; }
+const std::string & PdfErrorInfo::GetFilename() const { return m_sFile; }
+const std::string & PdfErrorInfo::GetInformation() const { return m_sInfo; }
+const std::wstring & PdfErrorInfo::GetInformationW() const { return m_swInfo; }
+
+void PdfErrorInfo::SetInformation( const char* pszInfo ) { m_sInfo = pszInfo ? pszInfo : ""; }
+void PdfErrorInfo::SetInformation( const wchar_t* pszInfo ) { m_swInfo = pszInfo ? pszInfo : L""; }
+
+PdfError::LogMessageCallback::~LogMessageCallback() {}
+
+void PdfError::EnableLogging( bool bEnable ) { PdfError::s_LogEnabled = bEnable; }
+bool PdfError::LoggingEnabled() { return PdfError::s_LogEnabled; }
+void PdfError::EnableDebug( bool bEnable ) { PdfError::s_DgbEnabled = bEnable; }
+bool PdfError::DebugEnabled() { return PdfError::s_DgbEnabled; }
+
 bool PdfError::s_DgbEnabled = true;
 bool PdfError::s_LogEnabled = true;
 
@@ -632,6 +647,44 @@ void PdfError::DebugMessage( const char* pszMsg, ... )
 
 	vfprintf( stderr, pszMsg, args );
 	va_end( args );
+}
+
+EPdfError PdfError::GetError() const
+{
+    return m_error;
+}
+
+const TDequeErrorInfo & PdfError::GetCallstack() const
+{
+    return m_callStack;
+}
+
+void PdfError::SetError( const EPdfError & eCode, const char* pszFile, int line, const char* pszInformation )
+{
+    m_error = eCode;
+    this->AddToCallstack( pszFile, line, pszInformation );
+}
+
+void PdfError::AddToCallstack( const char* pszFile, int line, const char* pszInformation )
+{
+    m_callStack.push_front( PdfErrorInfo( line, pszFile, pszInformation ) );
+}
+
+void PdfError::SetErrorInformation( const char* pszInformation )
+{
+    if( m_callStack.size() )
+        m_callStack.front().SetInformation( pszInformation ? pszInformation : "" );
+}
+
+void PdfError::SetErrorInformation( const wchar_t* pszInformation )
+{
+    if( m_callStack.size() )
+        m_callStack.front().SetInformation( pszInformation ? pszInformation : L"" );
+}
+
+bool PdfError::IsError() const
+{
+    return (m_error != ePdfError_ErrOk);
 }
 
 };

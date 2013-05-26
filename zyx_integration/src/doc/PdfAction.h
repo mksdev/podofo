@@ -83,7 +83,7 @@ class PODOFO_DOC_API PdfAction : public PdfElement {
      */
     PdfAction( EPdfAction eAction, PdfDocument* pParent );
 
-    virtual ~PdfAction() { }
+    virtual ~PdfAction();
 
     /** Create a PdfAction object from an existing 
      *  PdfObject
@@ -114,7 +114,7 @@ class PODOFO_DOC_API PdfAction : public PdfElement {
     /** Get the type of this action
      *  \returns the type of this action
      */
-    inline EPdfAction GetType() const;
+    EPdfAction GetType() const;
 
     /** Adds this action to an dictionary.
      *  This method handles the all the complexities of making sure it's added correctly
@@ -136,14 +136,6 @@ class PODOFO_DOC_API PdfAction : public PdfElement {
  private:
     EPdfAction m_eType;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline EPdfAction PdfAction::GetType() const
-{
-    return m_eType;
-}
 
 };
 

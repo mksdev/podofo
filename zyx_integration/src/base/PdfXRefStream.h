@@ -58,7 +58,7 @@ class PdfXRefStream : public PdfXRef {
      * \returns the offset in the file at which the XRef table
      *          starts after it was written
      */
-    inline virtual pdf_uint64 GetOffset() const;
+    virtual pdf_uint64 GetOffset() const;
 
  protected:
     /** Called at the start of writing the XRef table.
@@ -110,14 +110,6 @@ class PdfXRefStream : public PdfXRef {
     size_t         m_bufferLen; ///< The length of the internal buffer for one XRef entry
     pdf_uint64     m_offset;    ///< Offset of the XRefStream object
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline pdf_uint64 PdfXRefStream::GetOffset() const
-{
-    return m_offset;
-}
 
 };
 

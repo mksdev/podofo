@@ -67,6 +67,15 @@ PdfContents::PdfContents( PdfPage* pParent )
     mContObj = this->GetObject();
 }
 
+PdfContents::~PdfContents()
+{
+}
+
+PdfObject* PdfContents::GetContents() const
+{
+	return mContObj;
+}
+
 PdfObject* PdfContents::GetContentsForAppending() const
 {
 //    if ( mContObj->GetDataType() == ePdfDataType_Stream || 

@@ -48,10 +48,7 @@ class PODOFO_API PdfData : public PdfDataType {
      *
      * \param pszData a null-terminated string to be copied.
      */
-    PdfData( const char* pszData )
-        : PdfDataType(), m_sData( pszData ) 
-        {
-        }
+    PdfData( const char* pszData );
 
     /**
      * Create a new PdfData object with valid PdfData.
@@ -59,19 +56,12 @@ class PODOFO_API PdfData : public PdfDataType {
      * \param pszData a char * buffer to be copied.
      * \param dataSize size of buffer
      */
-    PdfData( const char* pszData, size_t dataSize )
-        : PdfDataType(), m_sData( pszData, dataSize ) 
-        {
-        }
+    PdfData( const char* pszData, size_t dataSize );
 
     /** Copy an existing PdfData 
      *  \param rhs another PdfData to copy
      */
-    PdfData( const PdfData & rhs )
-        : PdfDataType()
-        {
-            this->operator=( rhs );
-        }
+    PdfData( const PdfData & rhs );
 
     /** Write the complete datatype to a file.
      *  \param pDevice write the object to this device
@@ -88,36 +78,18 @@ class PODOFO_API PdfData : public PdfDataType {
      *  \param rhs another PdfData to copy
      *  \returns this object
      */
-    inline const PdfData & operator=( const PdfData & rhs );
+    const PdfData & operator=( const PdfData & rhs );
 
     /**
      * Access the data as a std::string
      * \returns a const reference to the contained data
      */
-     inline const std::string & data() const;
+     const std::string & data() const;
 
  private:
     std::string m_sData;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfData & PdfData::operator=( const PdfData & rhs )
-{
-    m_sData = rhs.m_sData;
-    return (*this);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const std::string & PdfData::data() const {
-    return m_sData;
-}
-
-
 }; // namespace PoDoFo
 
 #endif /* _PDF_DATATYPE_H_ */
-

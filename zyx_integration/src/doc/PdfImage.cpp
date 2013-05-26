@@ -757,4 +757,15 @@ void PdfImage::SetInterpolate(bool bValue)
 {
     this->GetObject()->GetDictionary().AddKey( "Interpolate", PdfVariant(bValue));
 }
+
+double PdfImage::GetWidth() const
+{
+    return this->GetPageSize().GetWidth();
+}
+
+double PdfImage::GetHeight() const
+{
+    return this->GetPageSize().GetHeight();
+}
+
 };

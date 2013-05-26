@@ -50,7 +50,7 @@ class PdfPage;
  */
 class PODOFO_DOC_API PdfTableModel {
  public:
-    virtual ~PdfTableModel() {};
+    virtual ~PdfTableModel();
 
     /** 
      * \param col the column of the table cell
@@ -188,57 +188,57 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      *  \param pFont the font for the table contents
      */
-    inline void SetFont( PdfFont* pFont );
+    void SetFont( PdfFont* pFont );
 
     /** Set the horizontal alignment of the contents in all table cells
      *
      *  \param eAlignment the horizontal alignment of text in a table cell
      */
-    inline void SetAlignment( EPdfAlignment eAlignment );
+    void SetAlignment( EPdfAlignment eAlignment );
 
     /** Set the vertical alignment of the contents in all table cells
      *
      *  \param eAlignment the vertiical alignment of text in a table cell
      */
-    inline void SetAlignment( EPdfVerticalAlignment eAlignment );
+    void SetAlignment( EPdfVerticalAlignment eAlignment );
 
     /** Set the background color of the table cells
      *
      *  \param rColor the background color
      */
-    inline void SetBackgroundColor( const PdfColor & rColor );
+    void SetBackgroundColor( const PdfColor & rColor );
 
     /** Set the foreground color of the table cells
      *
      *  \param rColor the foreground color
      */
-    inline void SetForegroundColor( const PdfColor & rColor );
+    void SetForegroundColor( const PdfColor & rColor );
 
     /** Sets wether all cells have a background color or not
      *
      *  \param bEnable if true all cells have a background color
      */
-    inline void SetBackgroundEnabled( bool bEnable );
+    void SetBackgroundEnabled( bool bEnable );
 
     /** Sets wether all cells have wordwrapping or not
      *
      *  \param bEnable if true all cells have wordwrapping
      */
-    inline void SetWordWrapEnabled( bool bEnable );
+    void SetWordWrapEnabled( bool bEnable );
 
     /** Sets wether all cells have a border or not.
      *  
      *  \param bEnable if true a border will be drawn
      *                 using the current PdfPainter settings
      */
-    inline void SetBorderEnabled( bool bEnable );
+    void SetBorderEnabled( bool bEnable );
     
     /** Sets the stroke width of the border around
      *  the table.
      *
      *  \param dWidth the stroke width of the border
      */
-    inline void SetBorderWidth( double dWidth );
+    void SetBorderWidth( double dWidth );
     
     /** Sets the contents of a specific cell
      *
@@ -246,7 +246,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      * \param row the row of the table cell
      * \param rsString the contents of this cell
      */
-    inline void SetText( int col, int row, const PdfString & rsString );
+    void SetText( int col, int row, const PdfString & rsString );
 
     /** 
      * \param col the column of the table cell
@@ -254,7 +254,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the contents string of this table cell
      */
-    inline virtual PdfString GetText ( int col, int row ) const;
+    virtual PdfString GetText ( int col, int row ) const;
 
     /** 
      * \param col the column of the table cell
@@ -262,7 +262,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the horizontal alignment of the contents in the cell
      */
-    inline virtual EPdfAlignment GetAlignment ( int col, int row ) const;
+    virtual EPdfAlignment GetAlignment ( int col, int row ) const;
 
     /** 
      * \param col the column of the table cell
@@ -270,7 +270,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the vertical alignment of the contents in the cell
      */
-    inline virtual EPdfVerticalAlignment GetVerticalAlignment ( int col, int row ) const;
+    virtual EPdfVerticalAlignment GetVerticalAlignment ( int col, int row ) const;
 
     /** 
      * \param col the column of the table cell
@@ -278,7 +278,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the font of this table cell or NULL to use the default font
      */
-    inline virtual PdfFont*  GetFont ( int col, int row ) const;
+    virtual PdfFont*  GetFont ( int col, int row ) const;
     
     /** 
      * \param col the column of the table cell
@@ -286,7 +286,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns true if this cell has a background color
      */
-    inline virtual bool HasBackgroundColor( int col, int row ) const;
+    virtual bool HasBackgroundColor( int col, int row ) const;
 
     /** 
      * \param col the column of the table cell
@@ -294,7 +294,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the background color of the specified cell
      */
-    inline virtual PdfColor GetBackgroundColor( int col, int row ) const;
+    virtual PdfColor GetBackgroundColor( int col, int row ) const;
 
 
     /** 
@@ -303,7 +303,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the foreground (text) color of the specified cell
      */
-    inline virtual PdfColor GetForegroundColor( int col, int row ) const;
+    virtual PdfColor GetForegroundColor( int col, int row ) const;
 
     /** 
      * \param col the column of the table cell
@@ -311,7 +311,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns true if the specified cell should use wordwrapping
      */
-    inline virtual bool HasWordWrap( int col, int row ) const;
+    virtual bool HasWordWrap( int col, int row ) const;
 
     /** 
      * \returns true if the table should have
@@ -321,12 +321,12 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      * Cell borders are always drawn using the current PdfPainter
      * settings.
      */
-    inline virtual bool HasBorders() const;
+    virtual bool HasBorders() const;
     
     /** 
      * \returns the stroke witdth of the border line
      */
-    inline virtual double GetBorderWidth() const;
+    virtual double GetBorderWidth() const;
 
     /**
      * \param col the column of the table cell
@@ -334,7 +334,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the border color 
      */
-    inline virtual PdfColor GetBorderColor( int col, int row ) const;
+    virtual PdfColor GetBorderColor( int col, int row ) const;
 
     /** 
      * \param col the column of the table cell
@@ -342,7 +342,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns true if the table cell contains an image
      */
-    inline virtual bool HasImage( int col, int row ) const;
+    virtual bool HasImage( int col, int row ) const;
 
     /**
      * \param col the column of the table cell
@@ -350,7 +350,7 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
      *
      * \returns the image for the specified cell or NULL if the cell has no image
      */     
-    inline virtual PdfImage* GetImage( int col, int row ) const;
+    virtual PdfImage* GetImage( int col, int row ) const;
 
  private:
     PdfFont*              m_pFont;
@@ -371,200 +371,6 @@ class PODOFO_DOC_API PdfSimpleTableModel : public PdfTableModel {
 	bool                  m_bBorder;
 	double                m_dBorder;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetFont( PdfFont* pFont )
-{
-    m_pFont = pFont;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetAlignment( EPdfAlignment eAlignment )
-{
-    m_eAlignment = eAlignment;
-}
-
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetAlignment( EPdfVerticalAlignment eAlignment )
-{
-    m_eVerticalAlignment = eAlignment;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetBackgroundEnabled( bool bEnable )
-{
-    m_bBackground = bEnable;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetWordWrapEnabled( bool bEnable )
-{
-    m_bWordWrap = bEnable;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetBorderEnabled( bool bEnable )
-{
-	m_bBorder = bEnable;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetBorderWidth( double dWidth )
-{
-	m_dBorder = dWidth;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetBackgroundColor( const PdfColor & rColor )
-{
-    m_clBackground = rColor;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetForegroundColor( const PdfColor & rColor )
-{
-    m_clForeground = rColor;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfSimpleTableModel::SetText( int col, int row, const PdfString & rsString ) 
-{
-    if( !m_ppData || row >= m_nRows || col >= m_nCols )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidHandle );
-    }
-
-    m_ppData[row][col] = rsString;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfString PdfSimpleTableModel::GetText ( int col, int row ) const
-{
-    if( !m_ppData || row >= m_nRows || col >= m_nCols )
-        return PdfString();
-    else
-        return m_ppData[row][col].IsValid() ? m_ppData[row][col] : PdfString("");
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfAlignment PdfSimpleTableModel::GetAlignment ( int, int ) const
-{
-    return m_eAlignment;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfVerticalAlignment PdfSimpleTableModel::GetVerticalAlignment ( int, int ) const
-{
-    return m_eVerticalAlignment;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfFont* PdfSimpleTableModel::GetFont ( int, int ) const
-{
-    return m_pFont;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfSimpleTableModel::HasBackgroundColor ( int, int ) const
-{
-    return m_bBackground;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfColor PdfSimpleTableModel::GetBackgroundColor ( int, int ) const
-{
-    return m_clBackground;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfColor PdfSimpleTableModel::GetForegroundColor( int, int ) const
-{
-    return m_clForeground;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfSimpleTableModel::HasWordWrap( int, int ) const
-{
-    return m_bWordWrap;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfSimpleTableModel::HasBorders() const
-{
-	return m_bBorder;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-double PdfSimpleTableModel::GetBorderWidth() const
-{
-	return m_dBorder;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfColor PdfSimpleTableModel::GetBorderColor( int, int ) const
-{
-    // always return black
-    return PdfColor( 0.0, 0.0, 0.0 );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfSimpleTableModel::HasImage( int, int ) const
-{
-    return false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfImage* PdfSimpleTableModel::GetImage( int, int ) const
-{
-    return NULL;
-}
 
 /**
  * This is a high level class of a table which can be drawn to a PdfPainter.
@@ -637,13 +443,13 @@ class PODOFO_DOC_API PdfTable {
      *
      *  \see GetModel
      */
-    inline void SetModel( PdfTableModel* pModel );
+    void SetModel( PdfTableModel* pModel );
     
     /** Get the current PdfTableModel
      *
      *  \returns the currently set PdfTableModel or NULL if none was set
      */
-    inline const PdfTableModel* GetModel() const;
+    const PdfTableModel* GetModel() const;
 
     /** Set the width of all columns.
      *  
@@ -671,7 +477,7 @@ class PODOFO_DOC_API PdfTable {
      *  from either the table width or if no table width is set
      *  from the width of the page on which the table is drawn.
      */
-    inline void SetColumnWidth( double dWidth );
+    void SetColumnWidth( double dWidth );
 
     /** Set all rows to have the same height.
      *
@@ -681,7 +487,7 @@ class PODOFO_DOC_API PdfTable {
      *  from either the table height or if no table height is set
      *  from the height of the page on which the table is drawn.
      */
-    inline void SetRowHeight( double dHeight );
+    void SetRowHeight( double dHeight );
 
     /** Set the width of the table.
      *
@@ -692,7 +498,7 @@ class PODOFO_DOC_API PdfTable {
      *  If this width is not set, the width of the page
      *  on which this table is drawn is used.
      */
-    inline void SetTableWidth( double dWidth );
+    void SetTableWidth( double dWidth );
 
     /** Set the height of the table.
      *
@@ -703,7 +509,7 @@ class PODOFO_DOC_API PdfTable {
      *  If this height is not set, the height of the page
      *  on which this table is drawn is used.
      */
-    inline void SetTableHeight( double dHeight );
+    void SetTableHeight( double dHeight );
 
     /** Automatically create a new page and continue
      *  drawing the table on the new page,
@@ -726,7 +532,7 @@ class PODOFO_DOC_API PdfTable {
      *
      *  \see GetAutoPageBreak
      */
-    inline void SetAutoPageBreak( bool bPageBreak, CreatePageCallback callback, 
+    void SetAutoPageBreak( bool bPageBreak, CreatePageCallback callback, 
                                   void* pCustomData = NULL);
 
     /** 
@@ -735,17 +541,17 @@ class PODOFO_DOC_API PdfTable {
      *
      *  \see SetAutoPageBreak
      */
-    inline bool GetAutoPageBreak() const;
+    bool GetAutoPageBreak() const;
 
     /**
      * \returns the number of columns in the table.
      */
-    inline int GetCols() const;
+    int GetCols() const;
 
     /**
      * \returns the number of rows in the table.
      */
-    inline int GetRows() const;
+    int GetRows() const;
 
  protected:
     /** Internal functions that calculates the total table size
@@ -813,92 +619,6 @@ class PODOFO_DOC_API PdfTable {
     PdfRect m_curClipRect;
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfTable::SetModel( PdfTableModel* pModel )
-{
-    m_pModel = pModel;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfTableModel* PdfTable::GetModel() const
-{
-    return m_pModel;
-}
-
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfTable::SetColumnWidth( double dWidth )
-{
-    m_dColWidth = dWidth;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfTable::SetRowHeight( double dHeight )
-{
-    m_dRowHeight = dHeight;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfTable::SetTableWidth( double dWidth )
-{
-    m_dTableWidth = dWidth;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfTable::SetTableHeight( double dHeight )
-{
-    m_dTableHeight = dHeight;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfTable::SetAutoPageBreak( bool bPageBreak, CreatePageCallback callback, 
-                                 void* pCustomData  )
-{
-    m_bAutoPageBreak = bPageBreak;
-    m_fpCallback     = callback;
-    m_pCustomData    = pCustomData;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfTable::GetAutoPageBreak() const
-{
-    return m_bAutoPageBreak;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-int PdfTable::GetCols() const
-{
-    return m_nCols;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-int PdfTable::GetRows() const
-{
-    return m_nRows;
-}
-
 };
 
-
 #endif // _PDF_TABLE_H_
- 

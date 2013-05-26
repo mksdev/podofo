@@ -128,7 +128,7 @@ class PODOFO_API PdfVariant {
     /** \returns true if this PdfVariant is empty.
      *           i.e. m_eDataType == ePdfDataType_Null
      */
-    inline bool IsEmpty() const;
+    bool IsEmpty() const;
 
     /** Clear all internal member variables and free the memory
      *  they have allocated.
@@ -142,7 +142,7 @@ class PODOFO_API PdfVariant {
     /** \returns the datatype of this object or ePdfDataType_Unknown
      *  if it does not have a value.
      */
-    inline EPdfDataType GetDataType() const;
+    EPdfDataType GetDataType() const;
 
     /** \returns a human readable string representation of GetDataType()
      *  The returned string must not be free'd.
@@ -151,47 +151,47 @@ class PODOFO_API PdfVariant {
 
     /** \returns true if this variant is a bool (i.e. GetDataType() == ePdfDataType_Bool)
      */
-    inline bool IsBool() const { return GetDataType() == ePdfDataType_Bool; }
+    bool IsBool() const;
 
     /** \returns true if this variant is a number (i.e. GetDataType() == ePdfDataType_Number)
      */
-    inline bool IsNumber() const { return GetDataType() == ePdfDataType_Number; }
+    bool IsNumber() const;
 
     /** \returns true if this variant is a real (i.e. GetDataType() == ePdfDataType_Real)
      */
-    inline bool IsReal() const { return GetDataType() == ePdfDataType_Real; }
+    bool IsReal() const;
 
     /** \returns true if this variant is a string (i.e. GetDataType() == ePdfDataType_String)
      */
-    inline bool IsString() const { return GetDataType() == ePdfDataType_String; }
+    bool IsString() const;
 
     /** \returns true if this variant is a hex-string (i.e. GetDataType() == ePdfDataType_HexString)
      */
-    inline bool IsHexString() const { return GetDataType() == ePdfDataType_HexString; }
+    bool IsHexString() const;
 
     /** \returns true if this variant is a name (i.e. GetDataType() == ePdfDataType_Name)
      */
-    inline bool IsName() const { return GetDataType() == ePdfDataType_Name; }
+    bool IsName() const;
 
     /** \returns true if this variant is an array (i.e. GetDataType() == ePdfDataType_Array)
      */
-    inline bool IsArray() const { return GetDataType() == ePdfDataType_Array; }
+    bool IsArray() const;
 
     /** \returns true if this variant is a dictionary (i.e. GetDataType() == ePdfDataType_Dictionary)
      */
-    inline bool IsDictionary() const { return GetDataType() == ePdfDataType_Dictionary; }
+    bool IsDictionary() const;
 
     /** \returns true if this variant is raw data (i.e. GetDataType() == ePdfDataType_RawData
      */
-    inline bool IsRawData() const { return GetDataType() == ePdfDataType_RawData; }
+    bool IsRawData() const;
 
     /** \returns true if this variant is null (i.e. GetDataType() == ePdfDataType_Null)
      */
-    inline bool IsNull() const { return GetDataType() == ePdfDataType_Null; }
+    bool IsNull() const;
 
     /** \returns true if this variant is a reference (i.e. GetDataType() == ePdfDataType_Reference)
      */
-    inline bool IsReference() const { return GetDataType() == ePdfDataType_Reference; }
+    bool IsReference() const;
        
     /** Write the complete variant to an output device.
      *  This is an overloaded member function.
@@ -228,12 +228,12 @@ class PODOFO_API PdfVariant {
      *  This will set the dirty flag of this object.
      *  \see IsDirty
      */
-    inline void SetBool( bool b );
+    void SetBool( bool b );
 
     /** Get the value if this object is a bool.
      *  \returns the bool value.
      */
-    inline bool GetBool() const;
+    bool GetBool() const;
 
     /** Set the value of this object as long
      *  \param l the value as long.
@@ -241,12 +241,12 @@ class PODOFO_API PdfVariant {
      *  This will set the dirty flag of this object.
      *  \see IsDirty
      */
-    inline void SetNumber( long l );
+    void SetNumber( long l );
 
     /** Get the value of the object as long.
      *  \return the value of the number
      */
-    inline pdf_int64 GetNumber() const;
+    pdf_int64 GetNumber() const;
 
     /** Set the value of this object as double
      *  \param d the value as double.
@@ -254,55 +254,55 @@ class PODOFO_API PdfVariant {
      *  This will set the dirty flag of this object.
      *  \see IsDirty
      */
-    inline void SetReal( double d );
+    void SetReal( double d );
 
     /** Get the value of the object as double.
      *  \return the value of the number
      */
-    inline double GetReal() const;
+    double GetReal() const;
 
     /** \returns the value of the object as string.
      */
-    inline const PdfString & GetString() const;
+    const PdfString & GetString() const;
 
     /** \returns the value of the object as name
      */
-    inline const PdfName & GetName() const;
+    const PdfName & GetName() const;
 
     /** Returns the value of the object as array
      *  \returns a array
      */
-    inline const PdfArray & GetArray() const;
+    const PdfArray & GetArray() const;
 
     /** Returns the value of the object as array
      *  \returns a array
      */
-    inline PdfArray & GetArray();
+    PdfArray & GetArray();
 
     /** Returns the dictionary value of this object
      *  \returns a PdfDictionary
      */
-    inline const PdfDictionary & GetDictionary() const; 
+    const PdfDictionary & GetDictionary() const; 
 
     /** Returns the dictionary value of this object
      *  \returns a PdfDictionary
      */
-    inline PdfDictionary & GetDictionary(); 
+    PdfDictionary & GetDictionary(); 
 
     /** Get the reference values of this object.
      *  \returns a PdfReference
      */
-    inline const PdfReference & GetReference() const;
+    const PdfReference & GetReference() const;
 
     /** Get the reference values of this object.
      *  \returns a reference to the PdfData instance.
      */
-    inline const PdfData & GetRawData() const;
+    const PdfData & GetRawData() const;
 
     /** Get the reference values of this object.
      *  \returns a reference to the PdfData instance.
      */
-    inline PdfData & GetRawData();
+    PdfData & GetRawData();
 
     /** Assign the values of another PdfVariant to this one.
      *  \param rhs an existing variant which is copied.
@@ -321,7 +321,7 @@ class PODOFO_API PdfVariant {
     /**
      * \see operator==
      */
-    inline bool operator!=( const PdfVariant & rhs) const;
+    bool operator!=( const PdfVariant & rhs) const;
 
     /** The dirty flag is set if this variant
      *  has been modified after construction.
@@ -335,7 +335,7 @@ class PODOFO_API PdfVariant {
      *  \returns true if the value is dirty and has been 
      *                modified since construction
      */
-    inline bool IsDirty() const;
+    bool IsDirty() const;
 
     /**
      * Sets this object to immutable,
@@ -347,7 +347,7 @@ class PODOFO_API PdfVariant {
      * that no keys can be added to an object after setting stream data on it.
      *
      */
-    inline void SetImmutable(bool bImmutable);
+    void SetImmutable(bool bImmutable);
 
     /**
      * Retrieve if an object is immutable.
@@ -357,7 +357,7 @@ class PODOFO_API PdfVariant {
      *
      * @returns true if the object is immutable
      */
-    inline bool GetImmutable() const;
+    bool GetImmutable() const;
 
  protected:
 
@@ -366,7 +366,7 @@ class PODOFO_API PdfVariant {
      *  so this should be called before actually changing a value!
      * 
      */
-    inline void AssertMutable() const;
+    void AssertMutable() const;
 
     /** Sets the dirty flag of this PdfVariant
      *
@@ -375,7 +375,7 @@ class PODOFO_API PdfVariant {
      *
      *  \see IsDirty
      */
-    inline void SetDirty( bool bDirty );
+    void SetDirty( bool bDirty );
 
     /**
      * Dynamically load the contents of this object from a PDF file by calling
@@ -385,7 +385,7 @@ class PODOFO_API PdfVariant {
      * deferred loading this function does nothing, since deferred loading
      * will not be enabled.
      */
-    inline void DelayedLoad() const;
+    void DelayedLoad() const;
 
     /** Flag the object  incompletely loaded.  DelayedLoad() will be called
      *  when any method that requires more information than is currently
@@ -395,7 +395,7 @@ class PODOFO_API PdfVariant {
      *  If you want delayed loading you must ask for it. If you do so, call
      *  this method early in your ctor and be sure to override DelayedLoadImpl().
      */
-    inline void EnableDelayedLoading();
+    void EnableDelayedLoading();
 
     /** Load all data of the object if delayed loading is enabled.
      *
@@ -411,14 +411,14 @@ class PODOFO_API PdfVariant {
      * While this method is not `const' it may be called from a const context,
      * so be careful what you mess with.
      */
-    inline virtual void DelayedLoadImpl();
+    virtual void DelayedLoadImpl();
 
     /**
      * Returns true if delayed loading is disabled, or if it is enabled
      * and loading has completed. External callers should never need to
      * see this, it's an internal state flag only.
      */
-    PODOFO_NOTHROW inline bool DelayedLoadDone() const;
+    PODOFO_NOTHROW bool DelayedLoadDone() const;
 
     // Rather than having deferred load triggering disabled while deferred
     // loading is in progress, causing public methods to potentially return
@@ -429,22 +429,22 @@ class PODOFO_API PdfVariant {
     /** Version of GetDictionary() that doesn't trigger a delayed load
      *  \returns a PdfDictionary
      */
-    inline const PdfDictionary & GetDictionary_NoDL() const; 
+    const PdfDictionary & GetDictionary_NoDL() const; 
 
     /** Version of GetDictionary() that doesn't trigger a delayed load
      *  \returns a PdfDictionary
      */
-    inline PdfDictionary & GetDictionary_NoDL(); 
+    PdfDictionary & GetDictionary_NoDL(); 
 
     /** Version of GetArray() that doesn't trigger a delayed load
      *  \returns a array
      */
-    inline const PdfArray & GetArray_NoDL() const;
+    const PdfArray & GetArray_NoDL() const;
 
     /** Version of GetArray() that doesn't trigger a delayed load.
      *  \returns a array
      */
-    inline PdfArray & GetArray_NoDL();
+    PdfArray & GetArray_NoDL();
 
  private:
     /**
@@ -509,522 +509,11 @@ class PODOFO_API PdfVariant {
 
 #if defined(PODOFO_EXTRA_CHECKS)
 protected:
-    PODOFO_NOTHROW bool DelayedLoadInProgress() const { return m_bDelayedLoadInProgress; }
+    PODOFO_NOTHROW bool DelayedLoadInProgress() const
 private:
     mutable bool m_bDelayedLoadInProgress;
 #endif
 };
-
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVariant::DelayedLoad() const
-{
-#if defined(PODOFO_EXTRA_CHECKS)
-    // Whoops! Delayed loading triggered during delayed loading. Someone probably
-    // used a public method that calls DelayedLoad() from a delayed load.
-    if (m_bDelayedLoadInProgress)
-        PODOFO_RAISE_ERROR_INFO( ePdfError_InternalLogic, "Recursive DelayedLoad() detected" );
-#endif
-    if( !m_bDelayedLoadDone)
-    {
-#if defined(PODOFO_EXTRA_CHECKS)
-        m_bDelayedLoadInProgress = true;
-#endif
-        const_cast<PdfVariant*>(this)->DelayedLoadImpl();
-        // Nothing was thrown, so if the implementer of DelayedLoadImpl()
-        // following the rules we're done.
-        m_bDelayedLoadDone = true;
-#if defined(PODOFO_EXTRA_CHECKS)
-        m_bDelayedLoadInProgress = false;
-#endif
-    }
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfVariant::IsEmpty() const
-{
-    DelayedLoad();
-
-    return (m_eDataType == ePdfDataType_Null);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-EPdfDataType PdfVariant::GetDataType() const
-{
-    DelayedLoad();
-
-    return m_eDataType;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfVariant::SetBool( bool b )
-{
-    DelayedLoad();
-
-    if( !IsBool() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    AssertMutable();
-    m_Data.bBoolValue = b;
-    SetDirty( true );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfVariant::GetBool() const
-{
-    DelayedLoad();
-
-    if( !IsBool() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    return m_Data.bBoolValue;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfVariant::SetNumber( long l ) 
-{
-    DelayedLoad();
-
-    if( !IsReal() && !IsNumber() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    AssertMutable();
-    if ( IsReal() )
-        m_Data.dNumber = static_cast<double>(l);
-    else
-        m_Data.nNumber = l;
-    SetDirty( true );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-pdf_int64 PdfVariant::GetNumber() const
-{
-    DelayedLoad();
-
-    if( !IsReal() && !IsNumber() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    if ( IsReal() )
-        return static_cast<long>(floor( m_Data.dNumber ));
-    else
-        return m_Data.nNumber;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfVariant::SetReal( double d ) 
-{
-    DelayedLoad();
-
-    if( !IsReal() && !IsNumber() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    AssertMutable();
-    if ( IsReal() )
-        m_Data.dNumber = d;
-    else
-        m_Data.nNumber = static_cast<long>(floor( d ));
-    SetDirty( true );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-double PdfVariant::GetReal() const
-{
-    DelayedLoad();
-
-    if( !IsReal() && !IsNumber() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    if ( IsReal() )
-        return m_Data.dNumber;
-    else
-        return static_cast<double>(m_Data.nNumber);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif // __GNUC__
-const PdfData & PdfVariant::GetRawData() const
-{
-    DelayedLoad();
-
-    if( !IsRawData() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfData*)m_Data.pData);
-}
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif // __GNUC__
-
-
-PdfData & PdfVariant::GetRawData()
-{
-    DelayedLoad();
-
-    if( !IsRawData() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfData*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfString & PdfVariant::GetString() const
-{
-    DelayedLoad();
-
-    if( !IsString() && !IsHexString() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfString*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfName & PdfVariant::GetName() const
-{
-    DelayedLoad();
-
-    if( !IsName() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfName*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfArray & PdfVariant::GetArray() const
-{
-    DelayedLoad();
-    return GetArray_NoDL();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfArray & PdfVariant::GetArray_NoDL() const
-{
-    // Test against eDataType directly not GetDataType() since
-    // we don't want to trigger a delayed load (and if required one has
-    // already been triggered).
-    if( m_eDataType != ePdfDataType_Array )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfArray*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfArray & PdfVariant::GetArray()
-{
-    DelayedLoad();
-    return GetArray_NoDL();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfArray & PdfVariant::GetArray_NoDL()
-{
-    // Test against eDataType directly not GetDataType() since
-    // we don't want to trigger a delayed load (and if required one has
-    // already been triggered).
-    if( m_eDataType != ePdfDataType_Array )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfArray*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfDictionary & PdfVariant::GetDictionary() const
-{
-    DelayedLoad();
-    return GetDictionary_NoDL();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfDictionary & PdfVariant::GetDictionary_NoDL() const
-{
-    // Test against eDataType directly not GetDataType() since
-    // we don't want to trigger a delayed load (and if required one has
-    // already been triggered).
-    if( m_eDataType != ePdfDataType_Dictionary )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfDictionary*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfDictionary & PdfVariant::GetDictionary()
-{
-    DelayedLoad();
-    return GetDictionary_NoDL();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfDictionary & PdfVariant::GetDictionary_NoDL()
-{
-    // Test against eDataType directly not GetDataType() since
-    // we don't want to trigger a delayed load (and if required one has
-    // already been triggered).
-    if( m_eDataType != ePdfDataType_Dictionary )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfDictionary*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfReference & PdfVariant::GetReference() const
-{
-    DelayedLoad();
-
-    if( !IsReference() )
-    {
-        PODOFO_RAISE_ERROR( ePdfError_InvalidDataType );
-    }
-
-    // Do not change this to an reinterpret_cast
-    // We need a c-style casts here to avoid crashes
-    // because a reinterpret_cast might point to a different position.
-    return *((PdfReference*)m_Data.pData);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfVariant::DelayedLoadDone() const
-{
-    return m_bDelayedLoadDone;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfVariant::EnableDelayedLoading()
-{
-    m_bDelayedLoadDone = false;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfVariant::DelayedLoadImpl()
-{
-    // Default implementation of virtual void DelayedLoadImpl() throws, since delayed
-    // loading should not be enabled except by types that support it.
-    PODOFO_RAISE_ERROR( ePdfError_InternalLogic );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfVariant::operator!=( const PdfVariant & rhs) const
-{
-    return !(*this == rhs);
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfVariant::IsDirty() const
-{
-    // If this is a object with
-    // stream, the streams dirty
-    // flag might be set.
-    if( m_bDirty )
-        return m_bDirty;
-
-    switch( m_eDataType ) 
-    {
-        case ePdfDataType_Array:
-        case ePdfDataType_Dictionary:
-            // Arrays and Dictionaries
-            // handle dirty status by themselfes
-            return m_Data.pData->IsDirty();
-
-        case ePdfDataType_Bool:
-        case ePdfDataType_Number:
-        case ePdfDataType_Real:
-        case ePdfDataType_HexString:
-        case ePdfDataType_String:
-        case ePdfDataType_Name:
-        case ePdfDataType_RawData:
-        case ePdfDataType_Reference:
-        case ePdfDataType_Null:
-        case ePdfDataType_Unknown:
-        default:
-            return m_bDirty;
-    };
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfVariant::SetDirty( bool bDirty ) 
-{
-    m_bDirty = bDirty;
-
-    if( !m_bDirty ) 
-    {
-        // Propogate new dirty state to subclasses
-        switch( m_eDataType ) 
-        {
-            case ePdfDataType_Array:
-            case ePdfDataType_Dictionary:
-                // Arrays and Dictionaries
-                // handle dirty status by themselfes
-                m_Data.pData->SetDirty( m_bDirty );
-
-            case ePdfDataType_Bool:
-            case ePdfDataType_Number:
-            case ePdfDataType_Real:
-            case ePdfDataType_HexString:
-            case ePdfDataType_String:
-            case ePdfDataType_Name:
-            case ePdfDataType_RawData:
-            case ePdfDataType_Reference:
-            case ePdfDataType_Null:
-            case ePdfDataType_Unknown:
-            default:
-                break;
-        };    
-    }
-}
-
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVariant::SetImmutable(bool bImmutable)
-{
-    m_bImmutable = bImmutable;
-
-    switch( m_eDataType ) 
-    {
-        case ePdfDataType_Array:
-        case ePdfDataType_Dictionary:
-            // Arrays and Dictionaries
-            // handle dirty status by themselfes
-            m_Data.pData->SetImmutable( m_bImmutable );
-            
-        case ePdfDataType_Bool:
-        case ePdfDataType_Number:
-        case ePdfDataType_Real:
-        case ePdfDataType_HexString:
-        case ePdfDataType_String:
-        case ePdfDataType_Name:
-        case ePdfDataType_RawData:
-        case ePdfDataType_Reference:
-        case ePdfDataType_Null:
-        case ePdfDataType_Unknown:
-        default:
-            break;
-    };    
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline bool PdfVariant::GetImmutable() const 
-{
-    return m_bImmutable;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline void PdfVariant::AssertMutable() const
-{
-    if(m_bImmutable) 
-    {
-        throw new PdfError( ePdfError_ChangeOnImmutable );
-    }
-}
 
 };
 

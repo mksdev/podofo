@@ -258,4 +258,9 @@ pdf_long PdfFontMetricsBase14::GetFontDataLen() const
     return 0;
 }
 
+double PdfFontMetricsBase14::GetCapHeight() const 
+{
+    return cap_height;
+}
+
 };

@@ -75,7 +75,7 @@ class PODOFO_DOC_API PdfPage : public PdfElement, public PdfCanvas {
     /** Get the current page size in PDF Units
      *  \returns a PdfRect containing the page size available for drawing
      */
-    inline virtual const PdfRect GetPageSize() const;
+    virtual const PdfRect GetPageSize() const;
 
     // added by Petr P. Petrov 21 Febrary 2010
     /** Set the current page width in PDF Units
@@ -135,32 +135,32 @@ class PODOFO_DOC_API PdfPage : public PdfElement, public PdfCanvas {
      *  This is most likely an internal object.
      *  \returns a resources object
      */
-    inline virtual PdfObject* GetResources() const;
+    virtual PdfObject* GetResources() const;
 
     /** Get the current MediaBox (physical page size) in PDF units.
      *  \returns PdfRect the page box
      */
-    virtual const PdfRect GetMediaBox() const { return GetPageBox( "MediaBox" ); }
+    virtual const PdfRect GetMediaBox() const;
 
     /** Get the current CropBox (visible page size) in PDF units.
      *  \returns PdfRect the page box
      */
-    virtual const PdfRect GetCropBox() const { return GetPageBox( "CropBox" ); }
+    virtual const PdfRect GetCropBox() const;
 
     /** Get the current TrimBox (cut area) in PDF units.
      *  \returns PdfRect the page box
      */
-    virtual const PdfRect GetTrimBox() const { return GetPageBox( "TrimBox" ); }
+    virtual const PdfRect GetTrimBox() const;
 
     /** Get the current BleedBox (extra area for printing purposes) in PDF units.
      *  \returns PdfRect the page box
      */
-    virtual const PdfRect GetBleedBox() const { return GetPageBox( "BleedBox" ); }
+    virtual const PdfRect GetBleedBox() const;
 
     /** Get the current ArtBox in PDF units.
      *  \returns PdfRect the page box
      */
-    virtual const PdfRect GetArtBox() const { return GetPageBox( "ArtBox" ); }
+    virtual const PdfRect GetArtBox() const;
 
     /** Get the current page rotation (if any).
      *  \returns int 0, 90, 180 or 270
@@ -247,7 +247,7 @@ class PODOFO_DOC_API PdfPage : public PdfElement, public PdfCanvas {
      *  
      *  \returns PdfObject - the result of the key fetching or NULL
      */
-    inline const PdfObject* GetInheritedKey( const PdfName & rName ) const; 
+    const PdfObject* GetInheritedKey( const PdfName & rName ) const; 
 
  private:
 
@@ -290,30 +290,6 @@ class PODOFO_DOC_API PdfPage : public PdfElement, public PdfCanvas {
 
     TMapAnnotation m_mapAnnotations;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline PdfObject* PdfPage::GetResources() const
-{
-    return m_pResources;
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfRect PdfPage::GetPageSize() const
-{
-    return this->GetMediaBox();
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-inline const PdfObject* PdfPage::GetInheritedKey( const PdfName & rName ) const
-{
-    return this->GetInheritedKeyFromObject( rName.GetName().c_str(), this->GetObject() );
-}
 
 };
 

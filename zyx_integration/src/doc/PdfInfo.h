@@ -74,7 +74,7 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
     /** Get the author of the document
      *  \returns the author
      */
-    inline const PdfString & GetAuthor() const;
+    const PdfString & GetAuthor() const;
 
     /** Set the creator of the document.
      *  Typically the name of the application using the library.
@@ -85,7 +85,7 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
     /** Get the creator of the document
      *  \returns the creator
      */
-    inline const PdfString & GetCreator() const;
+    const PdfString & GetCreator() const;
 
     /** Set keywords for this document
      *  \param sKeywords a list of keywords
@@ -95,7 +95,7 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
     /** Get the keywords of the document
      *  \returns the keywords
      */
-    inline const PdfString & GetKeywords() const;
+    const PdfString & GetKeywords() const;
 
     /** Set the subject of the document.
      *  \param sSubject subject
@@ -105,7 +105,7 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
     /** Get the subject of the document
      *  \returns the subject
      */
-    inline const PdfString & GetSubject() const;
+    const PdfString & GetSubject() const;
 
     /** Set the title of the document.
      *  \param sTitle title
@@ -115,7 +115,7 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
     /** Get the title of the document
      *  \returns the title
      */
-    inline const PdfString & GetTitle() const;
+    const PdfString & GetTitle() const;
 
     // Peter Petrov 27 April 2008
     /** Set the producer of the document.
@@ -127,7 +127,7 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
     /** Get the producer of the document
      *  \returns the producer
      */
-    inline const PdfString & GetProducer() const;
+    const PdfString & GetProducer() const;
 
     /** Set the trapping state of the document.
      *  \param sTrapped trapped
@@ -137,17 +137,17 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
     /** Get the trapping state of the document
      *  \returns the title
      */
-    inline const PdfName & GetTrapped() const;
+    const PdfName & GetTrapped() const;
 
     /** Get creation date of document
      *  \return creation date
      */
-    inline PdfDate GetCreationDate() const;
+    PdfDate GetCreationDate() const;
 
     /** Get modification date of document
      *  \return modification date
      */
-    inline PdfDate GetModDate() const;
+    PdfDate GetModDate() const;
 
  private:
     /** Add the initial document information to the dictionary.
@@ -170,80 +170,6 @@ class PODOFO_DOC_API PdfInfo : public PdfElement {
 
 };
 
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfString & PdfInfo::GetAuthor() const
-{
-    return this->GetStringFromInfoDict( PdfName("Author") );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfString & PdfInfo::GetCreator() const
-{
-    return this->GetStringFromInfoDict( PdfName("Creator") );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfString & PdfInfo::GetKeywords() const
-{
-    return this->GetStringFromInfoDict( PdfName("Keywords") );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfString & PdfInfo::GetSubject() const
-{
-    return this->GetStringFromInfoDict( PdfName("Subject") );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfString & PdfInfo::GetTitle() const
-{
-    return this->GetStringFromInfoDict( PdfName("Title") );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfString & PdfInfo::GetProducer() const
-{
-    return this->GetStringFromInfoDict( PdfName("Producer") );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfName & PdfInfo::GetTrapped() const
-{
-	return this->GetNameFromInfoDict( PdfName("Trapped") );
-}
-
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfDate PdfInfo::GetCreationDate() const
-{
-    return PdfDate(this->GetStringFromInfoDict(PdfName("CreationDate")));
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-PdfDate PdfInfo::GetModDate() const
-{
-    return PdfDate(this->GetStringFromInfoDict(PdfName("ModDate")));
-}
-
 };
-
 
 #endif // _PDF_INFO_H_

@@ -107,7 +107,7 @@ class PODOFO_API PdfStream {
      *  The string will be copied into a newly allocated buffer.
      *  \param pszString a zero terminated string buffer containing only ASCII text data
      */
-    inline void Set( const char* pszString );
+    void Set( const char* pszString );
 
     /** Sets raw data for this filter which is read from an input stream.
      *  This method does neither encode nor decode the read data.
@@ -159,7 +159,7 @@ class PODOFO_API PdfStream {
      *  \see BeginAppend
      *  \see EndAppend
      */
-    inline void Append( const char* pszString, size_t lLen ); 
+    void Append( const char* pszString, size_t lLen ); 
 
     /** Append a null-terminated string to the current stream contents. 
      *
@@ -170,7 +170,7 @@ class PODOFO_API PdfStream {
      *  \see BeginAppend
      *  \see EndAppend
      */
-    inline void Append( const char* pszString ); 
+    void Append( const char* pszString ); 
 
     /** Append to the current stream contents.
      *
@@ -181,7 +181,7 @@ class PODOFO_API PdfStream {
      *  \see BeginAppend
      *  \see EndAppend
      */
-    inline void Append( const std::string& sString ); 
+    void Append( const std::string& sString ); 
 
     /** Finish appending data to this stream.
      *  BeginAppend() has to be called before this method.
@@ -199,7 +199,7 @@ class PODOFO_API PdfStream {
      *  \see BeginAppend
      *  \see Append
      */
-    inline bool IsAppending() const;
+    bool IsAppending() const;
 
     /** Get the stream's length with all filters applied (eg if the stream is
      * Flate compressed, the length of the compressed data stream).
@@ -291,50 +291,6 @@ class PODOFO_API PdfStream {
 
     bool                m_bAppend;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfStream::Set( const char* pszString )
-{
-    if( pszString ) 
-        Set( const_cast<char*>(pszString), strlen( pszString ) );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfStream::Append( const char* pszString, size_t lLen )
-{
-    PODOFO_RAISE_LOGIC_IF( !m_bAppend, "Append() failed because BeginAppend() was not yet called!" );
-
-    this->AppendImpl( pszString, lLen );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfStream::Append( const char* pszString )
-{
-    if( pszString )
-        Append( pszString, strlen( pszString ) );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-void PdfStream::Append( const std::string& sString ) 
-{
-    Append( sString.c_str(), sString.length() );
-}
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-bool PdfStream::IsAppending() const
-{
-    return m_bAppend;
-}
 
 };
 

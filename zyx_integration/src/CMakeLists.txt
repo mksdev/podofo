@@ -9,6 +9,7 @@ SET(PODOFO_DEPEND_TARGET CACHE INTERNAL
     "Which PoDoFo library target to depend on when building tools and tests")
 
 SET(PODOFO_BASE_SOURCES
+  base/util/PdfMutex.cpp
   base/PdfArray.cpp
   base/PdfCanvas.cpp
   base/PdfColor.cpp

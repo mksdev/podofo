@@ -333,6 +333,10 @@ PdfNamesTree::PdfNamesTree( PdfObject* pObject, PdfObject* pCatalog )
 {
 }
 
+PdfNamesTree::~PdfNamesTree()
+{
+}
+
 void PdfNamesTree::AddValue( const PdfName & tree, const PdfString & key, const PdfObject & rValue )
 {
     PdfNameTreeNode root( NULL, this->GetRootNode( tree, true ) );    
@@ -496,5 +500,14 @@ void PdfNamesTree::AddToDictionary( PdfObject* pObj, PdfDictionary & rDict )
 
 }
 
-};
+PdfObject* PdfNamesTree::GetJavaScriptNode(bool bCreate) const
+{
+    return this->GetRootNode( PdfName("JavaScript"), bCreate );
+}
 
+PdfObject* PdfNamesTree::GetDestsNode(bool bCreate) const
+{
+    return this->GetRootNode( PdfName("Dests"), bCreate );
+}
+
+};

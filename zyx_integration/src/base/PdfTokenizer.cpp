@@ -803,4 +803,29 @@ void PdfTokenizer::QuequeToken( const char* pszToken, EPdfTokenType eType )
     m_deqQueque.push_back( TTokenizerPair( std::string( pszToken ), eType ) );
 }
 
+bool PdfTokenizer::IsWhitespace(const unsigned char ch)
+{
+    return ( PdfTokenizer::s_whitespaceMap[static_cast<size_t>(ch)] != 0 );
+}
+
+bool PdfTokenizer::IsDelimiter(const unsigned char ch)
+{
+    return ( PdfTokenizer::s_delimiterMap[ch] != 0 );
+}
+
+bool PdfTokenizer::IsRegular(const unsigned char ch)
+{
+    return !IsWhitespace(ch) && !IsDelimiter(static_cast<size_t>(ch));
+}
+
+bool PdfTokenizer::IsPrintable(const unsigned char ch)
+{
+    return ((ch > 32U) && (ch < 125U));
+}
+
+int PdfTokenizer::GetHexValue(const unsigned char ch)
+{
+    return PdfTokenizer::s_hexMap[static_cast<size_t>(ch)];
+}
+
 };

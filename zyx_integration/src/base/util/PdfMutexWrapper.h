@@ -43,11 +43,11 @@ class PdfMutexWrapper {
      * 
      *  \param rMutex the mutex to be locked.
      */
-    PODOFO_NOTHROW inline PdfMutexWrapper( PdfMutex & rMutex );
+    PODOFO_NOTHROW PdfMutexWrapper( PdfMutex & rMutex );
 
     /** Unlocks the mutex on destruction
      */
-    inline ~PdfMutexWrapper();
+    ~PdfMutexWrapper();
 
   private:
     /** default constructor, not implemented
@@ -62,29 +62,6 @@ class PdfMutexWrapper {
 
     PdfMutex& m_rMutex;
 };
-
-PdfMutexWrapper::PdfMutexWrapper( PdfMutex & rMutex )
-    : m_rMutex( rMutex )
-{
-    m_rMutex.Lock();
-}
-
-
-PdfMutexWrapper::~PdfMutexWrapper()
-{
-#if defined(DEBUG)
-    try {
-	m_rMutex.UnLock();
-    }
-    catch( const PdfError & rError ) 
-    {
-	rError.PrintErrorMsg();
-        throw rError;
-    }
-#else
-    m_rMutex.UnLock();
-#endif
-}
 
 }; // Util
 }; // PoDoFo

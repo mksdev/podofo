@@ -54,7 +54,7 @@ class PODOFO_DOC_API PdfShadingPattern : public PdfElement {
      *  in the pages resource dictionary.
      *  \returns PdfName containing the identifier (e.g. /Sh13)
      */
-    inline const PdfName & GetIdentifier() const;
+    const PdfName & GetIdentifier() const;
 
   protected:
     /** Create a new PdfShadingPattern object which will introduce itself
@@ -86,14 +86,6 @@ class PODOFO_DOC_API PdfShadingPattern : public PdfElement {
  private: 
     PdfName m_Identifier;
 };
-
-// -----------------------------------------------------
-// 
-// -----------------------------------------------------
-const PdfName & PdfShadingPattern::GetIdentifier() const
-{
-    return m_Identifier;
-}
 
 /** A shading pattern that is a simple axial
  *  shading between two colors.

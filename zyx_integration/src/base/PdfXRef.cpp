@@ -27,6 +27,42 @@
 
 namespace PoDoFo {
 
+PdfXRef::TXRefItem::TXRefItem( const PdfReference & rRef, const pdf_uint64 & off ) 
+	: reference( rRef ), offset( off )
+{
+}
+
+bool PdfXRef::TXRefItem::operator<( const TXRefItem & rhs ) const
+{
+	return this->reference < rhs.reference;
+}
+
+PdfXRef::PdfXRefBlock::PdfXRefBlock() 
+   : m_nFirst( 0 ), m_nCount( 0 )
+{
+}
+
+PdfXRef::PdfXRefBlock::PdfXRefBlock( const PdfXRefBlock & rhs )
+   : m_nFirst( 0 ), m_nCount( 0 )
+{
+   this->operator=( rhs );
+}
+
+bool PdfXRef::PdfXRefBlock::operator<( const PdfXRef::PdfXRefBlock & rhs ) const
+{
+   return m_nFirst < rhs.m_nFirst;
+}
+
+const PdfXRef::PdfXRefBlock & PdfXRef::PdfXRefBlock::operator=( const PdfXRef::PdfXRefBlock & rhs )
+{
+   m_nFirst  = rhs.m_nFirst;
+   m_nCount  = rhs.m_nCount;
+   
+   items     = rhs.items;
+   freeItems = rhs.freeItems;
+
+   return *this;
+}
 
 bool PdfXRef::PdfXRefBlock::InsertItem( const TXRefItem & rItem, bool bUsed )
 {
@@ -334,6 +370,11 @@ void PdfXRef::WriteXRefEntry( PdfOutputDevice* pDevice, pdf_uint64 offset,
 
 void PdfXRef::EndWrite( PdfOutputDevice* ) 
 {
+}
+
+pdf_uint64 PdfXRef::GetOffset() const
+{
+    return m_offset;
 }
 
 };

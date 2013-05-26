@@ -50,6 +50,8 @@ PdfAcroForm::PdfAcroForm( PdfDocument* pDoc, PdfObject* pObject, EPdfAcroFormDef
     Init( eDefaultAppearance );
 }
 
+PdfAcroForm::~PdfAcroForm() { }
+
 void PdfAcroForm::Init( EPdfAcroFormDefaulAppearance eDefaultAppearance )
 {
     // Add default appearance: black text, 12pt times 
@@ -111,6 +113,11 @@ void PdfAcroForm::SetNeedAppearances( bool bNeedAppearances )
 bool PdfAcroForm::GetNeedAppearances() const
 {
     return this->GetObject()->GetDictionary().GetKeyAsBool( PdfName("NeedAppearances"), false );
+}
+
+PdfDocument* PdfAcroForm::GetDocument()
+{
+    return m_pDocument;
 }
 
 };
