@@ -123,6 +123,11 @@ void PdfInfo::SetTrapped(const PdfName & sTrapped)
 		this->GetObject()->GetDictionary().AddKey( "Trapped", PdfName( "Unknown" ) );
 }
 
+void PdfInfo::SetCustomKey(const PdfName &sName, const PdfString &sValue)
+{
+    this->GetObject()->GetDictionary().AddKey( sName, sValue );
+}
+
 const PdfString & PdfInfo::GetAuthor() const
 {
     return this->GetStringFromInfoDict( PdfName("Author") );
