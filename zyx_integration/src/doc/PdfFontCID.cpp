@@ -135,6 +135,9 @@ void PdfFontCID::Init( bool bEmbed, bool bSubset )
     {
         this->EmbedFont( pDescriptor );
         m_bWasEmbedded = true;
+    } else if (!bEmbed) {
+        // it's not asked to be embedded, thus mark as embedded already, to not do that at PdfFontCID::EmbedFont()
+        m_bWasEmbedded = true;
     }
 }
 
