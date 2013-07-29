@@ -230,12 +230,8 @@ PdfPage* PdfPagesTree::InsertPage( const PdfRect & rSize, int atIndex)
 		 atIndex = this->GetTotalNumberOfPages() - 1;
 	 }
 
-	 if (atIndex <= 0) {
-		 atIndex = ePdfPageInsertionPoint_InsertBeforeFirstPage;
-	 }
-
-	 InsertPage( atIndex, pPage );
-    m_cache.AddPageObject( atIndex + 1, pPage );
+	 InsertPage( atIndex - 1, pPage );
+    m_cache.AddPageObject( atIndex, pPage );
 
     return pPage;
 }
