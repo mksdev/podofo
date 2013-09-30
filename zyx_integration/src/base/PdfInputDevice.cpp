@@ -58,8 +58,6 @@ PdfInputDevice::PdfInputDevice( const char* pszFilename )
 }
 
 #ifdef _WIN32
-#if defined(_MSC_VER)  &&  _MSC_VER <= 1200			// nicht für Visualstudio 6
-#else
 PdfInputDevice::PdfInputDevice( const wchar_t* pszFilename )
 {
     this->Init();
@@ -87,7 +85,6 @@ PdfInputDevice::PdfInputDevice( const wchar_t* pszFilename )
         throw e;
     }
 }
-#endif
 #endif // _WIN32
 
 PdfInputDevice::PdfInputDevice( const char* pBuffer, size_t lLen )
