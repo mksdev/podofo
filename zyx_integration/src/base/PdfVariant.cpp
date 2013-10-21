@@ -863,7 +863,7 @@ void PdfVariant::AssertMutable() const
 {
     if(m_bImmutable) 
     {
-        throw new PdfError( ePdfError_ChangeOnImmutable );
+        throw PdfError( ePdfError_ChangeOnImmutable );
     }
 }
 
