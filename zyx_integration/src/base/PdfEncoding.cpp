@@ -115,6 +115,19 @@ PdfEncoding::const_iterator PdfEncoding::end() const
     return PdfEncoding::const_iterator( this, this->GetLastChar() + 1 );
 }
 
+/* bcc32 workarounds */
+#ifdef __BORLANDC__
+bool PdfEncoding::IsAutoDelete() const
+{
+    return false;
+}
+
+bool PdfEncoding::IsSingleByteEncoding() const
+{
+    return true;
+}
+#endif // __BORLANDC__
+
 // -----------------------------------------------------
 // PdfSimpleEncoding
 // -----------------------------------------------------
