@@ -1675,20 +1675,6 @@ void PdfPainter::AddToPageResources( const PdfName & rIdentifier, const PdfRefer
     m_pPage->AddResource( rIdentifier, rRef, rName );
 }
 
-void PdfPainter::AddRawCommands(const std::string &commands, bool addToPath)
-{
-    PODOFO_RAISE_LOGIC_IF( !m_pCanvas, "Call SetPage() first before doing drawing operations." );
-
-    if (commands.empty()) {
-        return;
-    }
-
-    if (addToPath)
-        m_curPath << commands;
-
-    m_pCanvas->Append( commands.c_str() );
-}
-
 void PdfPainter::ConvertRectToBezier( double dX, double dY, double dWidth, double dHeight, double pdPointX[], double pdPointY[] )
 {
     // this function is based on code from:
@@ -1921,9 +1907,14 @@ PdfString PdfPainter::ExpandTabs( const PdfString & rsString, pdf_long lStringLe
 #endif
 }
 
-const PdfCanvas* PdfPainter::GetPage() const
+PdfCanvas* PdfPainter::GetPage() const
 {
     return m_pPage;
+}
+
+PdfStream* PdfPainter::GetCanvas() const
+{
+    return m_pCanvas;
 }
 
 EPdfTextRenderingMode PdfPainter::GetTextRenderingMode(void) const
@@ -1956,9 +1947,9 @@ unsigned short PdfPainter::GetPrecision() const
     return static_cast<unsigned short>(m_oss.precision());
 }
 
-std::string PdfPainter::GetCurrentPath(void) const
+std::ostringstream &PdfPainter::GetCurrentPath(void)
 {
-	return m_curPath.str();
+	return m_curPath;
 }
 
 void PdfPainter::SetClipRect( const PdfRect & rRect )

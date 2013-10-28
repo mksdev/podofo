@@ -88,7 +88,13 @@ class PODOFO_DOC_API PdfPainter {
      *
      *  \returns the current page of the painter or NULL if none is set
      */
-    const PdfCanvas* GetPage() const;
+    PdfCanvas* GetPage() const;
+
+    /** Return the current page canvas stream that is set on the painter.
+     *
+     *  \returns the current page canvas stream of the painter or NULL if none is set
+     */
+    PdfStream* GetCanvas() const;
 
     /** Finish drawing onto a page.
      * 
@@ -736,17 +742,11 @@ class PODOFO_DOC_API PdfPainter {
      */
     unsigned short GetPrecision() const;
 
-    /** Get current path string. This can be later used in \ref AddRawCommands.
+    /** Get current path string stream.
      * Stroke/Fill commands clear current path.
-     * \returns std::string representing current path
+     * \returns std::ostringstream representing current path
      */
-    std::string GetCurrentPath(void) const;
-
-    /** Adds raw commands into Canvas stream.
-     *  \param commands raw PDF commands
-     *  \param addToPath whether to add also to current path; default is false
-     */
-    void AddRawCommands(const std::string &commands, bool addToPath = false);
+    std::ostringstream &GetCurrentPath(void);
 
  private:
     /** Register an object in the resource dictionary of this page
