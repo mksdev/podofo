@@ -212,17 +212,28 @@ PdfFont* PdfFontFactory::CreateFont( FT_Library*, PdfObject* pObject )
     const PdfName & rSubType = pSubTypeKey->GetName();
     if( rSubType == PdfName("Type0") ) 
     {
+        // TABLE 5.18 Entries in a Type 0 font dictionary
+
         // The PDF reference states that DescendantFonts must be an array,
         // some applications (e.g. MS Word) put the array into an indirect object though.
-        const PdfArray & descendant  = 
+        PdfArray & descendants  =
             pObject->GetIndirectKey( "DescendantFonts" )->GetArray();
         PdfObject* pFontObject = NULL;
         
-        if (descendant.size() && descendant[0].IsReference())
+        if ( descendants.size() )
         {
-            pFontObject = pObject->GetOwner()->GetObject( descendant[0].GetReference() );
-
+            // DescendantFonts is an one-element array
+            PdfObject &descendant = descendants[0];
+            if ( descendant.IsReference() )
+            {
+                pFontObject = pObject->GetOwner()->GetObject( descendant.GetReference() );
+                pDescriptor = pFontObject->GetIndirectKey( "FontDescriptor" );
+            }
+            else
+            {
+                pFontObject = &descendant;
             pDescriptor = pFontObject->GetIndirectKey( "FontDescriptor" );
+        }
         }
         pEncoding   = pObject->GetIndirectKey( "Encoding" );
 
